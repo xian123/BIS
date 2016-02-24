@@ -91,7 +91,7 @@ else
     UpdateTestState $ICA_TESTFAILED
     exit 50
 fi
-i=0
+i=1
 while [ $i -lt $numVMBusNics ]
 do
 	ifconfig hn${i} down

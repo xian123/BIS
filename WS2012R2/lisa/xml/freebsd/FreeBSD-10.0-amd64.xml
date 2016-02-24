@@ -13,12 +13,12 @@
             <smtpServer>smtphost.southpacific.corp.microsoft.com</smtpServer>
         </email>
         <testparams>
-            <param>REPOSITORY_SERVER=10.156.76.149</param>
+            <param>REPOSITORY_SERVER=10.156.76.99</param>
             <param>REPOSITORY_EXPORT=/usr/lisa/public</param>
-            <param>NFS_SERVER=10.156.76.149</param>
+            <param>NFS_SERVER=10.156.76.99</param>
             <param>NFS_EXPORT=/usr/lisa/public</param>
             <param>RootDir=D:\code\BIS_automation\lisa\</param>
-            <param>TARGET_ADDR=10.156.76.149</param>  <!--target address to ping external network-->
+            <param>TARGET_ADDR=10.156.76.99</param>  <!--target address to ping external network-->
             <param>DEBUG=0</param>
         </testparams>
     </global>
@@ -27,28 +27,22 @@
         <suite>
             <suiteName>FeatureTest</suiteName>
             <suiteTests> 
-                <suiteTest>Floppymount</suiteTest>
-                <suiteTest>CDmount</suiteTest>                                 
-                 
                 <suiteTest>CheckMemoryCapacity-2GB</suiteTest>
 				<suiteTest>CheckMemoryCapacity-512MB</suiteTest>
                 <suiteTest>CheckMemoryCapacity-5GB</suiteTest>
 				
                 <suiteTest>CheckCPUCount-2</suiteTest>
                 <suiteTest>ShutdownFromHyperV-2</suiteTest> 
-                <suiteTest>CheckCPUCount-3</suiteTest>
-                <suiteTest>ShutdownFromHyperV-3</suiteTest> 
-                <suiteTest>CheckCPUCount-4</suiteTest>
-                <suiteTest>ShutdownFromHyperV-4</suiteTest>
-                <suiteTest>CheckCPUCount-8</suiteTest>
-                <suiteTest>ShutdownFromHyperV-4</suiteTest>                  
-
+ 
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>TimeSync</suiteTest>
                 <suiteTest>TimeSync_SavedVM</suiteTest>
                 <suiteTest>ShutdownFromHyperV</suiteTest>   
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
-                
+				
+                <suiteTest>CheckCPUCount-3</suiteTest>
+                <suiteTest>ShutdownFromHyperV-3</suiteTest> 
+				
                 <suiteTest>AddFixedIDEDrive</suiteTest>
                 <suiteTest>AddDynamicIDEDrive0</suiteTest> 
                 <suiteTest>AddDynamicIDEDrive1</suiteTest> 
@@ -67,12 +61,7 @@
                 <suiteTest>AddPassThroughSCSIDrive</suiteTest> 
                 <suiteTest>AddDynamicSCSIDrive_Multi</suiteTest> 
                 <suiteTest>AddPassThroughSCSIDrive_Multi</suiteTest>                   
-            
-                <suiteTest>TestExportImport</suiteTest>  
-                
-                <suiteTest>CopyFileExceedDiskSizeIDE</suiteTest>  
-                <suiteTest>CopyFileExceedDiskSizeSCSI</suiteTest>      
-                
+ 
                 <suiteTest>AddPassThroughIDEDrive0</suiteTest>                                
                 <suiteTest>AddPassThroughIDEDrive1</suiteTest> 
                 <suiteTest>AddPassThroughIDEDrive1_Multi</suiteTest>
@@ -92,14 +81,10 @@
                 <suiteTest>4K_AddMultipleVHDX_IDE0</suiteTest>
                 <suiteTest>4K_AddMultipleVHDX_IDE1</suiteTest>            
                 <suiteTest>4K_AddDynamicVHDX_SCSIDrive_Multi</suiteTest>            
-        
-                <suiteTest>CopyLargeFile</suiteTest> 
-                <suiteTest>CopyMultipleSmallFiles</suiteTest> 
-                
+
                 <suiteTest>ExternalSynthNetAdapter</suiteTest>
                 <suiteTest>SwitchNIC1</suiteTest> 
                 <suiteTest>SwitchNIC2</suiteTest> 
-
                 <suiteTest>InternalSynthNetAdapter</suiteTest>
                 <suiteTest>PrivateSynthNetAdapter</suiteTest>  
              
@@ -108,12 +93,9 @@
                 <suiteTest>PromiscSynthNetAdapter</suiteTest> 
                 <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest> 
                 <suiteTest>TwiceExternalSynthNetAdapter</suiteTest>
-                                 
-                <suiteTest>SynthNetAdapterOnly</suiteTest>  
-                <suiteTest>Test50TimesReboot</suiteTest>
-                
+				<suiteTest>Setmtu</suiteTest>	
+
                 <suiteTest>SetNMI</suiteTest>
-                <suiteTest>VerifyNMI</suiteTest>
                 <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
@@ -132,21 +114,10 @@
                 <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>       
 
-                <suiteTest>Setmtu</suiteTest>	
-                <suiteTest>UpDownNIC</suiteTest>				
-            </suiteTests>
-        </suite>
-        
-        <suite>
-            <suiteName>LegacyNICTest</suiteName>
-            <suiteTests>
-                <suiteTest>PrivateSynthNetAdapter</suiteTest>        
-                <suiteTest>InternalSynthNetAdapter</suiteTest>    
-                <suiteTest>StaticMac</suiteTest>        
-                <suiteTest>PromiscSynthNetAdapter</suiteTest>    
-                <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest>    
-                <suiteTest>SwitchNIC1</suiteTest>        
-                <suiteTest>TwiceExternalSynthNetAdapter</suiteTest>                    
+				<suiteTest>CheckCPUCount-4</suiteTest>
+                <suiteTest>ShutdownFromHyperV-4</suiteTest>
+				
+                <suiteTest>Test50TimesReboot</suiteTest>			
             </suiteTests>
         </suite>
         
@@ -172,8 +143,7 @@
                 <suiteTest>AddDynamicSCSIDrive</suiteTest> 
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
                 <suiteTest>AddDifferencingSCSIDrive</suiteTest>   
-                <suiteTest>AddPassThroughSCSIDrive</suiteTest>                 
-                                        
+                <suiteTest>AddPassThroughSCSIDrive</suiteTest>                               
                 <suiteTest>AddPassThroughIDEDrive1</suiteTest> 
 
                 <suiteTest>AddDynamicIDEDriveVHDX0</suiteTest>
@@ -189,9 +159,7 @@
                 <suiteTest>HostOnlyWriteToPool0</suiteTest>           
 
                 <suiteTest>ExternalSynthNetAdapter</suiteTest>    
-                <suiteTest>PingSizeInterval</suiteTest>        
-                
-                <suiteTest>UpDownNIC</suiteTest>
+
                 <suiteTest>Setmtu</suiteTest>                         
             </suiteTests>
         </suite>
@@ -201,7 +169,10 @@
             <suiteTests>                                                                                                   
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
-                
+				
+                <suiteTest>CheckCPUCount-2</suiteTest>
+				<suiteTest>ShutdownFromHyperV-2</suiteTest>
+				
                 <suiteTest>AddFixedIDEDrive</suiteTest>
                 <suiteTest>AddDynamicIDEDrive0</suiteTest> 
                 <suiteTest>AddDynamicIDEDrive1</suiteTest> 
@@ -213,6 +184,9 @@
                
                 <suiteTest>TakeSnapShot</suiteTest>
                 <suiteTest>RevertSnapShot</suiteTest> 
+				
+				<suiteTest>CheckCPUCount-3</suiteTest>
+				<suiteTest>ShutdownFromHyperV-3</suiteTest>
             
                 <suiteTest>AddDynamicSCSIDrive</suiteTest> 
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
@@ -251,22 +225,19 @@
                 <suiteTest>ModifyNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>      
-             
-                <suiteTest>CopyLargeFile</suiteTest> 
-                <suiteTest>CopyMultipleSmallFiles</suiteTest>      
-                <suiteTest>CopyFileExceedDiskSizeIDE</suiteTest> 
-                <suiteTest>CopyFileExceedDiskSizeSCSI</suiteTest>  	 
-
-				<suiteTest>CheckCPUCount-2</suiteTest>
-				<suiteTest>ShutdownFromHyperV-2</suiteTest>
-				<suiteTest>CheckCPUCount-3</suiteTest>
-				<suiteTest>ShutdownFromHyperV-3</suiteTest>
+				
 				<suiteTest>CheckCPUCount-4</suiteTest>
 				<suiteTest>ShutdownFromHyperV-4</suiteTest>
 				
 				<suiteTest>Setmtu</suiteTest>
 				<suiteTest>PingSizeInterval</suiteTest>
-				<suiteTest>ExternalSynthNetAdapter</suiteTest>                                                    
+				<suiteTest>ExternalSynthNetAdapter</suiteTest>   
+				<suiteTest>SwitchNIC1</suiteTest> 
+                <suiteTest>SwitchNIC2</suiteTest> 
+                <suiteTest>InternalSynthNetAdapter</suiteTest>
+                <suiteTest>PrivateSynthNetAdapter</suiteTest> 		
+
+				<suiteTest>Test50TimesReboot</suiteTest>					
             </suiteTests>
         </suite>
 
@@ -286,11 +257,11 @@
                 <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
                 <suiteTest>SendNMIToVMwithUnPrivUser</suiteTest>    
-
-                <suiteTest>UpDownNIC</suiteTest>           
-                <suiteTest>Setmtu</suiteTest>                    
-
-                <suiteTest>Test50TimesReboot</suiteTest>
+				
+				<suiteTest>CopyLargeFile</suiteTest> 
+                <suiteTest>CopyMultipleSmallFiles</suiteTest>      
+                <suiteTest>CopyFileExceedDiskSizeIDE</suiteTest> 
+                <suiteTest>CopyFileExceedDiskSizeSCSI</suiteTest>  	
             </suiteTests>
         </suite> 
 
@@ -298,8 +269,6 @@
             <suiteName>debug</suiteName>
             <suiteTests>
                 <suiteTest>CheckMemoryCapacity-2GB</suiteTest>
-				<suiteTest>CheckMemoryCapacity-512MB</suiteTest>
-                <suiteTest>CheckMemoryCapacity-5GB</suiteTest>      
             </suiteTests>
         </suite>        
     </testSuites>
@@ -311,7 +280,7 @@
             <testScript>TC-CheckMemCapacity.sh</testScript>
             <files>remote-scripts\freebsd\TC-CheckMemCapacity.sh</files>
             <setupScript>setupScripts\ChangeMemory.ps1</setupScript>
-            <timeout>120</timeout>
+            <timeout>600</timeout>
             <testparams>
                 <param>VMEM=512MB</param>
                 <param>TC_COVERED=CORE-09</param>   
@@ -325,7 +294,7 @@
             <testScript>TC-CheckMemCapacity.sh</testScript>
             <files>remote-scripts\freebsd\TC-CheckMemCapacity.sh</files>
             <setupScript>setupScripts\ChangeMemory.ps1</setupScript>
-            <timeout>120</timeout>
+            <timeout>600</timeout>
             <testparams>
                 <param>VMEM=2GB</param>
                 <param>TC_COVERED=CORE-09</param>   
@@ -339,7 +308,7 @@
             <testScript>TC-CheckMemCapacity.sh</testScript>
             <files>remote-scripts\freebsd\TC-CheckMemCapacity.sh</files>
             <setupScript>setupScripts\ChangeMemory.ps1</setupScript>
-            <timeout>120</timeout>
+            <timeout>600</timeout>
             <testparams>
                 <param>VMEM=5GB</param>
                 <param>TC_COVERED=CORE-09</param>   
@@ -496,7 +465,7 @@
             <noReboot>True</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
                 <param>TC_COVERED=NET-05</param>
             </testparams>
         </test>
@@ -518,15 +487,15 @@
         </test>
         <test>
             <testName>SwitchNIC1</testName>
-            <testScript>TC-AttachSynthNetAdapter1.sh</testScript>
-            <files>remote-scripts\freebsd\TC-AttachSynthNetAdapter1.sh</files>
+            <testScript>TC-AttachSynthNetAdapter.sh</testScript>
+            <files>remote-scripts\freebsd\TC-AttachSynthNetAdapter.sh</files>
             <setupScript>setupScripts\AddNIC.ps1</setupScript>
-            <timeout>100</timeout>
-            <onError>Abort</onError>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
             <noReboot>True</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
                 <param>TC_COVERED=NET-17</param>
             </testparams>
         </test>
@@ -536,8 +505,8 @@
             <files>remote-scripts\freebsd\TC-AttachSynthNetAdapter.sh</files>
             <pretest>setupScripts\SwitchNIC.ps1</pretest>
             <cleanupScript>setupScripts\RemoveNic.ps1</cleanupScript>
-            <timeout>100</timeout>
-            <onError>Abort</onError>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,Internal,InternalNet</param>
@@ -552,7 +521,7 @@
             <files>remote-scripts\freebsd\TC-AttachSynthNetAdapter.sh</files>
             <setupScript>setupScripts\AddNIC.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveNic.ps1</cleanupScript>
-            <timeout>100</timeout>
+            <timeout>600</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -592,7 +561,7 @@
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
                 <param>TC_COVERED=NET-15</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
             </testparams>
         </test>
 
@@ -695,7 +664,7 @@
             <setupScript>setupScripts\AddHardDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveHardDisk.ps1</cleanupScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Dynamic</param>
@@ -797,7 +766,7 @@
             <setupScript>setupScripts\AddHardDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveHardDisk.ps1</cleanupScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Diff</param>
@@ -813,7 +782,7 @@
             <setupScript>setupScripts\AddVhdxDiffDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Diff,4096</param>
@@ -839,7 +808,7 @@
             <testScript>Small_files.sh</testScript>
             <files>remote-scripts\freebsd\Small_files.sh</files>
             <timeout>1000</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>LARGE_FILENAME=testdata</param>
@@ -870,7 +839,7 @@
             <setupScript>setupScripts\AddHardDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveHardDisk.ps1</cleanupScript>
             <timeout>3600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Fixed</param>
@@ -896,7 +865,7 @@
             <testScript>setupScripts\timesync_savedVM.ps1</testScript>
             <files>setupScripts\timesync_savedVM.ps1</files>
             <timeout>800</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>True</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-05</param>
@@ -1070,7 +1039,7 @@
             <setupScript>setupScripts\AddVhdxHardDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Dynamic,4096</param>
@@ -1085,7 +1054,7 @@
             <setupScript>setupScripts\AddVhdxHardDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Fixed,4096</param>
@@ -1238,7 +1207,7 @@
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
                 <param>TC_COVERED=NET-07</param>
             </testparams>
         </test>
@@ -1254,7 +1223,7 @@
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
                 <param>MAC=00155DDC4F68</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
                 <param>TC_COVERED=TC113</param>
             </testparams>
         </test>
@@ -1269,7 +1238,7 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
                 <param>TC_COVERED=TC110</param>
             </testparams>
         </test>
@@ -1286,8 +1255,8 @@
         </test>
         <test>
             <testName>Setmtu</testName>
-            <testScript>SetMTU_New.sh</testScript>
-            <files>remote-scripts\freebsd\SetMTU_New.sh</files>
+            <testScript>SetMTU.sh</testScript>
+            <files>remote-scripts\freebsd\SetMTU.sh</files>
             <setupScript>setupScripts\AddNIC.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveNic.ps1</cleanupScript>
             <timeout>600</timeout>
@@ -1295,7 +1264,7 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
                 <param>TC_COVERED=TC107</param>
             </testparams>
         </test>
@@ -1312,7 +1281,7 @@
                 <param>NIC=NetworkAdapter,External,ExternalNet,00155d33d0fc</param>
                 <param>TC_COVERED=NET-09</param>
                 <param>MAC=00:15:5d:33:d0:fc</param>
-                <param>TARGET_ADDR=10.156.76.149</param>
+                <param>TARGET_ADDR=10.156.76.99</param>
             </testparams>
         </test>
         <test>
@@ -1347,7 +1316,7 @@
             <testScript>setupScripts\TestExportImport.ps1</testScript>
             <files>setupScripts\TestExportImport.ps1</files>
             <timeout>1800</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=STOR-58</param>
@@ -1395,7 +1364,7 @@
                 <param>TEST_DEVICE1=/dev/da1</param>
                 <param>TC_COVERED=TC67</param>
                 <param>NO=1</param>
-                <param>PARENT=Beta4_amd64.vhdx</param>
+                <param>PARENT=icaDiffVhdx512.vhdx</param>
             </testparams>
         </test>
         <test>
@@ -1659,7 +1628,7 @@
             <files>remote-scripts\freebsd\KVP_VerifyKeyValue.sh</files>
             <preTest>setupScripts\BIS_DisableEnableDataExchange.ps1</preTest>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                  <param>TC_COVERED=KVP-10</param>
@@ -1673,7 +1642,7 @@
             <testName>StopStartKvpDaemon</testName>
             <testScript>setupscripts\BIS_StopStartKvpDaemon.ps1</testScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                  <param>TC_COVERED=KVP-12</param>

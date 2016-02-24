@@ -103,6 +103,7 @@ do
 		exit 60
 	fi
 	if [ $? == 0 ]; 	then
+	    killall dhclient
 		dhclient hn${i}
 	else
 		msg="Error at ifconfig hn${i} up"
@@ -131,6 +132,7 @@ do
 		exit 90
 	fi
 	if [ $? == 0 ]; 	then
+	    killall dhclient
 		dhclient hn${i}
 	else
 		msg="Error at ifconfig hn${i} up"

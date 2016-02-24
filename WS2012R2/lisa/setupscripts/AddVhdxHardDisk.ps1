@@ -457,6 +457,9 @@ if ($testParams -eq $null -or $testParams.Length -lt 3)
     return $False
 }
 
+#Remove the dvd drive of the vm
+Get-VMDvdDrive -VMName $vmName -ControllerNumber 1  | Remove-VMDvdDrive
+
 #
 # Parse the testParams string
 #

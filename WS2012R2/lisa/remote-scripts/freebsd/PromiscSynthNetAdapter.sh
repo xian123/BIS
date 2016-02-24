@@ -2,7 +2,7 @@
 #
 # PromiscSynthAdaptor.sh
 #
-# This test script enables and disables promiscuous mode of hn0 adaptor
+# This test script enables and disables promiscuous mode of hn1 adaptor
 #
 # Test parameter :
 #     NIC: It shows the apdator to be attach is of which network type and uses which network name
@@ -75,19 +75,19 @@ echo "Covers ${TC_COVERED}" >> ~/summary.log
 #Enabling/disabling promisc mode
 #
 
-ifconfig hn0 promisc
+ifconfig hn1 promisc
 ifconfig | grep -q "PROMISC" 
 if [ $? -ne 0 ];	then
-    echo "Error entering hn0 promisc mode" >> ~/summary.log
+    echo "Error entering hn1 promisc mode" >> ~/summary.log
     UpdateTestState $ICA_TESTFAILED
     exit 50
 fi
 LogMsg "Promiscuous Mode Enabled"
 
-ifconfig hn0 -promisc
+ifconfig hn1 -promisc
 ifconfig | grep -q "PROMISC"
 if [ $? -eq 0 ]; 	then
-    echo "Error disabling hn0 promisc mode" >> ~/summary.log
+    echo "Error disabling hn1 promisc mode" >> ~/summary.log
     UpdateTestState $ICA_TESTFAILED
     exit 60
 fi

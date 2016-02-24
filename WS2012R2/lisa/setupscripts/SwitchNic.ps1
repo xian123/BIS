@@ -129,23 +129,20 @@ Write-Output "Covers TC124" | Out-File $summaryLog
 
 
 #
-# Load the PowerShell HyperV Library
-#
-$sts = get-module | select-string -pattern HyperV -quiet
-if (! $sts)
-{
-    Import-module .\HyperVLibV2Sp1\HyperV.psd1
-}
-
-#
 # Switch the NIC of the VM
 #
- $snic = Get-VMNIC -VM $vmName -VMBus
+ $snic = Get-VMNetworkAdapter –VMName $vmName
  Write-Output $snic | Out-File -Append $summaryLog
+ if( $snic.Length -ne 2 )
+ {
+     "Error: Switch Network Adaptor is not equal to 2"
+     return $False
+ }
  
- $switch = Set-VMNICSwitch $snic -Virtualswitch Internal
-
- if ($switch.SwitchName -ne "Internal")
+ $switchName = "InternalNet"
+ $snic[-1] | Connect-VMNetworkAdapter –SwitchName $switchName
+ $switch = Get-VMNetworkAdapter –VMName $vmName
+ if ($switch[-1].SwitchName -ne $switchName)
   {
     "Error: Unable to Switch Network Adaptor Type"
      return $False

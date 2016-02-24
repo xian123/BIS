@@ -224,6 +224,8 @@ if ($($vm.State) -ne "Running")
 $VMKB.TypeCtrlAltDel()
 #>
 
+<# Dexuan: we comment out this for FreeBSD, because FreeBSD doesn't support "init 3".
+   Dexuan: Here we assume the FreeBSD VM is in console mode (i.e., not in GUI mode) for now.
 .\bin\plink.exe -i .\ssh\$sshKey root@$vmIPAddr "init 3 &"
 if($? -eq "True")
 {
@@ -236,6 +238,7 @@ else
 }
 
 Start-Sleep 10
+#>
 
 $VMKB = gwmi -namespace "root\virtualization\v2" -class "Msvm_Keyboard" -ComputerName $hvServer -Filter "SystemName='$($vm.Id)'"
 

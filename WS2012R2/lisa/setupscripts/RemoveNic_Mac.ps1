@@ -89,15 +89,6 @@ if (-not $testParams -or $testParams.Length -lt 22)
 }
 
 #
-# Load the HyperVLib version 2 modules
-#
-<#$sts = get-module | select-string -pattern HyperV -quiet
-if (! $sts)
-{
-    Import-module .\HyperVLibV2SP1\Hyperv.psd1
-}#>
-
-#
 # Parse the testParams string, then process each parameter
 #
 $params = $testParams.Split(';')
@@ -168,40 +159,13 @@ foreach ($p in $params)
             return $false
         }
 
-        #
-        # Validate the MAC is the correct length
-        #
-        #if ($macAddress.Length -ne 12)
-        #{
-           #"Error: Invalid mac address: $p"
-            # return $false
-       # }
-        
-        #
-        # Make sure each character is a hex digit
-        #
-       # $ca = $macAddress.ToCharArray()
-       # foreach ($c in $ca)
-        #{
-            #if ($c -notmatch "[A-F0-9]")
-            #{
-                #"Error: MAC address contains non hexidecimal characters: $c"
-               #return $false
-            #}
-        #}
-        
-        #
-        # Get all the NICs on the VM. Then delete all
-        # NICs of the requested type.
-        #
-        #$nics = Get-VMNic -vm $vmName -server $hvServer -MAC $macAddress -Legacy:$legacy -VMBus:(-not $legacy)
         $nics = Get-VMNetworkAdapter -VMName $vmName -ComputerName $hvServer -IsLegacy:$legacy
         if ($nics)
         {
-            foreach ($nic in $nics)
-            {
-                $nic |  Remove-VMNetworkAdapter -Confirm:$false
-            }
+            for( $i = 1; $i -lt $nics.length; $i++)
+			{
+			    $nics[$i] | Remove-VMNetworkAdapter -Confirm:$false
+			}
             $retVal = $True
         }
         else

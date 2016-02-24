@@ -114,7 +114,7 @@ fi
 #
 for j in 1 2 3 4 5 6
 do
-    i=`ifconfig hn0 | grep ether | cut -d " " -f 2 | cut -d ":" -f $j`
+    i=`ifconfig hn1 | grep ether | cut -d " " -f 2 | cut -d ":" -f $j`
     Mac=`echo $MAC | cut -d ":" -f $j`
     if [ $i = $Mac ] ; then
         LogMsg "digits matched"$i,$Mac
@@ -127,6 +127,9 @@ do
 done
 LogMsg "MAC address is the same"
 
+ifconfig hn0 down
+dhclient hn1
+
 #
 # Test the ping
 #
@@ -135,6 +138,8 @@ ping -c 5 ${TARGET_ADDR}
 if [ $? -ne 0 ] ; then
     LogMsg "Ping failed, Test : Failed"
 	echo "Ping failed, Test : Failed" >> ~/summary.log
+	ifconfig hn0 up
+	ifconfig hn1 down
     sleep 1 
 	UpdateTestState $ICA_TESTFAILED
 	exit 60
@@ -147,5 +152,8 @@ echo "MAC address is the same and also ping is successful, Test : Passed" >> ~/s
 #
 LogMsg "Test case completed successfully"
 UpdateTestState $ICA_TESTCOMPLETED
+
+ifconfig hn0 up
+ifconfig hn1 down
 
 exit 0

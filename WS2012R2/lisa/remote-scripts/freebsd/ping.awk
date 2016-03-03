@@ -1,6 +1,6 @@
 BEGIN  { found = 0; t="0"; target="" }
 
-match($0,"5 packet") { found = 1; t = $7; target=$1 }
+match($0,"1 packet") { found = 1; t = $7; target=$1 }
 
 END { 
       if (found == 1)

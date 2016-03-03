@@ -79,18 +79,30 @@ for s in  0 1 48 64 512 1440 1500 1505 4096 4192 25152
 do
     for i in 0.1 0.01 0.005
     do
-        LogMsg "ping -s $s -i $i -c $count ${TARGET_ADDR}"
-        ping -s $s -i $i -c $count ${TARGET_ADDR} > pingfile
-        dropped=`awk -f ping.awk pingfile`
-        if [ $dropped != "0.0" ]; then
-            msg="Error: ping -s $s -i $i -c $count dropped packets"
+	    for((j=1;j<=$count;j++))
+		do
+			LogMsg "ping -s $s -i $i -c 1 ${TARGET_ADDR}"
+			ping -s $s -i $i -c 1 ${TARGET_ADDR} > pingfile
+			dropped=`awk -f ping.awk pingfile`
+			if [ $dropped != "0.0" ]; then
+			    continue
+				sleep 5
+			else
+			    break
+			fi
+		done
+		if [ $j -gt $count ]; then
+		    msg="Error: ping -s $s -i $i -c 1 dropped packets"
             LogMsg $msg
             echo $msg >> ~/summary.log
             UpdateTestState $ICA_TESTFAILED
             exit 50
-        fi
+		fi
     done
 done
+
+
+
 
 #
 # Now ping with size 25153 which should fail due to kernel limits

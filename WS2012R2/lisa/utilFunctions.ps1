@@ -1387,8 +1387,8 @@ function GetIPv4ViaHyperV([String] $vmName, [String] $server)
                 Continue
             }
 
-            # Ignore address if it a loopback address
-            if ($address.StartsWith("127."))
+            # Ignore address if it a loopback address or an invalide address
+			if(($address.StartsWith("127.") -eq $True ) -or ($address.StartsWith("0.")) -eq $True)
             {
                 Continue
             }
@@ -1577,10 +1577,16 @@ function GetIPv4ViaKVP( [String] $vmName, [String] $server)
                 $addrs = $addresses.Split(";")
                 foreach ($addr in $addrs)
                 {
-                    if ($addr.StartsWith("127."))
+				    if($addr -eq $null)
+					{
+					    Continue
+					}
+					
+                    if(($addr.StartsWith("127.") -eq $True ) -or ($addr.StartsWith("0.")) -eq $True)
                     {
                         Continue
                     }
+					
                     return $addr
                 }
             }

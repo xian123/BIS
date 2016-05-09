@@ -273,6 +273,13 @@
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
 				
+				<suiteTest>VHDX_HotADD_Multi_Dynamic_SCSI_SMP</suiteTest>
+                <suiteTest>VHDX_HotRemove_Multi_Dynamic_SCSI_SMP</suiteTest>
+                <suiteTest>VHD_HotADD_Multi_Dynamic_SCSI_SMP</suiteTest>
+                <suiteTest>VHD_HotRemove_Multi_Dynamic_SCSI_SMP</suiteTest>
+                <suiteTest>HotAddPassThroughSCSIDrive_Multi</suiteTest>
+                <suiteTest>HotRemovePassThroughSCSIDrive_Multi</suiteTest> 
+				
 				<suiteTest>Test50TimesReboot</suiteTest>					
             </suiteTests>
         </suite>
@@ -1895,28 +1902,137 @@
 				<param>NO=2</param>
 			</testparams>
 		</test>
+		
+	    <test>
+			<testName>VHDX_HotADD_Multi_Dynamic_SCSI_SMP</testName>
+		    <testScript>AddNewDisk_New.sh</testScript>
+		    <files>remote-scripts\freebsd\AddNewDisk_New.sh</files>
+			<setupScript>setupScripts\ChangeCPU.ps1</setupScript>
+		    <preTest>setupScripts\AddVhdxHardDisk.ps1</preTest>  
+		    <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
+		    <timeout>600</timeout>
+		    <onError>Abort</onError>
+		    <noReboot>False</noReboot>
+		    <testparams>
+				<param>SCSI=0,0,Dynamic,4096</param>
+				<param>TEST_DEVICE1=/dev/da1</param>
+				<param>SCSI=0,1,Dynamic,4096</param>
+				<param>TEST_DEVICE2=/dev/da2</param>
+				<param>TC_COVERED=STOR-42</param>
+				<param>NO=2</param>
+				<param>VCPU=4</param>
+		    </testparams>
+		</test>
+		
+		<test>
+			<testName>VHDX_HotRemove_Multi_Dynamic_SCSI_SMP</testName>
+			<testScript>HotRemoveDisk.sh</testScript>
+			<files>remote-scripts/freebsd/HotRemoveDisk.sh</files>
+			<setupScript>setupScripts\AddVhdxHardDisk.ps1</setupScript> 
+			<preTest>setupScripts\RemoveVhdxHardDisk.ps1</preTest>
+			<timeout>600</timeout>
+			<testparams>
+				<param>SCSI=0,0,Dynamic,4096</param>    
+				<param>TEST_DEVICE1=/dev/da1</param>
+				<param>SCSI=0,1,Dynamic,4096</param>
+				<param>TEST_DEVICE2=/dev/da2</param>
+				<param>TC_COVERED=STOR-42</param>    
+				<param>NO=2</param>
+			</testparams>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+		</test>
+		
+		<test>
+			<testName>VHD_HotADD_Multi_Dynamic_SCSI_SMP</testName>
+			<testScript>AddNewDisk_New.sh</testScript>
+			<files>remote-scripts\freebsd\AddNewDisk_New.sh</files>
+			<setupScript>setupScripts\ChangeCPU.ps1</setupScript>
+			<preTest>setupScripts\AddHardDisk.ps1</preTest>    
+			<cleanupScript>setupScripts\RemoveHardDisk.ps1</cleanupScript>   
+			<timeout>600</timeout>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>SCSI=0,0,Dynamic</param>
+				<param>TEST_DEVICE1=/dev/da1</param>
+				<param>SCSI=0,1,Dynamic</param>
+				<param>TEST_DEVICE2=/dev/da2</param>
+				<param>TC_COVERED=STOR-24</param>
+				<param>NO=2</param>
+				<param>VCPU=4</param>
+			</testparams>
+		</test>
+		
+		<test>
+			<testName>VHD_HotRemove_Multi_Dynamic_SCSI_SMP</testName>
+			<testScript>HotRemoveDisk.sh</testScript>
+			<files>remote-scripts/freebsd/HotRemoveDisk.sh</files>
+			<setupScript>setupScripts\AddHardDisk.ps1</setupScript> 
+			<preTest>setupScripts\RemoveHardDisk.ps1</preTest>
+			<timeout>600</timeout>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>SCSI=0,0,Dynamic</param>
+				<param>TEST_DEVICE1=/dev/da1</param>
+				<param>SCSI=0,1,Dynamic</param>
+				<param>TEST_DEVICE2=/dev/da2</param>
+				<param>TC_COVERED=STOR-24</param>
+				<param>NO=2</param>
+			</testparams>
+		</test>
+		
+		
+		<test>
+			<testName>HotAddPassThroughSCSIDrive_Multi</testName>
+			<testScript>AddNewDisk_New.sh</testScript>
+			<files>remote-scripts\freebsd\AddNewDisk_New.sh</files>
+			<preTest>setupScripts\AddHardDisk.ps1</preTest>
+			<cleanupScript>setupScripts\RemoveHardDisk.ps1</cleanupScript>
+			<timeout>600</timeout>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>SCSI=0,0,PassThrough</param>
+				<param>TEST_DEVICE1=/dev/da1</param>
+				<param>SCSI=0,1,PassThrough</param>
+				<param>TEST_DEVICE2=/dev/da2</param>
+				<param>TC_COVERED=STOR-25</param>
+				<param>NO=2</param>
+			</testparams>
+		</test>
+		
+		<test>
+			<testName>HotRemovePassThroughSCSIDrive_Multi</testName>
+			<testScript>HotRemoveDisk.sh</testScript>
+			<files>remote-scripts/freebsd/HotRemoveDisk.sh</files>
+			<setupScript>setupScripts\AddHardDisk.ps1</setupScript> 
+			<preTest>setupScripts\RemoveHardDisk.ps1</preTest>
+			<timeout>600</timeout>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>SCSI=0,0,PassThrough</param>
+				<param>TEST_DEVICE1=/dev/da1</param>
+				<param>SCSI=0,1,PassThrough</param>
+				<param>TEST_DEVICE1=/dev/da1</param>
+				<param>TC_COVERED=STOR-25</param>
+				<param>NO=2</param>
+			</testparams>
+		</test>
         
     </testCases>
 
     <VMs>        
         <vm>
-            <hvServer>SH-OSTC-TH04</hvServer>
-            <vmName>FreeBSD_head</vmName>
+            <hvServer>localhost</hvServer>
+            <vmName>FreeBSD_VMname</vmName>
             <os>FreeBSD</os>
             <ipv4>10.156.76.113</ipv4>
             <sshKey>lisa_id_rsa.ppk</sshKey>
             <suite>debug</suite>
         </vm>
-        <!--
-        <vm>
-            <hvServer>XIAZHANG-W12R2</hvServer>
-            <vmName>FreeBSD10_packages_new_3</vmName>
-            <os>FreeBSD</os>
-            <ipv4>10.172.6.148</ipv4>
-            <sshKey>lisa_id_rsa.ppk</sshKey>
-            <suite>FeatureTest</suite>
-        </vm>    
-        -->
      </VMs>
 </config>
 

@@ -13,12 +13,12 @@
             <smtpServer>smtphost.southpacific.corp.microsoft.com</smtpServer>
         </email>
         <testparams>
-            <param>REPOSITORY_SERVER=10.156.76.99</param>
+            <param>REPOSITORY_SERVER=10.156.76.58</param>
             <param>REPOSITORY_EXPORT=/usr/lisa/public</param>
-            <param>NFS_SERVER=10.156.76.99</param>
+            <param>NFS_SERVER=10.156.76.58</param>
             <param>NFS_EXPORT=/usr/lisa/public</param>
             <param>RootDir=D:\code\BIS_automation\lisa\</param>
-            <param>TARGET_ADDR=10.156.76.99</param>  <!--target address to ping external network-->
+            <param>TARGET_ADDR=10.156.76.58</param>  <!--target address to ping external network-->
             <param>DEBUG=0</param>
         </testparams>
     </global>
@@ -280,6 +280,7 @@
                 <suiteTest>HotAddPassThroughSCSIDrive_Multi</suiteTest>
                 <suiteTest>HotRemovePassThroughSCSIDrive_Multi</suiteTest> 
 				
+				<suiteTest>TimeSyncWithNTPServer</suiteTest>					
 				<suiteTest>Test50TimesReboot</suiteTest>					
             </suiteTests>
         </suite>
@@ -525,7 +526,7 @@
             <noReboot>True</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=NET-05</param>
             </testparams>
         </test>
@@ -555,7 +556,7 @@
             <noReboot>True</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=NET-17</param>
             </testparams>
         </test>
@@ -621,7 +622,7 @@
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
                 <param>TC_COVERED=NET-15</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
             </testparams>
         </test>
 
@@ -1267,7 +1268,7 @@
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=NET-07</param>
             </testparams>
         </test>
@@ -1283,7 +1284,7 @@
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
                 <param>MAC=00155DDC4F68</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=TC113</param>
             </testparams>
         </test>
@@ -1298,7 +1299,7 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=TC110</param>
             </testparams>
         </test>
@@ -1324,7 +1325,7 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=TC107</param>
             </testparams>
         </test>
@@ -1341,7 +1342,7 @@
                 <param>NIC=NetworkAdapter,External,ExternalNet,00155d33d0fc</param>
                 <param>TC_COVERED=NET-09</param>
                 <param>MAC=00:15:5d:33:d0:fc</param>
-                <param>TARGET_ADDR=10.156.76.99</param>
+                <param>TARGET_ADDR=10.156.76.58</param>
             </testparams>
         </test>
         <test>
@@ -2022,6 +2023,18 @@
 			</testparams>
 		</test>
         
+		<test>
+			<testName>TimeSyncWithNTPServer</testName>
+			<testScript>CORE_TimeSync_NTP.sh</testScript>
+			<files>remote-scripts\freebsd\CORE_TimeSync_NTP.sh</files>
+			<timeout>300</timeout>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>TC_COVERED=CORE-04</param>
+			</testparams>
+		</test>
+		
     </testCases>
 
     <VMs>        
@@ -2029,7 +2042,7 @@
             <hvServer>localhost</hvServer>
             <vmName>FreeBSD_VMname</vmName>
             <os>FreeBSD</os>
-            <ipv4>10.156.76.113</ipv4>
+            <ipv4></ipv4>
             <sshKey>lisa_id_rsa.ppk</sshKey>
             <suite>debug</suite>
         </vm>

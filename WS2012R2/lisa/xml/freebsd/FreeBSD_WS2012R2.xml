@@ -6,9 +6,9 @@
         <defaultSnapshot>ICABase</defaultSnapshot>
         <email>
             <recipients>
-                <to>xiazhang@microsoft.com</to>
+                <to>v-hoxian@microsoft.com</to>
             </recipients>
-            <sender>xiazhang@microsoft.com</sender>
+            <sender>v-hoxian@microsoft.com</sender>
             <subject>FreeBSD FTM test run with loadable modules on </subject>
             <smtpServer>smtphost.southpacific.corp.microsoft.com</smtpServer>
         </email>
@@ -28,9 +28,8 @@
             <suiteName>FeatureTest</suiteName>
             <suiteTests> 
                 <suiteTest>CheckMemoryCapacity-2GB</suiteTest>
-				<suiteTest>CheckMemoryCapacity-512MB</suiteTest>
                 <suiteTest>CheckMemoryCapacity-5GB</suiteTest>
-				
+				<suiteTest>CheckMemoryCapacity-512MB</suiteTest>
                 <suiteTest>CheckCPUCount-2</suiteTest>
                 <suiteTest>ShutdownFromHyperV-2</suiteTest> 
  
@@ -114,9 +113,6 @@
                 <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>       
 
-				<suiteTest>CheckCPUCount-4</suiteTest>
-                <suiteTest>ShutdownFromHyperV-4</suiteTest>
-				
 				<suiteTest>HotAddFixedSCSIDrive</suiteTest>
 				<suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
 				<suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
@@ -129,16 +125,16 @@
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
 				
-                <suiteTest>Test50TimesReboot</suiteTest>			
+                <suiteTest>Test50TimesReboot</suiteTest>	
+				
+				<suiteTest>CheckCPUCount-4</suiteTest>
+                <suiteTest>ShutdownFromHyperV-4</suiteTest>				
             </suiteTests>
         </suite>
         
         <suite>
             <suiteName>BasicTest</suiteName>
             <suiteTests>                                               
-                <suiteTest>CheckCPUCount-4</suiteTest>
-                <suiteTest>ShutdownFromHyperV-4</suiteTest>    
-                    
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
                 
@@ -161,17 +157,12 @@
                 <suiteTest>AddDynamicIDEDriveVHDX0</suiteTest>
                 <suiteTest>AddFixedIDEDriveVHDX</suiteTest>           
                 
-				<suiteTest>HotAddFixedSCSIDrive</suiteTest>
-				<suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
 				<suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
 				<suiteTest>HotRemoveFixedSCSIDrive_Multi</suiteTest>
 				<suiteTest>HotAddPassThroughSCSIDrive</suiteTest>
 				<suiteTest>HotRemovePassThroughSCSIDrive</suiteTest>
 				<suiteTest>HotAddDynamicSCSIDriveVHDX</suiteTest>
 				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
-				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
 				
                 <suiteTest>ReadKvpIntrinsicData</suiteTest>
                 <suiteTest>WriteKvpDataToGuest</suiteTest>
@@ -184,7 +175,9 @@
 
                 <suiteTest>ExternalSynthNetAdapter</suiteTest>    
 
-                <suiteTest>Setmtu</suiteTest>                         
+                <suiteTest>Setmtu</suiteTest>  
+                <suiteTest>CheckCPUCount-4</suiteTest>
+                <suiteTest>ShutdownFromHyperV-4</suiteTest>  				
             </suiteTests>
         </suite>
 
@@ -196,6 +189,11 @@
 				
                 <suiteTest>CheckCPUCount-2</suiteTest>
 				<suiteTest>ShutdownFromHyperV-2</suiteTest>
+				<suiteTest>CheckMemoryCapacity-2GB</suiteTest>
+				<suiteTest>CheckMemoryCapacity-512MB</suiteTest>
+				
+				<suiteTest>TimeSync</suiteTest>
+                <suiteTest>TimeSync_SavedVM</suiteTest>
 				
                 <suiteTest>AddFixedIDEDrive</suiteTest>
                 <suiteTest>AddDynamicIDEDrive0</suiteTest> 
@@ -208,9 +206,6 @@
                
                 <suiteTest>TakeSnapShot</suiteTest>
                 <suiteTest>RevertSnapShot</suiteTest> 
-				
-				<suiteTest>CheckCPUCount-3</suiteTest>
-				<suiteTest>ShutdownFromHyperV-3</suiteTest>
             
                 <suiteTest>AddDynamicSCSIDrive</suiteTest> 
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
@@ -250,9 +245,6 @@
                 <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>      
 				
-				<suiteTest>CheckCPUCount-4</suiteTest>
-				<suiteTest>ShutdownFromHyperV-4</suiteTest>
-				
 				<suiteTest>Setmtu</suiteTest>
 				<suiteTest>PingSizeInterval</suiteTest>
 				<suiteTest>ExternalSynthNetAdapter</suiteTest>   
@@ -281,7 +273,15 @@
                 <suiteTest>HotRemovePassThroughSCSIDrive_Multi</suiteTest> 
 				
 				<suiteTest>TimeSyncWithNTPServer</suiteTest>					
-				<suiteTest>Test50TimesReboot</suiteTest>					
+				<suiteTest>VmbusVerifyInterrupts</suiteTest>	
+				
+				<suiteTest>Test50TimesReboot</suiteTest>	
+
+				<suiteTest>SetNMI</suiteTest>
+                <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
+                <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
+                <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
+                <suiteTest>SendNMIToVMwithUnPrivUser</suiteTest> 
             </suiteTests>
         </suite>
 
@@ -1634,7 +1634,7 @@
             <testparams>
                  <param>TC_COVERED=KVP-04</param>
                  <param>Key=HostName</param>
-                 <param>Value=Lizzha-Computer.fareast.corp.microsoft.com</param>
+                 <param>Value=SH-OSTC-TH53dup.fareast.corp.microsoft.com</param>
                  <param>Pool=3</param>
             </testparams>
         </test>
@@ -1663,7 +1663,7 @@
             <noReboot>True</noReboot>
             <testparams>
                  <param>TC_COVERED=KVP-07</param>
-                 <param>Key=XXX</param>
+                 <param>Key=XYZ</param>
                  <param>Value=000</param>
                  <param>Pool=0</param>
             </testparams>
@@ -2033,6 +2033,20 @@
 			<testparams>
 				<param>TC_COVERED=CORE-04</param>
 			</testparams>
+		</test>
+		
+		<test>
+			<testName>VmbusVerifyInterrupts</testName>
+		    <testScript>vmbus_verify_interrupt.sh</testScript>
+		    <files>remote-scripts\freebsd\vmbus_verify_interrupt.sh</files>
+		    <setupScript>setupScripts\ChangeCPU.ps1</setupScript>
+		    <timeout>300</timeout>
+		    <onError>Continue</onError>
+		    <noReboot>False</noReboot>
+		    <testparams>
+			    <param>VCPU=2</param>
+			    <param>TC_COVERED=VMBUS-02</param>
+		    </testparams>
 		</test>
 		
     </testCases>

@@ -92,7 +92,6 @@
                 <suiteTest>PromiscSynthNetAdapter</suiteTest> 
                 <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest> 
                 <suiteTest>TwiceExternalSynthNetAdapter</suiteTest>
-				<suiteTest>Setmtu</suiteTest>	
 
                 <suiteTest>SetNMI</suiteTest>
                 <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
@@ -175,7 +174,6 @@
 
                 <suiteTest>ExternalSynthNetAdapter</suiteTest>    
 
-                <suiteTest>Setmtu</suiteTest>  
                 <suiteTest>CheckCPUCount-4</suiteTest>
                 <suiteTest>ShutdownFromHyperV-4</suiteTest>  				
             </suiteTests>
@@ -245,7 +243,6 @@
                 <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>      
 				
-				<suiteTest>Setmtu</suiteTest>
 				<suiteTest>PingSizeInterval</suiteTest>
 				<suiteTest>ExternalSynthNetAdapter</suiteTest>   
 				<suiteTest>SwitchNIC1</suiteTest> 
@@ -287,7 +284,9 @@
 
         <suite>    
             <suiteName>Other</suiteName>
-            <suiteTests>              
+            <suiteTests>
+				<suiteTest>Setmtu</suiteTest>	
+				
                 <suiteTest>Floppymount</suiteTest>
                 <suiteTest>CDmount</suiteTest>     
 

@@ -271,6 +271,7 @@
 				
 				<suiteTest>TimeSyncWithNTPServer</suiteTest>					
 				<suiteTest>VmbusVerifyInterrupts</suiteTest>	
+				<suiteTest>CopyWithDiffrentMTU</suiteTest>	
 				
 				<suiteTest>Test50TimesReboot</suiteTest>	
 
@@ -2045,6 +2046,21 @@
 		    <testparams>
 			    <param>VCPU=2</param>
 			    <param>TC_COVERED=VMBUS-02</param>
+		    </testparams>
+		</test>
+		
+		<test>
+			<testName>CopyWithDiffrentMTU</testName>
+			<testScript>CopyWithDiffrentMTU.sh</testScript>
+			<files>remote-scripts\freebsd\CopyWithDiffrentMTU.sh</files>
+			<timeout>600</timeout>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>TARGET_ADDR=10.156.76.58</param>
+				<param>TARGET_PATH=/root/testdata</param>
+				<param>LARGE_FILENAME=1GB.file</param>
+				<param>TC_COVERED=NET-13</param>
 		    </testparams>
 		</test>
 		

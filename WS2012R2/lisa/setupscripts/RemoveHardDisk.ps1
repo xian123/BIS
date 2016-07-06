@@ -255,7 +255,7 @@ function DeleteHardDrive([string] $vmName, [string] $hvServer, [string]$controll
         else
         {
             write-output "Info : Removing $controllerType $controllerID"
-            $sts = Remove-VMSCSIController $vmName -ComputerName $hvServer -ControllerNumber $controllerID -Confirm:$false
+            $sts = Remove-VMSCSIController $vmName -ComputerName $hvServer -ControllerNumber $controllerID -Confirm:$false   2> $null  | out-null
         }
     }
 

@@ -271,7 +271,7 @@
 				
 				<suiteTest>TimeSyncWithNTPServer</suiteTest>					
 				<suiteTest>VmbusVerifyInterrupts</suiteTest>	
-				<suiteTest>CopyWithDiffrentMTU</suiteTest>	
+				<suiteTest>CopyWithDifferentMTU</suiteTest>	
 				
 				<suiteTest>Test50TimesReboot</suiteTest>	
 
@@ -325,6 +325,79 @@
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
 			</suiteTests>
 		</suite>
+		
+		
+		<suite>    
+            <suiteName>DiskTest</suiteName>
+            <suiteTests>
+                <suiteTest>HotAddFixedSCSIDrive</suiteTest>
+				<suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
+				<suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
+				<suiteTest>HotRemoveFixedSCSIDrive_Multi</suiteTest>
+				<suiteTest>HotAddPassThroughSCSIDrive</suiteTest>
+				<suiteTest>HotRemovePassThroughSCSIDrive</suiteTest>
+				<suiteTest>HotAddDynamicSCSIDriveVHDX</suiteTest>
+				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
+				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
+				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
+				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
+				<suiteTest>HotAddPassThroughSCSIDrive_Multi</suiteTest>
+                <suiteTest>HotRemovePassThroughSCSIDrive_Multi</suiteTest> 
+				<suiteTest>AddFixedIDEDrive</suiteTest>
+                <suiteTest>AddDynamicIDEDrive0</suiteTest> 
+                <suiteTest>AddDynamicIDEDrive1</suiteTest> 
+                <suiteTest>AddDynamicIDEDrive_Multi</suiteTest>
+                <suiteTest>AddDifferencingIDEDrive</suiteTest>  
+                <suiteTest>AddDynamicSCSIDriveVHDX</suiteTest>
+                <suiteTest>AddFixedSCSIDriveVHDX</suiteTest>      
+                <suiteTest>AddDynamicSCSIDrive</suiteTest> 
+                <suiteTest>AddFixedSCSIDrive</suiteTest>
+                <suiteTest>AddDifferencingSCSIDrive</suiteTest>   
+                <suiteTest>AddDynamicSCSIDrive_Multi</suiteTest>      
+                <suiteTest>AddPassThroughSCSIDrive</suiteTest> 
+                <suiteTest>AddPassThroughSCSIDrive_Multi</suiteTest>                                   
+                <suiteTest>AddPassThroughIDEDrive0</suiteTest>                                
+                <suiteTest>AddPassThroughIDEDrive1</suiteTest> 
+                <suiteTest>AddPassThroughIDEDrive1_Multi</suiteTest>
+                <suiteTest>4K_AddDynamicIDEDriveVHDX0</suiteTest>
+                <suiteTest>4K_AddDynamicIDEDriveVHDX1</suiteTest>
+                <suiteTest>4K_AddFixedIDEDriveVHDX</suiteTest>
+                <suiteTest>AddDynamicIDEDriveVHDX0</suiteTest>
+                <suiteTest>AddDynamicIDEDriveVHDX1</suiteTest>
+                <suiteTest>AddFixedIDEDriveVHDX</suiteTest>   
+                <suiteTest>AddDifferencingIDEDriveVHDx4k</suiteTest>    
+                <suiteTest>4K_AddDynamicSCSIDriveVHDX</suiteTest>
+                <suiteTest>4K_AddFixedSCSIDriveVHDX</suiteTest>
+                <suiteTest>AddDifferencingSCSIDriveVHDx4k</suiteTest>
+                <suiteTest>4K_AddMultipleVHDX_IDE0</suiteTest>        
+                <suiteTest>4K_AddDynamicVHDX_SCSIDrive_Multi</suiteTest>            
+            </suiteTests>
+        </suite>  
+
+		<suite>    
+            <suiteName>KvpTest</suiteName>
+            <suiteTests>
+                <suiteTest>ReadKvpIntrinsicData</suiteTest>
+                <suiteTest>WriteKvpDataToGuest</suiteTest>
+                <suiteTest>ModifyKvpDataOnGuest</suiteTest>
+                <suiteTest>DeleteKvpDataOnGuest</suiteTest>
+                <suiteTest>ReadKvpNonIntrinsicData</suiteTest>
+                <suiteTest>KvpGetVmIpOnHost</suiteTest>
+                <suiteTest>OnGuestReadHostKvpData</suiteTest>
+                <suiteTest>HostOnlyWriteToPool0</suiteTest>
+                <suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
+                <suiteTest>ModifyNonExistentKvpDataOnGuest</suiteTest>
+                <suiteTest>DisableEnableDataExchange</suiteTest>
+                <suiteTest>StopStartKvpDaemon</suiteTest>       
+            </suiteTests>
+        </suite>  
+		
+		<suite>    
+            <suiteName>500TimesRebootTest</suiteName>
+            <suiteTests>
+                <suiteTest>Test500TimesReboot</suiteTest>
+            </suiteTests>
+        </suite>  
 		
         <suite>    
             <suiteName>debug</suiteName>
@@ -1394,6 +1467,17 @@
                 <param>TC_COVERED=BOOT-02</param>
             </testparams>                
         </test>
+		<test>
+            <testName>Test500TimesReboot</testName>
+            <testScript>setupScripts\Test500TimesReboot.ps1</testScript>
+            <files>setupScripts\Test500TimesReboot.ps1</files>
+            <timeout>50000</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>TC_COVERED=BOOT-02</param>
+            </testparams>                
+        </test>
         <test>
             <testName>AddDifferencingIDEDriveVHDx4k</testName>
             <testScript>AddNewDisk_New.sh</testScript>
@@ -2050,9 +2134,9 @@
 		</test>
 		
 		<test>
-			<testName>CopyWithDiffrentMTU</testName>
-			<testScript>CopyWithDiffrentMTU.sh</testScript>
-			<files>remote-scripts\freebsd\CopyWithDiffrentMTU.sh</files>
+			<testName>CopyWithDifferentMTU</testName>
+			<testScript>CopyWithDifferentMTU.sh</testScript>
+			<files>remote-scripts\freebsd\CopyWithDifferentMTU.sh</files>
 			<timeout>600</timeout>
 			<onError>Continue</onError>
 			<noReboot>False</noReboot>

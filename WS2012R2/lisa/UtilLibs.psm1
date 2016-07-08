@@ -56,7 +56,7 @@ report.xml:
 [string]$junitReportPath = ""
 [bool]$isGenerateJunitReport=$False
 
-Function FinishCaseReport([string]$completionCode, [string]$summaryLog)
+Function FinishCaseReport([string]$completionCode, [string]$summaryLog, [System.Xml.XmlElement]$vm)
 {
 	$caseFinish = [DateTime]::Now
 	$caseElapseTime = ($caseFinish - $Global:caseStart).TotalSeconds

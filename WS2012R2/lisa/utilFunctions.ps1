@@ -1232,6 +1232,7 @@ function UpdateCurrentTest([System.Xml.XmlElement] $vm, [XML] $xmlData)
         $vm.currentTest = [string] $nextTest
 		if($vm.currentTest -ne 'done')
 		{
+			$Global:caseStart = [DateTime]::Now
 			$Global:testcase = StartLogTestCase $testsuite "$($vm.currentTest)" "BIS.$($vm.suite)"
 		}		
         $testData = GetTestData $vm.currentTest $xmlData

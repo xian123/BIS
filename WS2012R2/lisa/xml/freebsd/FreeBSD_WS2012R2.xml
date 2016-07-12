@@ -402,6 +402,12 @@
         <suite>    
             <suiteName>debug</suiteName>
             <suiteTests>
+                <suiteTest>Heartbeat</suiteTest>
+                <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   				
+                <suiteTest>CheckCPUCount-2</suiteTest>
+				<suiteTest>ShutdownFromHyperV-2</suiteTest>
+				<suiteTest>CheckMemoryCapacity-2GB</suiteTest>
+				<suiteTest>CheckMemoryCapacity-512MB</suiteTest>
                 <suiteTest>CheckMemoryCapacity-2GB</suiteTest>
             </suiteTests>
         </suite>        

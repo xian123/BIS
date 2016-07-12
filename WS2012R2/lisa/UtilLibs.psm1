@@ -70,13 +70,13 @@ Function FinishCaseReport([string]$completionCode, [string]$summaryLog, [System.
 	{
 		$testSuiteResultDetails.totalFailTc += 1
 		$caseLog = Get-Content -path $summaryLog
-		FinishLogTestCase $Global:testcase $caseElapseTime "FAIL" "$($vm.currentTest) is aborted." $caseLog		
+		FinishLogTestCase $Global:testcase $caseElapseTime "FAIL" "$($vm.currentTest) failed." $caseLog		
 	}
 	else
 	{
  		$testSuiteResultDetails.totalAbortedTc += 1
 		$caseLog = Get-Content -path $summaryLog
-		FinishLogTestCase $Global:testcase $caseElapseTime "FAIL" "$($vm.currentTest) failed." $caseLog	
+		FinishLogTestCase $Global:testcase $caseElapseTime "ERROR" "$($vm.currentTest) is aborted." $caseLog	
 	}
 }
 Function StartLogReport([string]$reportPath, [DateTime]$startTime)

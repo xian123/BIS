@@ -2148,7 +2148,7 @@ function DoCollectLogFiles([System.Xml.XmlElement] $vm, [XML] $xmlData)
     SendCommandToVM $vm "rm -f state.txt"
     
     LogMsg 0 "Info : $($vm.vmName) Status for test $currentTest $iterationMsg = $completionCode"
-
+	FinishCaseReport $completionCode $summaryLog $vm
     if ( $($testData.postTest) )
     {
         UpdateState $vm $RunPostTestScript
@@ -3002,7 +3002,7 @@ function DoPS1TestCompleted ([System.Xml.XmlElement] $vm, [XML] $xmlData)
     }
     
     LogMsg 0 "Info : ${vmName} Status for test $($vm.currentTest) = ${completionCode}"
-
+	FinishCaseReport $completionCode $summaryLog $vm
     #
     # Update e-mail summary
     #

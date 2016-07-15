@@ -395,13 +395,27 @@ function CreateHardDrive( [string] $vmName, [string] $server, [System.Boolean] $
             $defaultVhdPath += "\"
         }
 
-	$vhdName = $defaultVhdPath + $vmName + "-" + $controllerType + "-" + $controllerID + "-" + $lun + "-" + $vhdType + ".vhdx" 
-
-
+		$currentTime = Get-Date -Format 'yyyymdhms'
+		$vhdName = $defaultVhdPath + $vmName + "-" + $controllerType + "-" + $controllerID + "-" + $lun + "-" + $vhdType + "-" + $currentTime + ".vhdx" 
+		
+		#Record the path of the new vhd
+		$newVHDListsPath =  ".\NewVhdxLists.log"  #Note: this file path must be as same as the path in RemoveVhdxHardDisk.ps1
+		$listContent = $vhdName + ","
+		$listContent | Out-File $newVHDListsPath -NoClobber -Append
+		
         $fileInfo = GetRemoteFileInfo -filename $vhdName -server $server
         if (-not $fileInfo)
         {
-            $nv = New-Vhd -Path $vhdName -size $global:MinDiskSize -Dynamic:($vhdType -eq "Dynamic") -LogicalSectorSize ([int] $sectorSize)  -ComputerName $server
+			if( $vhdType -eq "Dynamic" )
+			{
+				$vhdsize = $global:DefaultDynamicSize
+			}
+			else
+			{
+				$vhdsize = $global:MinDiskSize
+			}
+		
+            $nv = New-Vhd -Path $vhdName -size $vhdsize -Dynamic:($vhdType -eq "Dynamic") -LogicalSectorSize ([int] $sectorSize)  -ComputerName $server
             if ($nv -eq $null)
             {
                 "Error: New-VHD failed to create the new .vhd file: $($vhdName)"
@@ -549,5 +563,10 @@ foreach ($p in $params)
         }
     }
 }
+
+
+
+
+
 
 return $retVal

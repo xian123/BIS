@@ -368,12 +368,16 @@ function CreateHardDrive( [string] $vmName, [string] $server, [System.Boolean] $
           return $retVal
          }
          
-   #
-   # Adding vhdx child disk
-   #
-
-	$vhdName = $defaultVhdPath + $vmName + "-" + $controllerType + "-" + $controllerID + "-" + $lun + "-" + $vhdType + ".vhdx" 
-
+        #
+        # Adding vhdx child disk
+        #
+		$currentTime = Get-Date -Format 'yyyymdhms'
+		$vhdName = $defaultVhdPath + $vmName + "-" + $controllerType + "-" + $controllerID + "-" + $lun + "-" + $vhdType + "-" + $currentTime + ".vhdx" 
+		
+		#Record the path of the new vhd
+		$newVHDListsPath =  ".\NewVhdxLists.log"  #Note: this file path must be as same as the path in RemoveVhdxHardDisk.ps1
+		$listContent = $vhdName + ","
+		$listContent | Out-File $newVHDListsPath -NoClobber -Append
 
         $fileInfo = GetRemoteFileInfo -filename $vhdName -server $server
         if (-not $fileInfo)

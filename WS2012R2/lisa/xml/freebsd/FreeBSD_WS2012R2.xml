@@ -238,7 +238,6 @@
                 <suiteTest>KvpGetVmIpOnHost</suiteTest>
                 <suiteTest>OnGuestReadHostKvpData</suiteTest>
                 <suiteTest>HostOnlyWriteToPool0</suiteTest>
-                <suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>ModifyNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>      
@@ -271,7 +270,7 @@
 				
 				<suiteTest>TimeSyncWithNTPServer</suiteTest>					
 				<suiteTest>VmbusVerifyInterrupts</suiteTest>	
-				<suiteTest>CopyWithDifferentMTU</suiteTest>	
+				<suiteTest>VmbusProtocolVersion</suiteTest>	
 				
 				<suiteTest>Test50TimesReboot</suiteTest>	
 
@@ -279,7 +278,6 @@
                 <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
-                <suiteTest>SendNMIToVMwithUnPrivUser</suiteTest> 
             </suiteTests>
         </suite>
 
@@ -300,12 +298,12 @@
                 <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
-                <suiteTest>SendNMIToVMwithUnPrivUser</suiteTest>    
-				
+           
 				<suiteTest>CopyLargeFile</suiteTest> 
                 <suiteTest>CopyMultipleSmallFiles</suiteTest>      
                 <suiteTest>CopyFileExceedDiskSizeIDE</suiteTest> 
-                <suiteTest>CopyFileExceedDiskSizeSCSI</suiteTest>  	
+                <suiteTest>CopyFileExceedDiskSizeSCSI</suiteTest>  
+				<suiteTest>CopyWithDifferentMTU</suiteTest>					
             </suiteTests>
         </suite> 
 		
@@ -326,6 +324,14 @@
 			</suiteTests>
 		</suite>
 		
+		<suite>
+			<suiteName>KnownBugs</suiteName>
+			<suiteTests>
+				<suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
+				<suiteTest>CopyWithDifferentMTU</suiteTest>	
+				<suiteTest>SendNMIToVMwithUnPrivUser</suiteTest>    				
+			</suiteTests>
+		</suite>
 		
 		<suite>    
             <suiteName>DiskTest</suiteName>
@@ -2146,6 +2152,19 @@
 				<param>LARGE_FILENAME=1GB.file</param>
 				<param>TC_COVERED=NET-13</param>
 		    </testparams>
+		</test>
+		
+		<test>
+			<testName>VmbusProtocolVersion</testName>
+			<testScript>vmbus_protocol_version.sh</testScript>
+			<files>remote-scripts\freebsd\vmbus_protocol_version.sh</files>
+			<timeout>300</timeout>
+			<onError>Continue</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>VMBusVer=3.0</param>
+				<param>TC_COVERED=VMBUS-01</param>
+			</testparams>
 		</test>
 		
     </testCases>

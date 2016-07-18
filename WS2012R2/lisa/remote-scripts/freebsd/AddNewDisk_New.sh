@@ -95,18 +95,8 @@ do
         
     echo "Target device = ${!j}" >> ~/summary.log
 
-#
-# Overwrite any existing partition table.  Then fdisk the device.
-#
-# dd if=/dev/zero of=${TEST_DEVICE} bs=1k count=1
-# if [ $? -ne 0 ]; then
-    # echo "Error: Unable to zero first 1K of ${TEST_DEVICE}"
-    # UpdateTestState $ICA_TESTFAILED
-    # exit 30
-# fi
-
     #
-    # Delete existing filesystem 
+    # Delete the existed filesystem 
     #
 
     DEVICE=~/disk.txt
@@ -115,18 +105,19 @@ do
     DISK=`echo ${!j} | cut -c 6-8`
     grep -q "${DISK}p1" $DEVICE
     if [ $? -eq 0 ]; then
-        LogMsg "Deleting filesystem"
+        LogMsg "Deleting the existed filesystem"
         gpart delete -i 1 "${DISK}"
         gpart destroy "${DISK}"
-	else
-	    LogMsg "No filesystem exits"
     fi
 
     sleep 2
 
     gpart create -s GPT ${!j}
     if [ $? -ne 0 ]; then
-        LogMsg "Error: Unable to create GPT on ${TEST_DEVICE}"
+        LogMsg "Error: Unable to create GPT on ${!j}"
+		echo "Error: Unable to create GPT on ${!j}" >> ~/summary.log
+		echo "Maybe the device ${!j} doesn't exist, so check the /dev/ via 'ls /dev/da* /dev/ad*' command and its results are:  " >> ~/summary.log
+		ls /dev/da*  /dev/ad* >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 40
     fi
@@ -134,6 +125,7 @@ do
     gpart add -t freebsd-ufs ${!j}
     if [ $? -ne 0 ]; then
         LogMsg "Error: Unable to add freebsd-ufs slice to ${TEST_DEVICE}"
+		echo "Error: gpart add -t freebsd-ufs ${!j} failed" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 50
     fi
@@ -141,6 +133,7 @@ do
     newfs ${!j}p1
     if [ $? -ne 0 ]; then
         LogMsg "Error: Unable to format the device ${TEST_DEVICE}p1"
+		echo "Error: Unable to format the device ${TEST_DEVICE}p1" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 60
     fi
@@ -149,6 +142,7 @@ do
     mount ${!j}p1 /mnt
     if [ $? -ne 0 ]; then
         LogMsg "Error: Unable mount device ${TEST_DEVICE}p1"
+		echo "Error: Unable mount device ${TEST_DEVICE}p1" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 70
     fi
@@ -158,6 +152,7 @@ do
     mkdir ${TARGET_DIR}
     if [ $? -ne 0 ]; then
         LogMsg "Error: unable to create ${TARGET_DIR}"
+		echo "Error: unable to create ${TARGET_DIR}" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 80
     fi
@@ -166,12 +161,14 @@ do
     cp ~/*.sh ${TARGET_DIR}
     if [ $? -ne 0 ]; then
         LogMsg "Error: unable to copy files to ${TARGET_DIR}"
+		echo "Error: unable to copy files to ${TARGET_DIR}" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 90
     fi
 
     if [ ! -e "${TARGET_DIR}/constants.sh" ]; then
-        LogMsg "Error: Write to disk failed"
+        LogMsg "Error: Write to disk(${!j}p1) failed"
+		echo "Error: Write to disk(${!j}p1) failed" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 100
     fi
@@ -179,7 +176,8 @@ do
     LogMsg "rm -f ${TARGET_DIR}/constants.sh"
     rm -f ${TARGET_DIR}/constants.sh
     if [ -e "${TARGET_DIR}/constants.sh" ]; then
-        LogMsg "Error: Delete of file on disk failed"
+        LogMsg "Error: Delete of file on disk(${!j}p1) failed"
+		echo "Error:  Delete of file on disk(${!j}p1) failed" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 110
     fi
@@ -188,6 +186,7 @@ do
     umount /mnt
     if [ $? -ne 0 ]; then
         LogMsg "Error: unable to unmount /mnt"
+		echo "Error: unable to unmount /mnt" >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
         exit 120
     fi

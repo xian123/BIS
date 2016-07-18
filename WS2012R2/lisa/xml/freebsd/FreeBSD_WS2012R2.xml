@@ -239,7 +239,6 @@
                 <suiteTest>OnGuestReadHostKvpData</suiteTest>
                 <suiteTest>HostOnlyWriteToPool0</suiteTest>
                 <suiteTest>ModifyNonExistentKvpDataOnGuest</suiteTest>
-                <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>      
 				
 				<suiteTest>PingSizeInterval</suiteTest>
@@ -328,6 +327,7 @@
 			<suiteName>KnownBugs</suiteName>
 			<suiteTests>
 				<suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
+				<suiteTest>DisableEnableDataExchange</suiteTest>
 				<suiteTest>CopyWithDifferentMTU</suiteTest>	
 				<suiteTest>SendNMIToVMwithUnPrivUser</suiteTest>    				
 			</suiteTests>
@@ -1739,9 +1739,9 @@
             <noReboot>True</noReboot>
             <testparams>
                  <param>TC_COVERED=KVP-05</param>
-                 <param>Key=DDD</param>
-                 <param>Value=555</param>
-                 <param>Pool=2</param>
+                 <param>Key=DDDEEE</param>
+                 <param>Value=321</param>
+                 <param>Pool=0</param>
             </testparams>
         </test>
         

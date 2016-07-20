@@ -1005,7 +1005,7 @@
             <files>setupScripts\timesync_savedVM.ps1</files>
             <timeout>800</timeout>
             <onError>Continue</onError>
-            <noReboot>True</noReboot>
+            <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-05</param>
             </testparams>                

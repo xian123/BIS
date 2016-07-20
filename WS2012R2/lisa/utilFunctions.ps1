@@ -1646,3 +1646,43 @@ function GetIPv4([String] $vmName, [String] $server)
 
     return $addr
 }
+
+
+#######################################################################
+#
+# DeleteVHDInFile()
+#
+#######################################################################
+function DeleteVHDInFile([String] $FilePath)
+{
+	$status = Test-Path $FilePath  
+	if( $status -eq "True" )
+	{
+		$vhdLists = Get-Content $FilePath
+		$lists = $vhdLists.Split(',')
+		foreach ($vhd in $lists)
+		{
+			if ($vhd.Trim().Length -eq 0)
+			{
+				continue
+			}
+			
+			#Only delete .vhd or .vhdx files for safty
+			if( $vhd.EndsWith(".vhd")  -or $vhd.EndsWith(".vhdx") )
+			{
+				$status = Test-Path $vhd  
+				if( $status -eq "True" )
+				{
+					"Start to delete the $vhd for saving disk space."
+					Remove-Item $vhd  -Force
+					"Delete the $vhd successffully."
+				}
+			}
+		}
+
+		Remove-Item $FilePath  -Force
+	}
+	
+	return 0
+}
+

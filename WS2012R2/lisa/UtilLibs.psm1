@@ -79,6 +79,8 @@ Function FinishCaseReport([string]$completionCode, [string]$summaryLog, [System.
 		FinishLogTestCase $Global:testcase $caseElapseTime "ERROR" "$($vm.currentTest) is aborted." $caseLog	
 	}
 }
+
+
 Function StartLogReport([string]$reportPath, [DateTime]$startTime)
 {
 	if(!$junitReport)

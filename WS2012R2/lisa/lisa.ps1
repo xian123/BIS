@@ -765,7 +765,12 @@ function RunTests ([String] $xmlFilename )
         LogMsg 3 "Info : Running Lisa Init script '$($xmlConfig.Config.Global.LisaInitScript)'"
         $initResults = RunInitShutdownScript $xmlConfig.Config.Global.LisaInitScript $xmlFilename
     }
+	
 	# Start to generate test report
+	if( $testReport -eq $null )
+	{
+		$testReport = "$pwd\report.xml"
+	}
 	StartLogReport $testReport 
 	$Global:testsuite = StartLogTestSuite "BIS" $Script:testStartTime
 	$Global:testSuiteResultDetails=@{"totalTc"=0;"totalPassTc"=0;"totalFailTc"=0;"totalAbortedTc"=0;"totalElapseTime"=0}
@@ -783,6 +788,10 @@ function RunTests ([String] $xmlFilename )
 	Write-Host $testSuiteResultDetails.totalPassTc,$testSuiteResultDetails.totalFailTc,$testSuiteResultDetails.totalAbortedTc
 
 	# Compress logs
+	if( $reportCompressFile -eq $null )
+	{
+		$reportCompressFile = "$pwd\logs.zip"
+	}
 	CICompressFolderToZip "$testDir" $reportCompressFile
 	
     #

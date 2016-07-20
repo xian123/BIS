@@ -274,7 +274,6 @@
 				<suiteTest>Test50TimesReboot</suiteTest>	
 
 				<suiteTest>SetNMI</suiteTest>
-                <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
             </suiteTests>

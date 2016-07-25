@@ -272,10 +272,6 @@
 				<suiteTest>VmbusProtocolVersion</suiteTest>	
 				
 				<suiteTest>Test50TimesReboot</suiteTest>	
-
-				<suiteTest>SetNMI</suiteTest>
-                <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
-                <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
             </suiteTests>
         </suite>
 
@@ -287,16 +283,8 @@
                 <suiteTest>Floppymount</suiteTest>
                 <suiteTest>CDmount</suiteTest>     
 
-                <suiteTest>TimeSync</suiteTest>
-                <suiteTest>TimeSync_SavedVM</suiteTest>
                 <suiteTest>TestExportImport</suiteTest>  
 
-                <suiteTest>SetNMI</suiteTest>
-
-                <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
-                <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
-                <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
-           
 				<suiteTest>CopyLargeFile</suiteTest> 
                 <suiteTest>CopyMultipleSmallFiles</suiteTest>      
                 <suiteTest>CopyFileExceedDiskSizeIDE</suiteTest> 
@@ -328,7 +316,17 @@
 				<suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
 				<suiteTest>DisableEnableDataExchange</suiteTest>
 				<suiteTest>CopyWithDifferentMTU</suiteTest>	
-				<suiteTest>SendNMIToVMwithUnPrivUser</suiteTest>    				
+			</suiteTests>
+		</suite>
+		
+		<suite>
+			<suiteName>NMITest</suiteName>
+			<suiteTests>
+				<suiteTest>SetNMI</suiteTest>
+                <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
+                <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
+                <suiteTest>VerifyNMIforVMInPausedState</suiteTest>
+                <suiteTest>SendNMIToVMwithUnPrivUser</suiteTest>    				
 			</suiteTests>
 		</suite>
 		

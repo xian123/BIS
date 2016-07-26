@@ -1979,54 +1979,58 @@ function DoTestRunning([System.Xml.XmlElement] $vm, [XML] $xmlData)
     $stateFile = "state.txt"
 
     del $stateFile -ErrorAction "SilentlyContinue"
+	
+	$tryTimes = 0
+	do 
+	{
+		$tryTimes += 1
+		if ( (GetFileFromVM $vm $stateFile ".") )
+		{
+			if (test-path $stateFile)
+			{
+				$vm.testCaseResults = "Aborted"
+				$contents = Get-Content -Path $stateFile
+				if ($null -ne $contents)
+				{
+					if ($contents -eq $TestRunning)
+					{
+						return
+					}
+					elseif ($contents -eq $TestCompleted)
+					{
+						$vm.testCaseResults = "Success"
+						UpdateState $vm $CollectLogFiles
+					}
+					elseif ($contents -eq $TestAborted)
+					{
+						AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) aborted. See logfile for details"
+					}
+					elseif($contents -eq $TestFailed)
+					{
+						AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) failed. See logfile for details"
+						$vm.testCaseResults = "Failed"
+					}
+					else
+					{
+						AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) has an unknown status of '$($contents)'"
+					}
+					
+					del $stateFile -ErrorAction "SilentlyContinue"
+				}
+				else
+				{
+					LogMsg 6 "Warn : $($vm.vmName) state file is empty"
+				}
+				break
+			}
+		}
+		sleep 3
+	} while ($tryTimes -le 5)
     
-    if ( (GetFileFromVM $vm $stateFile ".") )
-    {
-        if (test-path $stateFile)
-        {
-            $vm.testCaseResults = "Aborted"
-            $contents = Get-Content -Path $stateFile
-            if ($null -ne $contents)
-            {
-                if ($contents -eq $TestRunning)
-                {
-                    return
-                }
-                elseif ($contents -eq $TestCompleted)
-                {
-                    $vm.testCaseResults = "Success"
-                    UpdateState $vm $CollectLogFiles
-                }
-                elseif ($contents -eq $TestAborted)
-                {
-                    AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) aborted. See logfile for details"
-                }
-                elseif($contents -eq $TestFailed)
-                {
-                    AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) failed. See logfile for details"
-                    $vm.testCaseResults = "Failed"
-                }
-                else
-                {
-                    AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) has an unknown status of '$($contents)'"
-                }
-                
-                del $stateFile -ErrorAction "SilentlyContinue"
-            }
-            else
-            {
-                LogMsg 6 "Warn : $($vm.vmName) state file is empty"
-            }
-        }
-        else
-        {
-            LogMsg 0 "Warn : $($vm.vmName) ssh reported success, but state file was not copied"
-        }
-    }
-    else
-    {
-        LogMsg 0 "Warn : $($vm.vmName) unable to pull state.txt from VM."
-    }
+	if($tryTimes -gt 5)
+	{
+		LogMsg 0 "Error : $($vm.vmName) unable to pull state.txt from VM."
+	}
 }
 
 

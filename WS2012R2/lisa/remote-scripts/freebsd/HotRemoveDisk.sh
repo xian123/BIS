@@ -76,6 +76,7 @@ do
 	ls /dev/da* | grep "/dev/da$i"
 	if [ $? -eq 0 ]; then
 		LogMsg "Error: /dev/da$i still exists"
+		echo "Error: /dev/da$i still exists"   >> ~/summary.log
 		UpdateTestState $ICA_TESTFAILED
 		exit 1
 	fi

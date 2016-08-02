@@ -287,6 +287,7 @@ if (-not $ipv4)
     if (-not $ipv4)
     {
         "Error: Unable to determin the IPv4 address for VM ${vmName}"
+        "Error: Unable to determin the IPv4 address for VM ${vmName}"  >> $summaryLog
         return $False
     }
 }
@@ -316,6 +317,7 @@ $unixTimeStr = GetUnixVMTime -sshKey "ssh\${sshKey}" -ipv4 $ipv4
 if (-not $unixTimeStr)
 {
     "Error: Unable to get date/time string from VM"
+    "Error: Unable to get date/time string from VM" >> $summaryLog
     return $False
 }
 
@@ -338,6 +340,7 @@ $timeSpan = $windowsTime - $unixTime
 if (-not $timeSpan)
 {
     "Error: Unable to compute timespan"
+    "Error: Unable to compute timespan"  >> $summaryLog
     return $False
 }
 
@@ -358,5 +361,6 @@ if ($diffInSeconds -and $diffInSeconds -lt $maxTimeDiff)
 }
 
 $msg
+$msg >> $summaryLog
 
 return $retVal

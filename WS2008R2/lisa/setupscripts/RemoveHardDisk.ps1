@@ -291,6 +291,20 @@ foreach ($p in $params)
 
 }
 
+
+
+#
+#Delete the vhd/vhdx file from the local disk for saving space
+#
+. .\utilFunctions.ps1 | out-null
+$newVHDListsPath = ".\NewVhdLists.log" #Note: this file path must be as same as the path in AddHardDisk.ps1
+$status = Test-Path $newVHDListsPath  
+if( $status -eq "True" )
+{
+	DeleteVHDInFile (Resolve-Path $newVHDListsPath).Path
+}
+
+
 "RemoveHardDisk returning $retVal"
 
 return $retVal

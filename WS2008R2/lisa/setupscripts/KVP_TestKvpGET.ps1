@@ -129,16 +129,16 @@ echo "Covers : ${tcCovered}" >> $summaryLog
 "TestParams : '${testParams}'"
 
 #
-# Source the TCUtils.ps1 file so we have access to the functions it provides.
+# Source the utilFunctions.ps1 file so we have access to the functions it provides.
 #
-. .\setupScripts\TCUtils.ps1 | out-null
+. .\utilFunctions.ps1 | out-null
 
 #
 # Read the IP addresses via KVP.  
 # This is populated with the KVP GET operation.
 #
 "Info :Reading IP addresses via KVP"
-$ipAddr = GetIPv4ViaKVP  $vmName $hvServer
+$ipAddr = GetIPv4  $vmName $hvServer
 if (-not $ipAddr)
 {
     "Error: IP address cannot be read"

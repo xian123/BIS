@@ -1220,3 +1220,137 @@ function GetIterationParam([System.Xml.XmlElement] $vm, [XML] $xmlData)
     return $iterationParam   
 }
 
+
+
+
+
+#######################################################################
+#
+# GetIPv4()
+#
+#######################################################################
+function GetIPv4( [String] $vmName, [String] $server)
+{
+    <#
+    .Synopsis
+        Ise KVP to retrieve the VMs IPv4 address.
+    .Description
+        Do a KVP intrinsic data exchange with the VM and
+        extract the IPv4 address from the returned KVP data.
+    .Parameter vmName
+        Name of the VM to retrieve the IP address from.
+    .Parameter server
+        Name of the server hosting the VM
+    .Example
+        GetIPv4 $testVMName $serverName
+    #>
+
+    $vmObj = Get-WmiObject -Namespace root\virtualization -ComputerName $server -Query "Select * From Msvm_ComputerSystem Where ElementName=`'$VMName`'"
+    if (-not $vmObj)
+    {
+        Write-Error -Message "GetIPv4: Unable to create Msvm_ComputerSystem object" -Category ObjectNotFound -ErrorAction SilentlyContinue
+        return $null
+    }
+
+    $kvp = Get-WmiObject -Namespace root\virtualization -ComputerName $server -Query "Associators of {$vmObj} Where AssocClass=Msvm_SystemDevice ResultClass=Msvm_KvpExchangeComponent"
+    if (-not $kvp)
+    {
+        Write-Error -Message "GetIPv4: Unable to create KVP exchange object" -Category ObjectNotFound -ErrorAction SilentlyContinue
+        return $null
+    }
+
+    $rawData = $Kvp.GuestIntrinsicExchangeItems
+    if (-not $rawData)
+    {
+        Write-Error -Message "GetIPv4: No KVP Intrinsic data returned" -Category ReadError -ErrorAction SilentlyContinue
+        return $null
+    }
+
+    $name = $null
+    $addresses = $null
+
+    foreach ($dataItem in $rawData)
+    {
+        $found = 0
+        $xmlData = [Xml] $dataItem
+        foreach ($p in $xmlData.INSTANCE.PROPERTY)
+        {
+            if ($p.Name -eq "Name" -and $p.Value -eq "NetworkAddressIPv4")
+            {
+                $found += 1
+            }
+
+            if ($p.Name -eq "Data")
+            {
+                $addresses = $p.Value
+                $found += 1
+            }
+
+            if ($found -eq 2)
+            {
+                $addrs = $addresses.Split(";")
+                foreach ($addr in $addrs)
+                {
+				    if($addr -eq $null)
+					{
+					    Continue
+					}
+					
+                    if(($addr.StartsWith("127.") -eq $True ) -or ($addr.StartsWith("0.")) -eq $True)
+                    {
+                        Continue
+                    }
+					
+                    return $addr
+                }
+            }
+        }
+    }
+
+    Write-Error -Message "GetIPv4: No IPv4 address found for VM ${vmName}" -Category ObjectNotFound -ErrorAction SilentlyContinue
+    return $null
+}
+
+
+
+
+
+#######################################################################
+#
+# DeleteVHDInFile()
+#
+#######################################################################
+function DeleteVHDInFile([String] $FilePath)
+{
+	$status = Test-Path $FilePath  
+	if( $status -eq "True" )
+	{
+		$vhdLists = Get-Content $FilePath
+		$lists = ([string] $vhdLists).Split(',')
+		foreach ($vhd in $lists)
+		{
+			$vhd = $vhd.Trim()
+			if ($vhd.Length -eq 0)
+			{
+				continue
+			}
+
+			#Only delete .vhd or .vhdx files for safty
+			if( $vhd.EndsWith(".vhd")  -or $vhd.EndsWith(".vhdx") )
+			{
+				$status = Test-Path $vhd  
+				if( $status -eq "True" )
+				{
+					"Start to delete the $vhd for saving disk space."
+					Remove-Item $vhd  -Force
+					"Delete the $vhd successffully."
+				}
+			}
+		}
+
+		Remove-Item $FilePath  -Force
+	}
+	
+	return 0
+}
+

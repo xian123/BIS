@@ -925,6 +925,43 @@ function DoSlowSystemStarting([System.Xml.XmlElement] $vm, [XML] $xmlData)
     }
     else
     {
+        # If an IP address was not provided in the .XML file, try to determine the VMs IP address
+        $ipv4 = $null
+        LogMsg 9 "Debug: vm.ipv4 = $($vm.ipv4)"
+
+        #
+        # Need to ask the VM for the IP address on every
+        # test.  But we also want to honor a <ipv4> value
+        # if it was specified.
+        #
+        if (-not $vm.ipv4)
+        {
+            LogMsg 9 "Debug: vm.ipv4 is NULL"
+            $ipv4 = GetIPv4 $vm.vmName $vm.hvServer
+            if ($ipv4)
+            {
+                # Update the VMs copy of the IPv4 address
+                $vm.ipv4 = [String] $ipv4
+                LogMsg 9 "Debug: Setting VMs IP address to $($vm.ipv4)"
+            }
+            else
+            {
+                return
+            }
+        }
+
+        #
+        # Update the vm.ipv4 value if the VMs IP address changed
+        #
+        $ipv4 = GetIPv4 $vm.vmName $vm.hvServer
+        LogMsg 9 "Debug: vm.ipv4 = $($vm.ipv4) and ipv4 = ${ipv4} "
+        if ($ipv4 -and ($vm.ipv4 -ne [String] $ipv4))
+        {
+            LogMsg 0 "Updating VM IP： ${ipv4}"
+            $vm.ipv4 = [String] $ipv4
+        }
+        
+        # See if the SSH port is accepting connections
         $sts = TestPort $vm.ipv4 -port 22 -timeout 5
         if ($sts)
         {
@@ -1665,6 +1702,26 @@ function DoTestStarting([System.Xml.XmlElement] $vm, [XML] $xmlData)
 ########################################################################
 function DoTestRunning([System.Xml.XmlElement] $vm, [XML] $xmlData)
 {
+    <#
+    .Synopsis
+        Verify the test is still running on the VM
+    .Description
+        Use SSH to get a copy of ~/state.txt from the Linux
+        VM and verify the contents.  The contents will be
+        one of the following:
+          TestRunning   - Test is still running
+          TestCompleted - Test completed successfully
+          TestAborted   - An error occured while setting up the test
+          TestFailed    - An error occured during the test
+        Leave this state once the value is not TestRunning
+    .Parameter vm
+        XML Element representing the VM under test.
+    .Parameter $xmlData
+        XML document for the test.
+    .Example
+        DoTestRunning $testVM $xmlData
+    #>
+
     if (-not $vm -or $vm -isnot [System.Xml.XmlElement])
     {
         LogMsg 0 "Error: DoTestRunning received a null vm parameter"
@@ -1700,55 +1757,60 @@ function DoTestRunning([System.Xml.XmlElement] $vm, [XML] $xmlData)
     $stateFile = "state.txt"
 
     del $stateFile -ErrorAction "SilentlyContinue"
+	
+	$tryTimes = 0
+	do 
+	{
+		$tryTimes += 1
+		if ( (GetFileFromVM $vm $stateFile ".") )
+		{
+			if (test-path $stateFile)
+			{
+				$vm.testCaseResults = "Aborted"
+				$contents = Get-Content -Path $stateFile
+				if ($null -ne $contents)
+				{
+					if ($contents -eq $TestRunning)
+					{
+						return
+					}
+					elseif ($contents -eq $TestCompleted)
+					{
+						$vm.testCaseResults = "Success"
+						UpdateState $vm $CollectLogFiles
+					}
+					elseif ($contents -eq $TestAborted)
+					{
+						AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) aborted. See logfile for details"
+					}
+					elseif($contents -eq $TestFailed)
+					{
+						AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) failed. See logfile for details"
+						$vm.testCaseResults = "Failed"
+					}
+					else
+					{
+						AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) has an unknown status of '$($contents)'"
+					}
+					
+					del $stateFile -ErrorAction "SilentlyContinue"
+				}
+				else
+				{
+					LogMsg 6 "Warn : $($vm.vmName) state file is empty"
+				}
+				break
+			}
+		}
+		sleep 3
+	} while ($tryTimes -le 5)
     
-    if ( (GetFileFromVM $vm $stateFile ".") )
-    {
-        if (test-path $stateFile)
-        {
-            $vm.testCaseResults = "Aborted"
-            $contents = Get-Content -Path $stateFile
-            if ($null -ne $contents)
-            {
-                if ($contents -eq $TestRunning)
-                {
-                    return
-                }
-                elseif ($contents -eq $TestCompleted)
-                {
-                    $vm.testCaseResults = "Success"
-                    UpdateState $vm $CollectLogFiles
-                }
-                elseif ($contents -eq $TestAborted)
-                {
-                    AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) aborted. See logfile for details"
-                }
-                elseif($contents -eq $TestFailed)
-                {
-                    AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) failed. See logfile for details"
-                    $vm.testCaseResults = "Failed"
-                }
-                else
-                {
-                    AbortCurrentTest $vm "$($vm.vmName) Test $($vm.currentTest) has an unknown status of '$($contents)'"
-                }
-                
-                del $stateFile -ErrorAction "SilentlyContinue"
-            }
-            else
-            {
-                LogMsg 6 "Warn : $($vm.vmName) state file is empty"
-            }
-        }
-        else
-        {
-            LogMsg 0 "Warn : $($vm.vmName) ssh reported success, but state file was not copied"
-        }
-    }
-    else
-    {
-        LogMsg 0 "Warn : $($vm.vmName) unable to pull state.txt from VM."
-    }
+	if($tryTimes -gt 5)
+	{
+		LogMsg 0 "Error : $($vm.vmName) unable to pull state.txt from VM."
+	}
 }
+
 
 
 ########################################################################

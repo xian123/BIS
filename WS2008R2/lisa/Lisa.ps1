@@ -50,7 +50,7 @@ $testDir = $null
 $xmlConfig = $null
 
 $testStartTime = [DateTime]::Now
-
+Import-Module .\UtilLibs.psm1 -Force
 
 ########################################################################
 #
@@ -427,10 +427,37 @@ function RunTests ([String] $xmlFilename )
         AddTestParamsToVMs $xmlConfig $testParams
     }
 
+    
+    # Start to generate test report
+	if( $testReport -eq $null )
+	{
+		$testReport = "$pwd\report.xml"
+	}
+	StartLogReport $testReport 
+	$Global:testsuite = StartLogTestSuite "BIS" $Script:testStartTime
+	$Global:testSuiteResultDetails=@{"totalTc"=0;"totalPassTc"=0;"totalFailTc"=0;"totalAbortedTc"=0;"totalElapseTime"=0}
+	$startTime = [Datetime]::Now.ToUniversalTime()
+
+    
     LogMsg 10 "Info : Calling RunICTests"
     . .\stateEngine.ps1
     RunICTests $xmlConfig
 
+    # Finish to generate test report	
+	$endTime = [Datetime]::Now.ToUniversalTime()
+	$testSuiteResultDetails.totalElapseTime = ($endTime-$startTime).TotalSeconds
+	FinishLogTestSuite $testsuite $testSuiteResultDetails.totalElapseTime
+	FinishLogReport
+	Write-Host $testSuiteResultDetails.totalPassTc,$testSuiteResultDetails.totalFailTc,$testSuiteResultDetails.totalAbortedTc
+
+	# Compress logs
+	if( $reportCompressFile -eq $null )
+	{
+		$reportCompressFile = "$pwd\logs.zip"
+	}
+	CICompressFolderToZip "$testDir" $reportCompressFile
+	
+    
     #
     # email the test results if requested
     #

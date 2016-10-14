@@ -1,13 +1,13 @@
-﻿########################################################################
+########################################################################
 #
 # Linux on Hyper-V and Azure Test Code, ver. 1.0.0
 # Copyright (c) Microsoft Corporation
 #
-# All rights reserved. 
+# All rights reserved.
 # Licensed under the Apache License, Version 2.0 (the ""License"");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#     http://www.apache.org/licenses/LICENSE-2.0  
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # THIS CODE IS PROVIDED *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS
 # OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
@@ -27,7 +27,6 @@
     Test Case Utility functions.  This is a collection of function
     commonly used by PowerShell test case scripts and setup scripts.
 #>
-
 
 #####################################################################
 #
@@ -97,10 +96,10 @@ function GetFileFromVM([String] $ipv4, [String] $sshKey, [string] $remoteFile, [
     return $retVal
 }
 
-
 #######################################################################
 #
 # GetIPv4()
+#
 #######################################################################
 function GetIPv4([String] $vmName, [String] $server)
 {
@@ -138,7 +137,6 @@ function GetIPv4([String] $vmName, [String] $server)
 
     return $addr
 }
-
 
 #######################################################################
 #
@@ -212,7 +210,6 @@ function GetIPv4ViaHyperV([String] $vmName, [String] $server)
     return $null
 }
 
-
 #######################################################################
 #
 # GetIPv4ViaICASerial()
@@ -266,7 +263,7 @@ function GetIPv4ViaICASerial( [String] $vmName, [String] $server)
     #
     # Get the Pipe name for COM1
     #
-    $pipName = $vm.ComPort2.Path
+    $pipeName = $vm.ComPort2.Path
     if (-not $pipeName)
     {
         Write-Error -Message "GetIPv4ViaICASerial: VM ${vmName} does not have a pipe associated with COM1" -Category ObjectNotFound -ErrorAction SilentlyContinue
@@ -307,13 +304,12 @@ function GetIPv4ViaICASerial( [String] $vmName, [String] $server)
             Write-Error -Message "GetIPv4ViaICASerial: ICAserical returned an error: ${response}" -Category ReadError -ErrorAction SilentlyContinue
             return $null
         }
-            
+
         $ipv4 = $tokens[2].Trim()
     }
 
     return $ipv4
 }
-
 
 #######################################################################
 #
@@ -395,7 +391,120 @@ function GetIPv4ViaKVP( [String] $vmName, [String] $server)
     return $null
 }
 
+#######################################################################
+#
+# GenerateIpv4()
+#
+#######################################################################
+function GenerateIpv4($tempipv4, $oldipv4)
+{
+    <#
+    .Synopsis
+        Generates an unused IP address based on an old IP address.
+    .Description
+        Generates an unused IP address based on an old IP address.
+    .Parameter tempipv4
+        The ipv4 address on which the new ipv4 will be based and generated in the same subnet
+    .Example
+        GenerateIpv4 $testIPv4Address $oldipv4
+    #>
+    [int]$i= $null
+    [int]$check = $null
+    if ($oldipv4 -eq $null){
+        [int]$octet = 102
+    }
+    else {
+        $oldIpPart = $oldipv4.Split(".")
+        [int]$octet  = $oldIpPart[3]
+    }
 
+    $ipPart = $tempipv4.Split(".")
+    $newAddress = ($ipPart[0]+"."+$ipPart[1]+"."+$ipPart[2])
+
+    while ($check -ne 1 -and $octet -lt 255){
+        $octet = 1 + $octet
+        if (!(Test-Connection "$newAddress.$octet" -Count 1 -Quiet))
+        {
+            $splitip = $newAddress + "." + $octet
+            $check = 1
+        }
+    }
+
+    return $splitip.ToString()
+}
+
+#######################################################################
+#
+# GetKVPEntry()
+#
+#######################################################################
+function GetKVPEntry( [String] $vmName, [String] $server, [String] $kvpEntryName)
+{
+    <#
+    .Synopsis
+        Try to determine a VMs KVP entry with KVP Intrinsic data.
+    .Description
+        Try to determine a VMs KVP entry with KVP Intrinsic data.
+    .Parameter vmName
+        Name of the VM
+    .Parameter server
+        Name of the server hosting the VM
+    .Parameter kvpEntryName
+        Name of the KVP entry, for example: FullyQualifiedDomainName, IntegrationServicesVersion, NetworkAddressIPv4, NetworkAddressIPv6
+    .Example
+        GetKVPEntry "myTestVM" "localhost" "FullyQualifiedDomainName"
+    #>
+
+    $vmObj = Get-WmiObject -Namespace root\virtualization\v2 -Query "Select * From Msvm_ComputerSystem Where ElementName=`'$vmName`'" -ComputerName $server
+    if (-not $vmObj)
+    {
+        Write-Error -Message "GetKVPEntry: Unable to create Msvm_ComputerSystem object" -Category ObjectNotFound -ErrorAction SilentlyContinue
+        return $null
+    }
+
+    $kvp = Get-WmiObject -Namespace root\virtualization\v2 -Query "Associators of {$vmObj} Where AssocClass=Msvm_SystemDevice ResultClass=Msvm_KvpExchangeComponent" -ComputerName $server
+    if (-not $kvp)
+    {
+        Write-Error -Message "GetKVPEntry: Unable to create KVP exchange component" -Category ObjectNotFound -ErrorAction SilentlyContinue
+        return $null
+    }
+
+    $rawData = $Kvp.GuestIntrinsicExchangeItems
+    if (-not $rawData)
+    {
+        Write-Error -Message "GetKVPEntry: No KVP Intrinsic data returned" -Category ReadError -ErrorAction SilentlyContinue
+        return $null
+    }
+
+    $kvpValue = $null
+
+    foreach ($dataItem in $rawData)
+    {
+        $found = 0
+        $xmlData = [Xml] $dataItem
+        foreach ($p in $xmlData.INSTANCE.PROPERTY)
+        {
+            if ($p.Name -eq "Name" -and $p.Value -eq $kvpEntryName)
+            {
+                $found += 1
+            }
+
+            if ($p.Name -eq "Data")
+            {
+                $kvpValue = $p.Value
+                $found += 1
+            }
+
+            if ($found -eq 2)
+            {
+                return $kvpValue
+            }
+        }
+    }
+
+    Write-Error -Message "GetKVPEntry: No such KVP entry found for VM ${vmName}" -Category ObjectNotFound -ErrorAction SilentlyContinue
+    return $null
+}
 
 #######################################################################
 #
@@ -426,23 +535,22 @@ function GetRemoteFileInfo([String] $filename, [String] $server )
     #>
 
     $fileInfo = $null
-    
+
     if (-not $filename)
     {
         return $null
     }
-    
+
     if (-not $server)
     {
         return $null
     }
-    
+
     $remoteFilename = $filename.Replace("\", "\\")
     $fileInfo = Get-WmiObject -query "SELECT * FROM CIM_DataFile WHERE Name='${remoteFilename}'" -computer $server -ErrorAction SilentlyContinue
-    
+
     return $fileInfo
 }
-
 
 #####################################################################
 #
@@ -488,7 +596,7 @@ function SendCommandToVM([String] $ipv4, [String] $sshKey, [string] $command)
     }
 
     # get around plink questions
-    bin\plink.exe -i ssh\${sshKey} root@${ipv4} 'exit 0'
+    echo y | bin\plink.exe -i ssh\${sshKey} root@${ipv4} 'exit 0'
     $process = Start-Process bin\plink -ArgumentList "-i ssh\${sshKey} root@${ipv4} ${command}" -PassThru -NoNewWindow -Wait -redirectStandardOutput lisaOut.tmp -redirectStandardError lisaErr.tmp
     if ($process.ExitCode -eq 0)
     {
@@ -504,7 +612,6 @@ function SendCommandToVM([String] $ipv4, [String] $sshKey, [string] $command)
 
     return $retVal
 }
-
 
 #####################################################################
 #
@@ -560,9 +667,9 @@ function SendFileToVM([String] $ipv4, [String] $sshkey, [string] $localFile, [st
     {
         $recurse = "-r"
     }
-    
+
     # get around plink questions
-    bin\plink.exe -i ssh\${sshKey} root@${ipv4} 'exit 0'
+    echo y | bin\plink.exe -i ssh\${sshKey} root@${ipv4} "exit 0"
 
     $process = Start-Process bin\pscp -ArgumentList "-i ssh\${sshKey} ${localFile} root@${ipv4}:${remoteFile}" -PassThru -NoNewWindow -Wait -redirectStandardOutput lisaOut.tmp -redirectStandardError lisaErr.tmp
     if ($process.ExitCode -eq 0)
@@ -584,7 +691,6 @@ function SendFileToVM([String] $ipv4, [String] $sshkey, [string] $localFile, [st
 
     return $retVal
 }
-
 
 #######################################################################
 #
@@ -610,7 +716,7 @@ function StopVMViaSSH ([String] $vmName, [String] $server="localhost", [int] $ti
     .Example
         StopVmViaSSH "testVM" "localhost" "300" "lisa_id_rsa.ppk"
     #>
-
+	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.HyperV.PowerShell")
     if (-not $vmName)
     {
         Write-Error -Message "StopVMViaSSH: VM name is null" -Category ObjectNotFound -ErrorAction SilentlyContinue
@@ -672,7 +778,6 @@ function StopVMViaSSH ([String] $vmName, [String] $server="localhost", [int] $ti
     return $False
 }
 
-
 #####################################################################
 #
 # TestPort
@@ -733,7 +838,6 @@ function TestPort ([String] $ipv4addr, [Int] $portNumber=22, [Int] $timeout=5)
     return $retVal
 }
 
-
 #######################################################################
 #
 # WaiForVMToReportDemand()
@@ -783,7 +887,6 @@ function WaitForVMToReportDemand([String] $vmName, [String] $server, [int] $time
     return $retVal
 }
 
-
 #######################################################################
 #
 # WaiForVMToStartKVP()
@@ -826,7 +929,6 @@ function WaitForVMToStartKVP([String] $vmName, [String] $server, [int] $timeout)
     Write-Error -Message "WaitForVMToStartKVP: VM ${vmName} did not start KVP within timeout period ($timeout)" -Category OperationTimeout -ErrorAction SilentlyContinue
     return $retVal
 }
-
 
 #######################################################################
 #
@@ -873,8 +975,6 @@ function WaitForVMToStartSSH([String] $ipv4addr, [int] $timeout)
     return $retVal
 }
 
-
- 
 #######################################################################
 #
 # WaiForVMToStop()
@@ -896,7 +996,7 @@ function  WaitForVMToStop ([string] $vmName ,[string]  $hvServer, [int] $timeout
     .Example
         WaitForVMToStop "testVM" "localhost" 300
     a#>
-
+	[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.HyperV.PowerShell")
     $tmo = $timeout
     while ($tmo -gt 0)
     {
@@ -917,4 +1017,179 @@ function  WaitForVMToStop ([string] $vmName ,[string]  $hvServer, [int] $timeout
 
     Write-Error -Message "StopVM: VM did not stop within timeout period" -Category OperationTimeout -ErrorAction SilentlyContinue
     return $False
+}
+
+#######################################################################
+#
+# Runs a remote script on the VM and returns the log.
+#
+#######################################################################
+function RunRemoteScript($remoteScript)
+{
+    $retValue = $False
+    $stateFile     = "state.txt"
+    $TestCompleted = "TestCompleted"
+    $TestAborted   = "TestAborted"
+    $TestFailed   = "TestFailed"
+    $TestRunning   = "TestRunning"
+    $timeout       = 6000
+
+    "./${remoteScript} > ${remoteScript}.log" | out-file -encoding ASCII -filepath runtest.sh
+
+    .\bin\pscp -i ssh\${sshKey} .\runtest.sh root@${ipv4}:
+    if (-not $?)
+    {
+       Write-Output "ERROR: Unable to copy runtest.sh to the VM"
+       return $False
+    }
+
+     .\bin\pscp -i ssh\${sshKey} .\remote-scripts\ica\${remoteScript} root@${ipv4}:
+    if (-not $?)
+    {
+       Write-Output "ERROR: Unable to copy ${remoteScript} to the VM"
+       return $False
+    }
+
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix ${remoteScript} 2> /dev/null"
+    if (-not $?)
+    {
+        Write-Output "ERROR: Unable to run dos2unix on ${remoteScript}"
+        return $False
+    }
+
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix runtest.sh  2> /dev/null"
+    if (-not $?)
+    {
+        Write-Output "ERROR: Unable to run dos2unix on runtest.sh"
+        return $False
+    }
+
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x ${remoteScript}   2> /dev/null"
+    if (-not $?)
+    {
+        Write-Output "ERROR: Unable to chmod +x ${remoteScript}"
+        return $False
+    }
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x runtest.sh  2> /dev/null"
+    if (-not $?)
+    {
+        Write-Output "ERROR: Unable to chmod +x runtest.sh " -
+        return $False
+    }
+
+    # Run the script on the vm
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "./runtest.sh"
+
+    # Return the state file
+    while ($timeout -ne 0 )
+    {
+    .\bin\pscp -q -i ssh\${sshKey} root@${ipv4}:${stateFile} . #| out-null
+    $sts = $?
+    if ($sts)
+    {
+        if (test-path $stateFile)
+        {
+            $contents = Get-Content -Path $stateFile
+            if ($null -ne $contents)
+            {
+                    if ($contents -eq $TestCompleted)
+                    {
+                        Write-Output "Info : state file contains Testcompleted."
+                        $retValue = $True
+                        break
+                    }
+
+                    if ($contents -eq $TestAborted)
+                    {
+                         Write-Output "Info : State file contains TestAborted message."
+                         break
+                    }
+                    if ($contents -eq $TestFailed)
+                    {
+                        Write-Output "Info : State file contains TestFailed message."
+                        break
+                    }
+                    $timeout--
+
+                    if ($timeout -eq 0)
+                    {
+                        Write-Output "Error : Timed out on Test Running , Exiting test execution."
+                        break
+                    }
+
+            }
+            else
+            {
+                Write-Output "Warn : state file is empty"
+                break
+            }
+
+        }
+        else
+        {
+             Write-Host "Warn : ssh reported success, but state file was not copied"
+             break
+        }
+    }
+    else
+    {
+         Write-Output "Error : pscp exit status = $sts"
+         Write-Output "Error : unable to pull state.txt from VM."
+         break
+    }
+    }
+
+    # Get the logs
+    $remoteScriptLog = $remoteScript+".log"
+
+    bin\pscp -q -i ssh\${sshKey} root@${ipv4}:${remoteScriptLog} .
+    $sts = $?
+    if ($sts)
+    {
+        if (test-path $remoteScriptLog)
+        {
+            $contents = Get-Content -Path $remoteScriptLog
+            if ($null -ne $contents)
+            {
+                    if ($null -ne ${TestLogDir})
+                    {
+                        move "${remoteScriptLog}" "${TestLogDir}\${remoteScriptLog}"
+                    }
+
+                    else
+                    {
+                        Write-Output "INFO: $remoteScriptLog is copied in ${rootDir}"
+                    }
+
+            }
+            else
+            {
+                Write-Output "Warn: $remoteScriptLog is empty"
+            }
+        }
+        else
+        {
+             Write-Output "Warn: ssh reported success, but $remoteScriptLog file was not copied"
+        }
+    }
+
+    # Cleanup
+    del state.txt -ErrorAction "SilentlyContinue"
+    del runtest.sh -ErrorAction "SilentlyContinue"
+
+    return $retValue
+}
+
+#######################################################################
+#
+# Checks kernel version on VM
+#
+#######################################################################
+function check_kernel
+{
+    .\bin\plink -i ssh\${sshKey} root@${ipv4} "uname -r"
+    if (-not $?) {
+        Write-Output "ERROR: Unable check kernel version" -ErrorAction SilentlyContinue
+        return $False
+    }
 }

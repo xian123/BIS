@@ -240,15 +240,24 @@ if (-not $?)
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 120
+$sleepTime = 60
 Start-Sleep -s $sleepTime
 
+$RetryCounts = 0
+$Retrylimits = 10
 
 $diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
-if (-not $?)
+while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
-    "Error: Unable to determine disk size from within the guest after growing the VHDX"
-    return $False
+	$RetryCounts ++
+	Start-Sleep -s $sleepTime    
+	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
+	$diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
+}
+if($RetryCounts -ge $Retrylimits)
+{
+	"Error: Unable to determine disk size from within the guest after growing the VHDX"
+	return $False
 }
 
 if ($diskSize.Trim() -ne $newVhdxSize)

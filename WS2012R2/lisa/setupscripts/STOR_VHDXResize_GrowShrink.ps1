@@ -289,19 +289,28 @@ if ( $newSize.contains("GB") -and $vhdxInfoResize.Size/1gb -ne $newSize.Trim("GB
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 120
+$sleepTime = 60
 Start-Sleep -s $sleepTime
 
 #
 # Check if the guest sees the added space
 #
 "Info : Check if the guest sees the new space"
+$RetryCounts = 0
+$Retrylimits = 10
 
 $growDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
-if (-not $?)
+while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
-    "Error: Unable to determine disk size from within the guest after growing the VHDX"
-    return $False
+	$RetryCounts ++
+	Start-Sleep -s $sleepTime    
+	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
+	$growDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
+}
+if($RetryCounts -ge $Retrylimits)
+{
+	"Error: Unable to determine disk size from within the guest after growing the VHDX"
+	return $False
 }
 
 if ($growDiskSize.Trim() -ne $newVhdxGrowSize)
@@ -347,7 +356,7 @@ if (-not $?)
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 120
+$sleepTime = 60
 Start-Sleep -s $sleepTime
 
 # Now start the VM if IDE disk attached or offline resize
@@ -372,12 +381,21 @@ if ( $controllerType -eq "IDE" -or $offline -eq "True" )
 # Check if the guest sees the added space
 #
 "Info : Check if the guest sees the new size"
+$RetryCounts = 0
+$Retrylimits = 10
 
 $shrinkDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
-if (-not $?)
+while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
-    "Error: Unable to determine disk size from within the guest after shrinking the VHDX"
-    return $False
+	$RetryCounts ++
+	Start-Sleep -s $sleepTime    
+	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
+	$shrinkDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
+}
+if($RetryCounts -ge $Retrylimits)
+{
+	"Error: Unable to determine disk size from within the guest after growing the VHDX"
+	return $False
 }
 
 if ($shrinkDiskSize.Trim() -ne $newVhdxShrinkSize)

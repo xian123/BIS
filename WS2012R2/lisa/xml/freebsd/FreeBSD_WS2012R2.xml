@@ -2189,7 +2189,7 @@
              <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript> 
              <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript> 
              <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files> 
-             <timeout>600</timeout> 
+             <timeout>1200</timeout> 
              <testparams> 
                  <param>Type=Dynamic</param> 
                  <param>SectorSize=512</param> 
@@ -2209,7 +2209,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -2229,7 +2229,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -2249,7 +2249,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -2269,7 +2269,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -2289,7 +2289,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -2309,7 +2309,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -2330,7 +2330,7 @@
           <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
           <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
           <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-          <timeout>600</timeout>
+          <timeout>1200</timeout>
           <onError>Continue</onError>
 		  <noReboot>False</noReboot>
           <testparams>
@@ -2351,7 +2351,7 @@
            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-           <timeout>600</timeout>
+           <timeout>1200</timeout>
            <onError>Continue</onError>
 		   <noReboot>False</noReboot>
            <testparams>
@@ -2373,7 +2373,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
  		    <noReboot>False</noReboot>
             <testparams>
@@ -2393,7 +2393,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
  		    <noReboot>False</noReboot>
             <testparams>
@@ -2413,7 +2413,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>3000</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
  		    <noReboot>False</noReboot>
             <testparams>
@@ -2433,7 +2433,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>3000</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
  		    <noReboot>False</noReboot>
             <testparams>
@@ -2453,7 +2453,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
  		    <noReboot>False</noReboot>
             <testparams>
@@ -2474,7 +2474,7 @@
            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-           <timeout>600</timeout>
+           <timeout>1200</timeout>
            <onError>Continue</onError>
  		   <noReboot>False</noReboot>
            <testparams>
@@ -2496,7 +2496,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
  		    <noReboot>False</noReboot>
             <testparams>
@@ -2517,7 +2517,7 @@
             <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
             <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
             <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
  		    <noReboot>False</noReboot>
             <testparams>

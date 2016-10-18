@@ -77,11 +77,11 @@ function CheckVSSDaemon()
 {
      $retValue = $False
     
-    .\bin\plink -i ssh\${sshKey} root@${ipv4} "ps -ef | grep '[h]v_vss_daemon' > /root/vss"
+    .\bin\plink -i ssh\${sshKey} root@${ipv4} "ps ax | grep '[h]v_vss_daemon' > /root/vss"
     if (-not $?)
     {
-        Write-Error -Message  "ERROR: Unable to run ps -ef | grep hv_vs_daemon" -ErrorAction SilentlyContinue
-        Write-Output "ERROR: Unable to run ps -ef | grep hv_vs_daemon"
+        Write-Error -Message  "ERROR: Unable to run ps ax | grep hv_vs_daemon" -ErrorAction SilentlyContinue
+        Write-Output "ERROR: Unable to run ps ax | grep hv_vs_daemon"
         return $False
     }
 
@@ -113,7 +113,7 @@ function CheckRecoveringJ()
 {
     $retValue = $False
        
-    .\bin\pscp -i ssh\${sshKey}  root@${ipv4}:/var/log/boot.* ./boot.msg 
+    .\bin\pscp -i ssh\${sshKey}  root@${ipv4}:/var/log/messages ./boot.msg 
 
     if (-not $?)
     {

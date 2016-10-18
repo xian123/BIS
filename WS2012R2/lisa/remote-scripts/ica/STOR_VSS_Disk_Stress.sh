@@ -49,35 +49,6 @@ UpdateTestState()
     echo $1 > ~/state.txt
 }
 
-#######################################################################
-# Checks what Linux distro we are running
-#######################################################################
-LinuxRelease()
-{
-    DISTRO=`grep -ihs "buntu\|Suse\|Fedora\|Debian\|CentOS\|Red Hat Enterprise Linux" /etc/{issue,*release,*version}`
-
-    case $DISTRO in
-        *buntu*)
-            echo "UBUNTU";;
-        Fedora*)
-            echo "FEDORA";;
-        CentOS*)
-            echo "CENTOS";;
-        *suse*)
-            echo "SLES";;
-        Red*Hat*)
-            echo "RHEL";;
-        Debian*)
-            echo "DEBIAN";;
-        *)
-            LogMsg "Unknown Distro"
-            UpdateTestState "TestAborted"
-            UpdateSummary "Unknown Distro, test aborted"
-            exit 1
-            ;; 
-    esac
-}
-
 ####################################################################### 
 # 
 # Main script body 
@@ -115,16 +86,24 @@ if [ ! ${iOzoneVers} ]; then
     exit 1
 fi
 
+pkg info curl
+if [ $? -ne 0 ]
+then
+	pkg install -y curl
+fi
+
 # Download iOzone
-curl http://www.iozone.org/src/current/iozone$iOzoneVers.tar > iozone$iOzoneVers.tar
+LogMsg "Start to download iozone"
+curl -o iozone${iOzoneVers}.tar http://www.iozone.org/src/current/iozone${iOzoneVers}.tar 2>/dev/null
+
 sts=$?
-if [ 0 -ne ${sts} ]; then
+if [ 0 -ne ${sts} ];
+then
     LogMsg "Error: iOzone download failed ${sts}"
     UpdateSummary "iOzone v$iOzoneVers download: Failed"
 else
     LogMsg "iOzone v$iOzoneVers download: Success"
 fi
-
 
 # Make sure the iozone exists
 IOZONE=iozone$iOzoneVers.tar
@@ -135,25 +114,18 @@ then
     exit 1
 fi
 
+eval $(stat -s iozone$iOzoneVers.tar)
+if [ $st_size == 0 ];
+then
+    LogMsg "iozone$iOzoneVers.tar was empty!"
+	UpdateTestState $ICA_TESTABORTED
+    exit 1
+fi
 # Install make
-case $(LinuxRelease) in
-    "SLES")
-    echo y | zypper install make gcc
-    ;;
-    "DEBIAN" | "UBUNTU")
-    apt-get update
-    apt-get install build-essential -y
-    ;;
-    "RHEL" | "CENTOS")
-    yum groupinstall "Development Tools" -y
-    ;;
-    *)
-    LogMsg "Distro not supported. Please install make manually."
-    ;;
-    esac
+pkg install -y make
 
 # Get Root Directory of tarball
-ROOTDIR=`tar -tvf ${IOZONE} | head -n 1 | awk -F " " '{print $6}' | awk -F "/" '{print $1}'`
+ROOTDIR=`tar -tvf ${IOZONE} | head -n 1 | awk -F " " '{print $9}' | awk -F "/" '{print $1}'`
 
 # Now Extract the Tar Ball.
 tar -xvf ${IOZONE}
@@ -161,7 +133,7 @@ sts=$?
 if [ 0 -ne ${sts} ]; then
 	LogMsg "Failed to extract Iozone tarball"
 	UpdateTestState $ICA_TESTABORTED
-    	exit 1
+    exit 1
 fi
 
 # cd in to directory    
@@ -175,7 +147,7 @@ fi
 cd ${ROOTDIR}/src/current
 
 # Compile iOzone
-make linux
+make freebsd64
 sts=$?
 	if [ 0 -ne ${sts} ]; then
 	    LogMsg "Error:  make linux  ${sts}"

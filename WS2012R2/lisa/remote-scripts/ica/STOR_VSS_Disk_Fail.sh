@@ -79,6 +79,13 @@ else
     exit 1
 fi
 
+if [ ! -e ./freezefs ];
+then
+	LogMsg "Cannot find freezefs file"
+	UpdateTestState $ICA_TESTABORTED
+    exit 1
+fi
+
 # Check if Variable in Const file is present or not
 if [ ! ${FILESYS} ]; then
     LogMsg "No FILESYS variable in constants.sh"
@@ -86,105 +93,77 @@ if [ ! ${FILESYS} ]; then
     exit 1
 fi
 
-# Count the Number of partition present in added new Disk . 
-count=0
-for disk in $(cat /proc/partitions | grep sd | awk '{print $4}')
+# make partition with gpart
+for i in `camcontrol devlist | awk -F \( '{print $2}' | grep "da[0-9]*"|awk -F , '{print $1}'`
 do
-        if [[ "$disk" != "sda"* ]];
-        then
-                ((count++))
-        fi
-done
+     if [ $i == "da0" ]
+     then
+        continue
+     fi
 
-((count--))
-
-# Format, Partition and mount all the new disk on this system.
-firstDrive=1
-for drive in $(find /sys/devices/ -name 'sd*' | grep 'sd.$' | sed 's/.*\(...\)$/\1/')
-do
-    #
-    # Skip /dev/sda
-    #
-    if [ $drive != "sda"  ] ; then 
-
-    driveName="${drive}"
-    # Delete the exisiting partition
-
-    for (( c=1 ; c<=count; count--))
-        do
-            (echo d; echo $c ; echo ; echo w) |  fdisk /dev/$driveName
-        done
-
-
-# Partition Drive
-    (echo n; echo p; echo 1; echo ; echo +500M; echo ; echo w) |  fdisk /dev/$driveName 
-    (echo n; echo p; echo 2; echo ; echo; echo ; echo w) |  fdisk /dev/$driveName 
-    sts=$?
-  if [ 0 -ne ${sts} ]; then
-      echo "Error:  Partitioning disk Failed ${sts}"
-      UpdateTestState "TestAborted"
-      UpdateSummary " Partitioning disk $driveName : Failed"
-      exit 1
-  else
-      echo "Partitioning disk $driveName : Sucsess"
-      UpdateSummary " Partitioning disk $driveName : Sucsess"
-  fi
-
-   sleep 1
-
-# Create file sytem on it . 
-   echo "y" | mkfs.$FILESYS /dev/${driveName}1  ; echo "y" | mkfs.$FILESYS /dev/${driveName}2  
-   sts=$?
-        if [ 0 -ne ${sts} ]; then
-            LogMsg "Error:  creating filesystem  Failed ${sts}"
-            UpdateTestState "TestAborted"
-            UpdateSummary " Creating FileSystem $filesys on disk $driveName : Failed"
-            exit 1
-        else
-            LogMsg "Creating FileSystem $FILESYS on disk  $driveName : Sucsess"
-            UpdateSummary " Creating FileSystem $FILESYS on disk $driveName : Sucsess"
-        fi
-
-   sleep 1
-
-# mount the disk .
-   MountName=${driveName}1
-   if [ ! -e ${MountName} ]; then
-     mkdir $MountName
-   fi
-   MountName1=${driveName}2
-   if [ ! -e ${MountName1} ]; then
-     mkdir $MountName1
-   fi
-   mount  /dev/${driveName}1 $MountName ; mount  /dev/${driveName}2 $MountName1
-   sts=$?
-       if [ 0 -ne ${sts} ]; then
-            LogMsg "Error:  mounting disk Failed ${sts}"
-            UpdateTestState "TestAborted"
-            UpdateSummary " Mounting disk $driveName on $MountName: Failed"
-            exit 1
-       else
-            LogMsg "mounting disk ${driveName}1 on ${MountName}"
-            LogMsg "mounting disk ${driveName}2 on ${MountName1}"
-            UpdateSummary " Mounting disk ${driveName}1 : Sucsess"
-            UpdateSummary " Mounting disk ${driveName}2 : Sucsess"
+     LogMsg "check partition on $i"
+     gpart show -p $i > /dev/null
+     if [ $? -eq 0 ]
+     then
+       LogMsg "partition is existed!"
+       a=`gpart show -p $i|grep $i|wc -l`
+       if [ $a -eq 2 ]
+       then
+          LogMsg "delete the existing partition"
+          gpart delete -i 1 da1
+          gpart destroy da1
        fi
-
-    # Now Freeze one of the volume.
-    fsfreeze -f $MountName1
-    sts=$?
-    if [ 0 -ne ${sts} ]; then
-        LogMsg "Error:  fsfreeze disk Failed ${sts}"
-        UpdateTestState "TestAborted"
-        UpdateSummary "Failed to fsfreeze $MountName1"
-        exit 1
-    else
-        LogMsg "fsfreeze succeed"
-        UpdateSummary "fsfreeze $MountName1: Success"
-
-  fi
-fi
+     fi
+    LogMsg "partition is not existed, and we create it"
+    gpart create -s GPT /dev/$i
+    gpart add -t ${FILESYS} /dev/$i
 done
+
+sleep 1
+
+# mount the partition
+  for i in `camcontrol devlist | awk -F \( '{print $2}' | grep "da[0-9]*"|awk -F , '{print $1}'`
+  do
+    if [ $i == "da0" ]
+    then
+       continue
+    fi
+
+    for j in `ls /dev/da* | grep "/dev/$i"`
+    do
+		if [ $j != "/dev/$i" ]
+		then
+			LogMsg "newfs $j"
+			newfs $j
+			LogMsg "Try to mount $j"
+			mnt_name=`echo $j | cut -c 6-`
+			if [ ! -e /mnt/$mnt_name ]
+			then
+				mkdir /mnt/$mnt_name
+			fi
+			mount | grep "/mnt/$mnt_name"
+			if [ $? -eq 0 ]
+			then
+				nohup sleep 1; ./freezefs -F /mnt/$mnt_name -d ${FREEZEDUR} &
+				LogMsg " Partition disk $j is already freezed: Success"
+				UpdateSummary " Partition disk $j is already freezed: Success"
+				continue
+			fi
+			mount $j /mnt/$mnt_name
+			if [ $? -eq 0 ]
+			then
+				nohup sleep 1; ./freezefs -F /mnt/$mnt_name -d ${FREEZEDUR} &
+				LogMsg " Partitioning disk $j is already freezed: Success"
+				UpdateSummary " Partitioning disk $j is already freezed: Success"
+			else
+				UpdateTestState "TestAborted"
+				LogMsg " Partitioning disk $j freezed: Failed"
+				UpdateSummary " Partitioning disk $j freezed: Failed"
+				exit 1
+			fi
+		fi
+    done
+  done
 
 UpdateTestState $ICA_TESTCOMPLETED
 

@@ -67,9 +67,11 @@ fi
 i=0
 for interface in $( /sbin/ifconfig | grep '^[a-z]' | sed 's/ .*//' )
 do
-    echo $interface
+    echo $interface > y
+    x=$(sed 's/://g' y)
+    interface=$x
     if [ $interface != "lo" ]; then
-
+        echo "ifconfig $interface down"
         ifconfig $interface down
         sts=$?
         if [ 0 -ne ${sts} ]; then

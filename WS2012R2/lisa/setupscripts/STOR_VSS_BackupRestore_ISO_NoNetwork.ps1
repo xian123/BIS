@@ -70,11 +70,11 @@ function CheckVSSDaemon()
 {
      $retValue = $False
     
-    .\bin\plink -i ssh\${sshKey} root@${ipv4} "ps -ef | grep '[h]v_vss_daemon' > /root/vss"
+    .\bin\plink -i ssh\${sshKey} root@${ipv4} "ps ax | grep '[h]v_vss_daemon' > /root/vss"
     if (-not $?)
     {
-        Write-Error -Message  "ERROR: Unable to run ps -ef | grep hv_vs_daemon" -ErrorAction SilentlyContinue
-        Write-Output "ERROR: Unable to run ps -ef | grep hv_vs_daemon"
+        Write-Error -Message  "ERROR: Unable to run ps ax | grep hv_vs_daemon" -ErrorAction SilentlyContinue
+        Write-Output "ERROR: Unable to run ps ax | grep hv_vs_daemon"
         return $False
     }
 
@@ -106,7 +106,7 @@ function CheckRecoveringJ()
 {
     $retValue = $False
        
-    .\bin\pscp -i ssh\${sshKey}  root@${ipv4}:/var/log/boot.* ./boot.msg 
+    .\bin\pscp -i ssh\${sshKey}  root@${ipv4}:/var/log/messages ./boot.msg 
 
     if (-not $?)
     {
@@ -143,7 +143,7 @@ function CheckRecoveringJ()
 function RunRemoteScript($remoteScript)
 {
 
-    "./${remoteScript} > ${remoteScript}.log" | out-file -encoding ASCII -filepath runtest.sh 
+    "nohup sleep 2; sh ./${remoteScript} > ${remoteScript}.log &" | out-file -encoding ASCII -filepath runtest.sh 
 
     .\bin\pscp -i ssh\${sshKey} .\runtest.sh root@${ipv4}:
     if (-not $?)
@@ -158,28 +158,28 @@ function RunRemoteScript($remoteScript)
        Write-Output "ERROR: Unable to copy ${remoteScript} to the VM"
        return $False
     }
-
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix ${remoteScript} 2> /dev/null"
+	echo y | .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "pkg install -y unix2dos >>& /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix ${remoteScript} >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to run dos2unix on ${remoteScript}"
         return $False
     }
 
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix runtest.sh  2> /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix runtest.sh  >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to run dos2unix on runtest.sh" 
         return $False
     }
     
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x ${remoteScript}   2> /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x ${remoteScript}  >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to chmod +x ${remoteScript}" 
         return $False
     }
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x runtest.sh  2> /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x runtest.sh  >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to chmod +x runtest.sh " -
@@ -187,17 +187,25 @@ function RunRemoteScript($remoteScript)
     }
 
     # Run the script on the vm
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "at -f runtest.sh now" 
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "./runtest.sh >>& /dev/null" 
     if (-not $?)
     {
         Write-Output "Error: Unable to submit runtest.sh to the vm"
         return $False
     }
-
+	
     del runtest.sh
     return $True
 }
 
+function InsertDVD([string] $CdPath) {
+	Set-VMDvdDrive -VMName $vmName -ComputerName $hvServer -Path $CdPath
+}
+
+function RemoveDVD() {
+	$dvdDrive = Get-VMDvdDrive -VMName $vmName -ComputerName $hvServer
+	Remove-VMDvdDrive -VMName $vmName -ComputerName $hvServer -ControllerNumber $dvdDrive.ControllerNumber -ControllerLocation $dvdDrive.ControllerLocation
+}
 ####################################################################### 
 # 
 # Main script body 
@@ -303,8 +311,8 @@ if (-not $sts[-1])
 Write-Output "VSS Daemon is running " >> $summaryLog
 
 # Insert CD/DVD .
-$CdPath = ".\bin\CDTEST.iso"
-Set-VMDvdDrive -VMName $vmName -ComputerName $hvServer -Path $CdPath
+InsertDVD ".\bin\CDTEST.iso"
+
 if (-not $?)
     {
         "Error: Unable to Add ISO $CdPath" 
@@ -340,6 +348,7 @@ if ($pingresult)
    {
        Write-Output "Network Down: Failed" >> $summaryLog
        Write-Output "ERROR: Running $remoteScript script failed on VM!"
+	   RemoveDVD
        return $False
    }
 
@@ -386,6 +395,7 @@ Write-Output "Backup duration: $BackupTime minutes"
 $sts=Get-WBJob -Previous 1
 if ($sts.JobState -ne "Completed")
 {
+	RemoveDVD
     Write-Output "ERROR: VSS WBBackup failed"
     $retVal = $false
     return $retVal
@@ -406,6 +416,7 @@ Start-WBHyperVRecovery -BackupSet $BackupSet -VMInBackup $BackupSet.Application[
 $sts=Get-WBJob -Previous 1
 if ($sts.JobState -ne "Completed")
 {
+	RemoveDVD
     Write-Output "ERROR: VSS WB Restore failed"
     $retVal = $false
     return $retVal
@@ -420,6 +431,7 @@ Write-Output "Restore duration: $RestoreTime minutes"
 $vm = Get-VM -Name $vmName -ComputerName $hvServer
     if (-not $vm)
     {
+		RemoveDVD
         Write-Output "ERROR: VM ${vmName} does not exist after restore"
         return $False
     }
@@ -428,6 +440,7 @@ Write-Output "Restore success!"
 # After Backup Restore VM must be off make sure that.
 if ( $vm.state -ne "Off" )  
 {
+	RemoveDVD
     Write-Output "ERROR: VM is not in OFF state, current state is " + $vm.state
     return $False
 }
@@ -437,6 +450,7 @@ $timeout = 500
 $sts = Start-VM -Name $vmName -ComputerName $hvServer 
 if (-not (WaitForVMToStartKVP $vmName $hvServer $timeout ))
 {
+	RemoveDVD
     Write-Output "ERROR: ${vmName} failed to start"
     return $False
 }
@@ -449,6 +463,7 @@ else
 $sts=CheckRecoveringJ
 if ($sts[-1])
 {
+	RemoveDVD
     Write-Output "ERROR: Recovering Journals in Boot log file, VSS backup/restore failed!"
     Write-Output "No Recovering Journal in boot logs: Failed" >> $summaryLog
     return $False
@@ -461,6 +476,7 @@ else
     Write-Output "No Recovering Journal in boot msg: Success" >> $summaryLog
 }
 
+RemoveDVD
 # Remove Existing Backups
 Write-Output "Removing old backups from $backupLocation"
 try { Remove-WBBackupSet -BackupTarget $backupLocation -Force -WarningAction SilentlyContinue }

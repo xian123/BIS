@@ -1891,6 +1891,7 @@ function DoCollectLogFiles([System.Xml.XmlElement] $vm, [XML] $xmlData)
     #
     # Test case may optionally create a summary.log.
     #
+    $summaryLog = "${testDir}\$($vm.vmName)__${currentTest}_summary.log"
     del $summaryLog -ErrorAction "SilentlyContinue"
     GetFileFromVM $vm "summary.log" .\${summaryLog}
     if (test-path $summaryLog)
@@ -1900,7 +1901,8 @@ function DoCollectLogFiles([System.Xml.XmlElement] $vm, [XML] $xmlData)
         {
             $vm.emailSummary += "          $line<br />"
         }
-        del $summaryLog
+        #Comment: The log parser may read VM information from this log file, such as Linux kernel version, etc. So don't delete this log:
+        #del $summaryLog
     }
 
     #
@@ -1927,6 +1929,7 @@ function DoCollectLogFiles([System.Xml.XmlElement] $vm, [XML] $xmlData)
     SendCommandToVM $vm "rm -f state.txt"
     
     LogMsg 0 "Info : $($vm.vmName) Status for test $currentTest $iterationMsg = $completionCode"
+    FinishCaseReport $completionCode $summaryLog $vm
 
     if ( $($testData.postTest) )
     {
@@ -2623,7 +2626,12 @@ function DoPS1TestCompleted ([System.Xml.XmlElement] $vm, [XML] $xmlData)
                 $completionCode = "Success"
             }
         }
+        
+        Remove-Job -Id $jobID
     }
+    
+    LogMsg 0 "Info : ${vmName} Status for test $($vm.currentTest) = ${completionCode}"
+	FinishCaseReport $completionCode $summaryLog $vm
     
     #
     # Update e-mail summary

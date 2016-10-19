@@ -165,6 +165,9 @@ if (-not (Test-Path $rootDir))
     return $False
 }
 
+#Sleep 10 seconds
+Start-Sleep -S 10
+
 cd $rootDir
 
 #

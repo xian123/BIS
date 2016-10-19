@@ -218,7 +218,7 @@ $ipv4 = $null
 $maxTimeDiff = "5.1"  #The time in vm will be synced with host every 5 seconds
 $rootDir = $null
 $tcCovered = "unknown"
-$testDelay = "0"
+$testDelay = "10"
 
 $params = $testParams.Split(";")
 foreach($p in $params)

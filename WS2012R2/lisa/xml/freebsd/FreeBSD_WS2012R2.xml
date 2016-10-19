@@ -2163,6 +2163,18 @@
 				<param>TC_COVERED=VMBUS-01</param>
 			</testparams>
 		</test>
+        
+        <test>
+            <testName>UpdateKernel</testName>
+            <testScript>UpdateKernel.sh</testScript>
+            <files>remote-scripts\freebsd\UpdateKernel.sh</files>
+            <timeout>7200</timeout>
+            <onError>Abort</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>TC_COVERED=Kernel-01</param>
+            </testparams>
+        </test>
 		
     </testCases>
 

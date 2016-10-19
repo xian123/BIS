@@ -273,7 +273,7 @@ Function Show-VHDMenu
                    }  #4
              {10..19 -contains $_}
                    {  $SelectedVHD = ($vhd[$_ -10]).name }
-              20   {  $SelectedVHD = (Select-List -InputObject $vhd -Property @{Name="Name"; expression={$_.Name -replace ($folder+"\").replace("\","\\"),""}}).name     }
+              20   {  $SelectedVHD = (Select-List -InputObject $vhd -Property ,@{Name="Name"; expression={$_.Name -replace ($folder+"\").replace("\","\\"),""}}).name     }
               21   {  
                       $SelectedVHD = Read-Host "Please enter the name of the VHD file" 
                       if ($SelectedVHD)  {
@@ -1138,7 +1138,7 @@ Function Show-VHDMenu
                    }  #4
              {10..19 -contains $_}
                    {  $SelectedVHD = ($vhd[$_ -10]).name }
-              20   {  $SelectedVHD = (Select-List -InputObject $vhd -Property @{Name="Name"; expression={$_.Name -replace ($folder+"\").replace("\","\\"),""}}).name     }
+              20   {  $SelectedVHD = (Select-List -InputObject $vhd -Property ,@{Name="Name"; expression={$_.Name -replace ($folder+"\").replace("\","\\"),""}}).name     }
               21   {  
                       $SelectedVHD = Read-Host "Please enter the name of the VHD file" 
                       if ($SelectedVHD)  {

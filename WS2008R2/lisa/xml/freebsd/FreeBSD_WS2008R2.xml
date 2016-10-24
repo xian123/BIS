@@ -772,8 +772,8 @@
             <testScript>setupScripts\timesync_savedVM.ps1</testScript>
             <files>setupScripts\timesync_savedVM.ps1</files>
             <timeout>800</timeout>
-            <onError>Abort</onError>
-            <noReboot>True</noReboot>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-05</param>
             </testparams>                
@@ -1536,7 +1536,7 @@
             <files>remote-scripts\freebsd\KVP_VerifyKeyValue.sh</files>
             <preTest>setupScripts\BIS_DisableEnableDataExchange.ps1</preTest>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                  <param>TC_COVERED=KVP-10</param>
@@ -1550,7 +1550,7 @@
             <testName>StopStartKvpDaemon</testName>
             <testScript>setupscripts\BIS_StopStartKvpDaemon.ps1</testScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                  <param>TC_COVERED=KVP-12</param>

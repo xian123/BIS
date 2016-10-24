@@ -280,7 +280,7 @@ if ( $controllerType -eq "IDE" -or $offline -eq "True" )
 
 $vhdxInfoResize = Get-VHD -Path $vhdPath -ComputerName $hvServer -ErrorAction SilentlyContinue
 
-if ( $newSize.contains("GB") -and $vhdxInfoResize.Size/1gb -ne $newSize.Trim("GB") )
+if ( $newGrowSize.contains("GB") -and $vhdxInfoResize.Size/1gb -ne $newGrowSize.Trim("GB") )
 {
   "Error: Failed to Resize Disk to new Size"
   return $False
@@ -289,7 +289,7 @@ if ( $newSize.contains("GB") -and $vhdxInfoResize.Size/1gb -ne $newSize.Trim("GB
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 60
+$sleepTime = 180
 Start-Sleep -s $sleepTime
 
 #
@@ -303,7 +303,7 @@ $growDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 |
 while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
 	$RetryCounts ++
-	Start-Sleep -s $sleepTime    
+	Start-Sleep -s 30
 	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
 	$growDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
 }
@@ -356,7 +356,7 @@ if (-not $?)
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 60
+$sleepTime = 180
 Start-Sleep -s $sleepTime
 
 # Now start the VM if IDE disk attached or offline resize
@@ -388,7 +388,7 @@ $shrinkDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1
 while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
 	$RetryCounts ++
-	Start-Sleep -s $sleepTime    
+	Start-Sleep -s 30
 	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
 	$shrinkDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
 }

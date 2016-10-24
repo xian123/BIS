@@ -283,6 +283,8 @@ function RunTestLog([String] $filename, [String] $logDir, [String] $TestName)
 {
     $retVal = $False
     $RunTestFile   = "${filename}.log"
+	Remove-Item $RunTestFile 2>&1 | Out-Null
+	Remove-Item "${logDir}\${TestName}_${filename}_vm.log" 2>&1 | Out-Null
 
     .\bin\pscp.exe -q -i ssh\${sshKey} root@${ipv4}:${RunTestFile} . #| out-null
     $sts = $?

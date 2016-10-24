@@ -240,7 +240,7 @@ if (-not $?)
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 60
+$sleepTime = 180
 Start-Sleep -s $sleepTime
 
 $RetryCounts = 0
@@ -250,7 +250,7 @@ $diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | gre
 while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
 	$RetryCounts ++
-	Start-Sleep -s $sleepTime    
+	Start-Sleep -s 10
 	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
 	$diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
 }

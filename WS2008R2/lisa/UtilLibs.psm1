@@ -183,7 +183,7 @@ Function FinishLogTestCase([object]$testcase, [string]$stateTimeStamp, [string]$
 	}
 	
     ($testcase.testcaseNode.Attributes | Where-Object { $_.Name -eq "time" }).Value = $stateTimeStamp
-	[int]($testcase.testsuite.testsuiteNode.Attributes | Where-Object { $_.Name -eq "tests" }).Value += 1
+	[int64]($testcase.testsuite.testsuiteNode.Attributes | Where-Object { $_.Name -eq "tests" }).Value += 1
 	if ($result -eq "FAIL")
 	{
 		$newChildElement = $global:junitReport.CreateElement("failure")
@@ -191,7 +191,7 @@ Function FinishLogTestCase([object]$testcase, [string]$stateTimeStamp, [string]$
 		$newChildElement.SetAttribute("message", $message)
 		$testcase.testcaseNode.AppendChild($newChildElement)
 		
-        [int]($testcase.testsuite.testsuiteNode.Attributes | Where-Object { $_.Name -eq "failures" }).Value += 1
+        [int64]($testcase.testsuite.testsuiteNode.Attributes | Where-Object { $_.Name -eq "failures" }).Value += 1
 	}
 	
 	if ($result -eq "ERROR")
@@ -201,7 +201,7 @@ Function FinishLogTestCase([object]$testcase, [string]$stateTimeStamp, [string]$
 		$newChildElement.SetAttribute("message", $message)
 		$testcase.testcaseNode.AppendChild($newChildElement)
 		
-        [int]($testcase.testsuite.testsuiteNode.Attributes | Where-Object { $_.Name -eq "errors" }).Value += 1
+        [int64]($testcase.testsuite.testsuiteNode.Attributes | Where-Object { $_.Name -eq "errors" }).Value += 1
 	}
 	FinishLogReport $False
 }

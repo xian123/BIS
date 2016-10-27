@@ -73,7 +73,7 @@ function CheckVSSDaemon()
 {
      $retValue = $False
     
-    .\bin\plink -i ssh\${sshKey} root@${ipv4} "ps -ef | grep '[h]v_vss_daemon' > /root/vss"
+    .\bin\plink -i ssh\${sshKey} root@${ipv4} "ps ax | grep '[h]v_vss_daemon' > /root/vss"
     if (-not $?)
     {
         Write-Error -Message  "ERROR: Unable to run ps -ef | grep hv_vs_daemon" -ErrorAction SilentlyContinue
@@ -109,7 +109,7 @@ function CheckRecoveringJ()
 {
     $retValue = $False
        
-    .\bin\pscp -i ssh\${sshKey}  root@${ipv4}:/var/log/boot.* ./boot.msg 
+    .\bin\pscp -i ssh\${sshKey}  root@${ipv4}:/var/log/messages ./boot.msg 
 
     if (-not $?)
     {
@@ -152,7 +152,7 @@ function RunRemoteScript($remoteScript)
     $TestRunning   = "TestRunning"
     $timeout       = 6000    
 
-    "./${remoteScript} > ${remoteScript}.log" | out-file -encoding ASCII -filepath runtest.sh 
+    "sh ./${remoteScript} > ${remoteScript}.log" | out-file -encoding ASCII -filepath runtest.sh 
 
     echo y | .\bin\pscp -i ssh\${sshKey} .\runtest.sh root@${ipv4}:
     if (-not $?)
@@ -168,27 +168,28 @@ function RunRemoteScript($remoteScript)
        return $False
     }
 
-    echo y | .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix ${remoteScript} 2> /dev/null"
+	echo y | .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "pkg install -y unix2dos >>& /dev/null"
+    echo y | .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix ${remoteScript} >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to run dos2unix on ${remoteScript}"
         return $False
     }
 
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix runtest.sh  2> /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix runtest.sh  >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to run dos2unix on runtest.sh" 
         return $False
     }
     
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x ${remoteScript}   2> /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x ${remoteScript}  >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to chmod +x ${remoteScript}" 
         return $False
     }
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x runtest.sh  2> /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x runtest.sh  >>& /dev/null"
     if (-not $?)
     {
         Write-Output "ERROR: Unable to chmod +x runtest.sh " -
@@ -196,7 +197,7 @@ function RunRemoteScript($remoteScript)
     }
 
     # Run the script on the vm
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "./runtest.sh 2> /dev/null"
+    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "./runtest.sh >>& /dev/null"
     
     # Return the state file
     while ($timeout -ne 0 )

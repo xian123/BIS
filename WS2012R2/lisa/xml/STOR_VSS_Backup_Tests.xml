@@ -28,11 +28,11 @@
         <defaultSnapshot>ICABase</defaultSnapshot>
         <email>
             <recipients>
-                <to>myself@mycompany.com</to>
+                <to>honzhan@microsoft.com</to>
             </recipients>
-            <sender>myself@mycompany.com</sender>
+            <sender>honzhan@microsoft.com</sender>
             <subject>LIS_STOR_VSS_Backup_tests_WS2012R2</subject>
-            <smtpServer>mysmtphost.mycompany.com</smtpServer>
+            <smtpServer>smtphost.southpacific.corp.microsoft.com</smtpServer>
         </email>
     </global>
 
@@ -41,18 +41,23 @@
             <suiteName>STOR_VSS</suiteName>
             <suiteTests>
                 <suiteTest>STOR_VSS_BackupRestore</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_ext3_vhd</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_ext4_vhd</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_reiserfs_vhd</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_ext4_vhdx</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_ISO_NoNetwork</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_3Chain_VHD</suiteTest>
+				<suiteTest>STOR_VSS_BackupRestore_3Chain_VHD</suiteTest>
                 <suiteTest>STOR_VSS_BackupRestore_State_Off</suiteTest>
                 <suiteTest>STOR_VSS_BackupRestore_State_Paused</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_Fail</suiteTest>
+				<suiteTest>STOR_VSS_BackupRestore_ufs_vhd</suiteTest>
+				<suiteTest>STOR_VSS_BackupRestore_ufs_vhdx</suiteTest>
+				<suiteTest>STOR_VSS_BackupRestore_DiskStress</suiteTest>
+				<suiteTest>STOR_VSS_BackupRestore_ISO_NoNetwork</suiteTest>
+				<suiteTest>STOR_VSS_BackupRestore_Fail</suiteTest>			
+				
+<!--
+				<suiteTest>STOR_VSS_BackupRestore_ext3_vhd</suiteTest>
+                <suiteTest>STOR_VSS_BackupRestore_ext4_vhd</suiteTest>
+                <suiteTest>STOR_VSS_BackupRestore_reiserfs_vhd</suiteTest>
+                <suiteTest>STOR_VSS_BackupRestore_ufs_vhdx</suiteTest>
                 <suiteTest>STOR_VSS_BackupRestore_PassTru</suiteTest>
                 <suiteTest>STOR_VSS_BackupRestore_ISCSI</suiteTest>
-                <suiteTest>STOR_VSS_BackupRestore_DiskStress</suiteTest>
+-->
             </suiteTests>
         </suite>
     </testSuites>
@@ -63,7 +68,7 @@
             <testScript>setupscripts\STOR_VSS_BackupRestore.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-17,VSS-06</param>
-                <param>DriveLetter=C:</param>
+                <param>DriveLetter=E:</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
@@ -72,71 +77,53 @@
         </test>
 
         <test>
-            <testName>STOR_VSS_BackupRestore_ext3_vhd</testName>
+            <testName>STOR_VSS_BackupRestore_ufs_vhd</testName>
             <setupScript>setupscripts\AddHardDisk.ps1</setupScript>
             <testScript>setupscripts\STOR_VSS_BackupRestore_Partition.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-01</param>
-                <param>DriveLetter=C:</param>
-                <param>SCSI=0,1,Dynamic</param>
-                <param>IDE=0,1,Dynamic</param>
-                <param>FILESYS=ext3</param>
+                <param>DriveLetter=E:</param>
+                <param>SCSI=0,0,Dynamic</param>
+                <param>FILESYS=freebsd-ufs</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
             <OnError>Continue</OnError>
-            <cleanupScript>setupscripts\RevertSnapshot.ps1</cleanupScript>
+            <cleanupScript>setupscripts\RemoveHardDisk.ps1</cleanupScript>
         </test>
 
-        <test>
-            <testName>STOR_VSS_BackupRestore_ext4_vhd</testName>
+		<test>
+            <testName>STOR_VSS_BackupRestore_Fail</testName>
             <setupScript>setupscripts\AddHardDisk.ps1</setupScript>
-            <testScript>setupscripts\STOR_VSS_BackupRestore_Partition.ps1</testScript> 
+            <testScript>setupscripts\STOR_VSS_BackupRestore_Fail.ps1</testScript> 
             <testParams>
-                <param>TC_COVERED=VSS-02</param>
-                <param>DriveLetter=C:</param>
+                <param>TC_COVERED=VSS-18</param>
+                <param>DriveLetter=E:</param>
                 <param>SCSI=0,1,Dynamic</param>
-                <param>IDE=0,1,Dynamic</param>
-                <param>FILESYS=ext4</param>
+                <!--<param>IDE=0,1,Dynamic</param>-->
+                <param>FILESYS=freebsd-ufs</param>
+				<param>FREEZEDUR=200</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
             <OnError>Continue</OnError>
-            <cleanupScript>setupscripts\RevertSnapshot.ps1</cleanupScript>
+            <cleanupScript>setupscripts\RemoveHardDisk.ps1</cleanupScript>
         </test>
-
+		
         <test>
-            <testName>STOR_VSS_BackupRestore_reiserfs_vhd</testName>
-            <setupScript>setupscripts\AddHardDisk.ps1</setupScript>
-            <testScript>setupscripts\STOR_VSS_BackupRestore_Partition.ps1</testScript> 
-            <testParams>
-                <param>TC_COVERED=VSS-03</param>
-                <param>DriveLetter=C:</param>
-                <param>SCSI=0,1,Dynamic</param>
-                <param>IDE=0,1,Dynamic</param>
-                <param>FILESYS=reiserfs</param>
-                <param>snapshotName=ICABase</param>
-            </testParams>
-            <timeout>2400</timeout>
-            <OnError>Continue</OnError>
-            <cleanupScript>setupscripts\RevertSnapshot.ps1</cleanupScript>
-        </test>
-
-        <test>
-            <testName>STOR_VSS_BackupRestore_ext4_vhdx</testName>
+            <testName>STOR_VSS_BackupRestore_ufs_vhdx</testName>
             <setupScript>setupscripts\AddVhdxHardDisk.ps1</setupScript>
             <testScript>setupscripts\STOR_VSS_BackupRestore_Partition.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-05</param>
-                <param>DriveLetter=C:</param>
-                <param>SCSI=0,1,Dynamic</param>
-                <param>IDE=0,1,Dynamic</param>
-                <param>FILESYS=ext4</param>
+                <param>DriveLetter=E:</param>
+                <param>SCSI=0,1,Dynamic,512</param>
+                <param>FILESYS=freebsd-ufs</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
             <OnError>Continue</OnError>
-            <cleanupScript>setupscripts\RevertSnapshot.ps1</cleanupScript>
+			<cleanupScript>setupscripts\RemoveVhdxHardDisk.ps1</cleanupScript>
         </test>
 
         <test>
@@ -144,7 +131,7 @@
             <testScript>setupscripts\STOR_VSS_BackupRestore_ISO_NoNetwork.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-11</param>
-                <param>DriveLetter=C:</param>
+                <param>DriveLetter=E:</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
@@ -157,23 +144,7 @@
             <testScript>setupscripts\STOR_VSS_3Chain_VHD_backup.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-12</param>
-                <param>DriveLetter=C:</param>
-                <param>snapshotName=ICABase</param>
-            </testParams>
-            <timeout>2400</timeout>
-            <OnError>Continue</OnError>
-            <cleanupScript>setupscripts\RevertSnapshot.ps1</cleanupScript>
-        </test>
-
-        <test>
-            <testName>STOR_VSS_BackupRestore_ISCSI</testName>
-            <testScript>setupscripts\STOR_VSS_BackupRestore_ISCSI.ps1</testScript> 
-            <testParams>
-                <param>TC_COVERED=VSS-13</param>
-                <param>DriveLetter=C:</param>
-                <param>TargetIP=10.7.1.10</param>
-                <param>IQN=iqn.2000-01.com:test-iqn</param> <!--optional, use it if more than one IQN is present -->
-                <param>FILESYS=ext4</param>
+                <param>DriveLetter=E:</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
@@ -186,8 +157,8 @@
             <testScript>setupscripts\STOR_VSS_BackupRestore_DiskStress.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-14</param>
-                <param>DriveLetter=C:</param>
-                <param>iOzoneVers=3_424</param>
+                <param>DriveLetter=E:</param>
+                <param>iOzoneVers=3_465</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
@@ -200,7 +171,7 @@
             <testScript>setupscripts\STOR_VSS_BackupRestore_State.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-15</param>
-                <param>DriveLetter=C:</param>
+                <param>DriveLetter=E:</param>
                 <param>vmState=Off</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
@@ -214,7 +185,7 @@
             <testScript>setupscripts\STOR_VSS_BackupRestore_State.ps1</testScript> 
             <testParams>
                 <param>TC_COVERED=VSS-15</param>
-                <param>DriveLetter=C:</param>
+                <param>DriveLetter=E:</param>
                 <param>vmState=Paused</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
@@ -240,15 +211,14 @@
         </test>
 
         <test>
-            <testName>STOR_VSS_BackupRestore_Fail</testName>
-            <setupScript>setupscripts\AddHardDisk.ps1</setupScript>
-            <testScript>setupscripts\STOR_VSS_BackupRestore_Fail.ps1</testScript> 
+            <testName>STOR_VSS_BackupRestore_ISCSI</testName>
+            <testScript>setupscripts\STOR_VSS_BackupRestore_ISCSI.ps1</testScript> 
             <testParams>
-                <param>TC_COVERED=VSS-18</param>
+                <param>TC_COVERED=VSS-13</param>
                 <param>DriveLetter=C:</param>
-                <param>SCSI=0,1,Dynamic</param>
-                <param>IDE=0,1,Dynamic</param>
-                <param>FILESYS=ext3</param>
+                <param>TargetIP=10.7.1.10</param>
+                <param>IQN=iqn.2000-01.com:test-iqn</param> <!--optional, use it if more than one IQN is present -->
+                <param>FILESYS=ext4</param>
                 <param>snapshotName=ICABase</param>
             </testParams>
             <timeout>2400</timeout>
@@ -260,10 +230,10 @@
     <VMs>
         <vm>
             <hvServer>localhost</hvServer>
-            <vmName>VM_NAME</vmName>
-            <os>Linux</os>
-            <ipv4></ipv4>
-            <sshKey>PKI_id_rsa.ppk</sshKey>
+            <vmName>hz_FreeBSD11_RC3</vmName>
+            <os>FreeBSD</os>
+            <ipv4>10.156.76.127</ipv4>
+            <sshKey>lisa_id_rsa.ppk</sshKey>
             <suite>STOR_VSS</suite>
         </vm>
     </VMs>

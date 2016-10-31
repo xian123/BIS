@@ -88,7 +88,7 @@ fi
 
 #
 # Configure the NIC if it is on the internal or private network
-# Warning: This function assums hn0 is the vmbus device we are working with
+# Warning: This function assums hn1 is the vmbus device we are working with
 #
 if [[ $NIC =~ [Ii]nternal ]] || [[ $NIC =~ [Pp]rivate ]]; then
     if [ "${LOCAL_ADDR:-UNDEFINED}" = "UNDEFINED" ]; then
@@ -99,10 +99,10 @@ if [[ $NIC =~ [Ii]nternal ]] || [[ $NIC =~ [Pp]rivate ]]; then
 	exit 60
     fi
 
-    echo "ifconfig hn0 inet ${LOCAL_ADDR}  netmask 255.255.255.0"
-    ifconfig hn0 inet ${LOCAL_ADDR} netmask 255.255.255.0
+    echo "ifconfig hn1 inet ${LOCAL_ADDR}  netmask 255.255.255.0"
+    ifconfig hn1 inet ${LOCAL_ADDR} netmask 255.255.255.0
     if [ $? -ne 0 ]; then
-        msg="Error: unable to configure hn0"
+        msg="Error: unable to configure hn1"
         echo $msg
         echo $msg >> ~/summary.log
         UpdateTestState $ICA_TESTFAILED
@@ -110,6 +110,11 @@ if [[ $NIC =~ [Ii]nternal ]] || [[ $NIC =~ [Pp]rivate ]]; then
     fi
 fi
 
+if [[ $NIC =~ [Ee]xternal ]]; then
+    dhclient hn1
+fi
+
+ifconfig hn0 down
 
 ping -q -c 1 $TARGET_ADDR > /dev/null
 if [ $? -ne 0 ]; then
@@ -117,8 +122,13 @@ if [ $? -ne 0 ]; then
     echo $msg
     echo $msg >> ~/summary.log
     UpdateTestState $ICA_TESTFAILED
+	ifconfig hn0 up
+	ifconfig hn1 down
     exit 80
 fi
+
+ifconfig hn0 up
+ifconfig hn1 down
 
 UpdateTestState $ICA_TESTCOMPLETED
 

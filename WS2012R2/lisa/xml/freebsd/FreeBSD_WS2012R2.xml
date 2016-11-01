@@ -106,7 +106,6 @@
                 <suiteTest>ReadKvpNonIntrinsicData</suiteTest>
                 <suiteTest>KvpGetVmIpOnHost</suiteTest>
                 <suiteTest>OnGuestReadHostKvpData</suiteTest>
-                <suiteTest>HostOnlyWriteToPool0</suiteTest>
                 <suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>ModifyNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>DisableEnableDataExchange</suiteTest>
@@ -169,8 +168,7 @@
                 <suiteTest>DeleteKvpDataOnGuest</suiteTest>
                 <suiteTest>ReadKvpNonIntrinsicData</suiteTest>
                 <suiteTest>KvpGetVmIpOnHost</suiteTest>
-                <suiteTest>OnGuestReadHostKvpData</suiteTest>
-                <suiteTest>HostOnlyWriteToPool0</suiteTest>           
+                <suiteTest>OnGuestReadHostKvpData</suiteTest>       
 
                 <suiteTest>ExternalSynthNetAdapter</suiteTest>    
 
@@ -237,7 +235,6 @@
                 <suiteTest>ReadKvpNonIntrinsicData</suiteTest>
                 <suiteTest>KvpGetVmIpOnHost</suiteTest>
                 <suiteTest>OnGuestReadHostKvpData</suiteTest>
-                <suiteTest>HostOnlyWriteToPool0</suiteTest>
                 <suiteTest>ModifyNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>StopStartKvpDaemon</suiteTest>      
 				
@@ -387,7 +384,6 @@
                 <suiteTest>ReadKvpNonIntrinsicData</suiteTest>
                 <suiteTest>KvpGetVmIpOnHost</suiteTest>
                 <suiteTest>OnGuestReadHostKvpData</suiteTest>
-                <suiteTest>HostOnlyWriteToPool0</suiteTest>
                 <suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>ModifyNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>DisableEnableDataExchange</suiteTest>

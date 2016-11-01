@@ -126,9 +126,7 @@
                 
                 <suiteTest>PrivateSynthNetAdapter</suiteTest>    
                 <suiteTest>InternalSynthNetAdapter</suiteTest>        
-                
-                <suiteTest>ExternalSynthNetAdapter</suiteTest>
-                <suiteTest>StaticMac</suiteTest>                      
+                <suiteTest>ExternalSynthNetAdapter</suiteTest>       
                 <suiteTest>PromiscSynthNetAdapter</suiteTest> 
                 <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest>                                   
             </suiteTests>

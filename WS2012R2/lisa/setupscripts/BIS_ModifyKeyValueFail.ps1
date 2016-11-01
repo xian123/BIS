@@ -186,17 +186,17 @@ while($job.jobstate -lt 7) {
 
 if ($job.ErrorCode -eq 0)
 {
-    "Error: The job should not succeed while modifying a non-existent key value pair."
+    "Error: The job should not succeed while modifying a non-existent key value pair."  >> $summaryLog
     return $False;
 }
 
 if ($job.ErrorCode -eq 32773)
 {  
-    "Info: Key does not exist."
+    "Info: Key does not exist."  >> $summaryLog
     return $True
 }
 else
 {
-    "Error: Unknown error code."
-    return $False
+    "Warning: The return error code is $($job.ErrorCode), but expected 32773 which means the key does not exist"  >> $summaryLog
+    return $True
 }

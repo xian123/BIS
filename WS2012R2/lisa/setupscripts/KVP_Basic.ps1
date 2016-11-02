@@ -254,7 +254,7 @@ if ($Intrinsic)
 	$osSpecificKeyNames = $null
 	switch ($osInfo.BuildNumber)
 	{
-		"9200" { $osSpecificKeyNames = @("OSBuildNumber", "OSVendor", "OSSignature") }
+		"9200" { $osSpecificKeyNames = @("OSBuildNumber") }
 		"9600" { $osSpecificKeyNames = @("OSDistributionName", "OSDistributionData", "OSPlatformId") }
 		default { $osSpecificKeyNames = $null }
 	}

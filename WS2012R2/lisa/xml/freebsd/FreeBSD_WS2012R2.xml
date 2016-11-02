@@ -2178,6 +2178,7 @@
 			<noReboot>False</noReboot>
 			<testparams>
 				<param>VMBusVer=3.0</param>
+                <param>VMBusVerOnWS2012=2.4</param>
 				<param>TC_COVERED=VMBUS-01</param>
 			</testparams>
 		</test>

@@ -80,6 +80,13 @@ if [ ! ${VMBusVer} ]; then
     exit 10
 fi
 
+if [ ! ${VMBusVerOnWS2012} ]; then
+    LogMsg "The VMBusVerOnWS2012 variable is not defined."
+	echo "The VMBusVerOnWS2012 variable is not defined." >> ~/summary.log
+    UpdateTestState $ICA_TESTABORTED
+    exit 10
+fi
+
 echo "This script covers test case: ${TC_COVERED}" >> ~/summary.log
 
 #
@@ -91,12 +98,12 @@ if [ "$vmbus_string" = "" ]; then
 	echo "Error! Could not find the VMBus protocol string in dmesg." >> ~/summary.log
 	UpdateTestState "TestFailed"
     exit 10
-elif [[ "$vmbus_string" == "$VMBusVer" ]]; then
+elif [ "$vmbus_string" == "$VMBusVer"  -o  "$vmbus_string" == "$VMBusVerOnWS2012" ]; then
 	LogMsg "Info: Found a matching VMBus string: ${vmbus_string}"
 	echo -e "Info: Found a matching VMBus string:\n ${vmbus_string}" >> ~/summary.log
 else
-	LogMsg "The vmbus protocol version expected to be ${VMBusVer}, but it's ${vmbus_string} now."
-	echo "The vmbus protocol version expected to be ${VMBusVer}, but it's ${vmbus_string} now." >> ~/summary.log
+	LogMsg "The vmbus protocol version expected to be ${VMBusVer} or ${VMBusVerOnWS2012}, but it's ${vmbus_string} now."
+	echo "The vmbus protocol version expected to be ${VMBusVer} or ${VMBusVerOnWS2012}, but it's ${vmbus_string} now." >> ~/summary.log
 	UpdateTestState "TestFailed"
 	exit 10
 fi

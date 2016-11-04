@@ -63,12 +63,6 @@ if [ ! ${TC_COVERED} ]; then
     exit 1
 fi
 
-if [ ! ${NVSVERSION} ]; then
-	echo "The NVSVERSION variable is not defined." | tee >>  ~/summary.log
-    UpdateTestState $ICA_TESTABORTED
-    exit 1
-fi
-
 if [ ! ${LOCAL_ADDR} ]; then
 	echo "The LOCAL_ADDR variable is not defined." | tee >>  ~/summary.log
     UpdateTestState $ICA_TESTABORTED
@@ -95,26 +89,16 @@ if [ $? -ne 0 ]; then
 fi
 
 
-#
-# Checking the nvs version
-#
-nvs=`sysctl -n dev.hn.1.nvs_version`
-if [ $? -ne 0 ]; then
-	echo "Warning: The sysctl -n dev.hn.1.nvs_version command does not be supported now."  | tee >>  ~/summary.log
-elif [ $nvs -lt $NVSVERSION ]; then
-	echo "Info: Found a matching VMBus string: ${nvs}" | tee >>  ~/summary.log
-	rx_ring_inuse=`sysctl -n dev.hn.1.rx_ring_inuse`
-	tx_ring_inuse=`sysctl -n dev.hn.1.tx_ring_inuse`
-	echo "tx_ring_inuse is $tx_ring_inuse" | tee >>  ~/summary.log
-	echo "rx_ring_inuse is $rx_ring_inuse" | tee >>  ~/summary.log
-	if [ $tx_ring_inuse -le 1 -a $rx_ring_inuse -le  1 ]; then 
-		UpdateTestState $ICA_TESTCOMPLETED
-		exit 0
-	fi
+# Create a test file named 24K.bin if it doesn't exist
+if [ ! -e "/usr/local/www/nginx/24K.bin" ]; then
+	echo "Create /usr/local/www/nginx/24K.bin "  | tee >>  ~/summary.log
+	dd if=/dev/zero of=/usr/local/www/nginx/24K.bin bs=1024 count=24
 fi
 
+echo "Run tcpdump -c 8 -eni hn1 tcp port 80 in background."  | tee >>  ~/summary.log
+tcpdump -c 8 -eni hn1 tcp port 80 > /root/TSO.log  &
 
-command="repeat 512 curl -o /dev/null  http://${LOCAL_ADDR}" 
+command="curl -o /dev/null  http://${LOCAL_ADDR}/24K.bin" 
 ssh root@$TARGET_ADDR  -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no $command 
 if [ $? -ne 0 ]; then
     echo "Error: Failed to execute $command" | tee >>  ~/summary.log
@@ -122,20 +106,53 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-sleep 15
+sleep 5
 
-count=`sysctl -n dev.hn.1.rx_ring_inuse`
-echo "The sysctl -n dev.hn.1.rx_ring_inuse is $count" | tee >>  ~/summary.log
-for((j=0;j<$count;j++))
+#Check TSO
+tso_flag=0
+lengths=`cat /root/TSO.log | grep length | sed 's/^.* IPv4//g' | sed 's/:.*$//g' | sed 's/.*length//g' | tr -d " "`
+for tmp in $lengths
 do
-    packets=`sysctl -n dev.hn.1.rx.$j.packets`
-	echo "The sysctl -n dev.hn.1.rx.$j.packets is $packets" | tee >>  ~/summary.log
-	if [ $packets -eq 0 ]; then
-		LogMsg "Test TestFailed"
-		UpdateTestState $ICA_TESTFAILED
-		exit 1
+	if [ $tmp -gt 1514 ]; then
+		echo "The length: $tmp is greator than 1514" | tee >>  ~/summary.log
+		tso_flag=1
+		break
 	fi
 done
 
-LogMsg "Test Passed"
-UpdateTestState $ICA_TESTCOMPLETED
+
+#Check LRO
+lro_queued=`ssh  root@$TARGET_ADDR  -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no  "sysctl -n  dev.hn.1.lro_queued"`
+lro_flushed=`ssh root@$TARGET_ADDR  -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no  "sysctl -n  dev.hn.1.lro_flushed"`
+
+echo "sysctl -n  dev.hn.1.lro_queued is $lro_queued"    | tee >>  ~/summary.log 
+echo "sysctl -n  dev.hn.1.lro_flushed is $lro_flushed"  | tee >>  ~/summary.log 
+
+rso_flag=0
+if [ $lro_queued -gt 0 -a $lro_flushed -gt 0 ]; then
+	rso_flag=1
+fi
+
+if [ $tso_flag -eq 1 -a $rso_flag -eq 1 ]; then
+	echo "Both TSO and RSO are enabled successfully."  | tee >>  ~/summary.log 
+	LogMsg "Test Passed"
+	UpdateTestState $ICA_TESTCOMPLETED
+	exit 0
+fi
+
+if [ $tso_flag -eq 0 -a $rso_flag -eq 1 ]; then
+	echo "TSO is enabled failed, but RSO are enabled successfully."   | tee >>  ~/summary.log 
+fi
+
+if [ $tso_flag -eq 1 -a $rso_flag -eq 0 ]; then
+	echo "RSO is enabled failed, but TSO are enabled successfully."  | tee >>  ~/summary.log 
+fi
+
+if [ $tso_flag -eq 0 -a $rso_flag -eq 0 ]; then
+	echo "Both TSO and RSO are enabled failed."   | tee >>  ~/summary.log 
+fi
+
+LogMsg "Test Failed"
+UpdateTestState $ICA_TESTFAILED
+exit 1
+

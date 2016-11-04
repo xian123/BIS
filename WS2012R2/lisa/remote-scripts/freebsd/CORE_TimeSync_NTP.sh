@@ -122,13 +122,13 @@ if [ $? -ne 0 ]; then
 	fi
 fi
 
-# We wait 10 seconds for the ntp server to sync
-sleep 10
+# We wait 20 seconds for the ntp server to sync
+sleep 20
 
 
 # Variables for while loop. stopTest is the time until the test will run
 isOver=false
-secondsToRun=1800
+secondsToRun=600
 stopTest=$(( $(date +%s) + secondsToRun )) 
 
 while [ $isOver == false ]; do
@@ -151,7 +151,7 @@ while [ $isOver == false ]; do
         isOver=true
     fi
 
-    # The loop will run for half an hour if delay doesn't match the requirements
+    # The loop will run for 10 mins if delay doesn't match the requirements
     if  [[ $(date +%s) -gt $stopTest ]]; then
         isOver=true
         if [[ $checkzero -eq 0 ]]; then
@@ -166,6 +166,8 @@ while [ $isOver == false ]; do
             exit 10
         fi
     fi
+    
+    sleep 5
 done
 
 # If we reached this point, time is synced.

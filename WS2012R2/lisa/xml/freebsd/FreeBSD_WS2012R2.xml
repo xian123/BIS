@@ -267,6 +267,7 @@
 				<suiteTest>TimeSyncWithNTPServer</suiteTest>					
 				<suiteTest>VmbusVerifyInterrupts</suiteTest>	
 				<suiteTest>VmbusProtocolVersion</suiteTest>	
+				<suiteTest>VerifyVRSS</suiteTest>	
 				
 				<suiteTest>Test50TimesReboot</suiteTest>	
             </suiteTests>
@@ -2540,6 +2541,25 @@
                 <param>fileSystems=ufs</param>
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-07</param>
+            </testparams>
+        </test>
+        
+        <test>
+            <testName>VerifyVRSS</testName>
+            <setupScript>setupScripts\ChangeCPUandAddNIC.ps1</setupScript>
+            <testScript>VerifyVRSS.sh</testScript>
+            <files>remote-scripts/freebsd/VerifyVRSS.sh</files>
+            <cleanupScript>setupScripts\RemoveNic.ps1</cleanupScript>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>VCPU=2</param>
+                <param>NVSVERSION=0x50000</param>
+                <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+                <param>TARGET_ADDR=192.168.1.100</param>
+                <param>LOCAL_ADDR=192.168.1.200</param>
+                <param>TC_COVERED=VRSS-01</param>
             </testparams>
         </test>
         

@@ -128,28 +128,28 @@ lro_flushed=`ssh root@$TARGET_ADDR  -oUserKnownHostsFile=/dev/null -oStrictHostK
 echo "sysctl -n  dev.hn.1.lro_queued is $lro_queued"    | tee >>  ~/summary.log 
 echo "sysctl -n  dev.hn.1.lro_flushed is $lro_flushed"  | tee >>  ~/summary.log 
 
-rso_flag=0
+lro_flag=0
 if [ $lro_queued -gt 0 -a $lro_flushed -gt 0 ]; then
-	rso_flag=1
+	lro_flag=1
 fi
 
-if [ $tso_flag -eq 1 -a $rso_flag -eq 1 ]; then
-	echo "Both TSO and RSO are enabled successfully."  | tee >>  ~/summary.log 
+if [ $tso_flag -eq 1 -a $lro_flag -eq 1 ]; then
+	echo "Both TSO and LRO are enabled successfully."  | tee >>  ~/summary.log 
 	LogMsg "Test Passed"
 	UpdateTestState $ICA_TESTCOMPLETED
 	exit 0
 fi
 
-if [ $tso_flag -eq 0 -a $rso_flag -eq 1 ]; then
-	echo "TSO is enabled failed, but RSO are enabled successfully."   | tee >>  ~/summary.log 
+if [ $tso_flag -eq 0 -a $lro_flag -eq 1 ]; then
+	echo "TSO is enabled failed, but LRO are enabled successfully."   | tee >>  ~/summary.log 
 fi
 
-if [ $tso_flag -eq 1 -a $rso_flag -eq 0 ]; then
-	echo "RSO is enabled failed, but TSO are enabled successfully."  | tee >>  ~/summary.log 
+if [ $tso_flag -eq 1 -a $lro_flag -eq 0 ]; then
+	echo "LRO is enabled failed, but TSO are enabled successfully."  | tee >>  ~/summary.log 
 fi
 
-if [ $tso_flag -eq 0 -a $rso_flag -eq 0 ]; then
-	echo "Both TSO and RSO are enabled failed."   | tee >>  ~/summary.log 
+if [ $tso_flag -eq 0 -a $lro_flag -eq 0 ]; then
+	echo "Both TSO and LRO are enabled failed."   | tee >>  ~/summary.log 
 fi
 
 LogMsg "Test Failed"

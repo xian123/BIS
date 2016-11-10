@@ -27,10 +27,10 @@
         <suite>    
             <suiteName>debug</suiteName>
             <suiteTests>
-                <suiteTest>VmbusVerifyInterrupts</suiteTest>	
+                <suiteTest>VmbusVerifyInterrupts</suiteTest>
             </suiteTests>
-        </suite>   
-                
+        </suite> 
+        
         <suite>
             <suiteName>BasicTest</suiteName>
             <suiteTests>                                               
@@ -171,23 +171,6 @@
 				<suiteTest>VerifyVRSS</suiteTest>	
 				<suiteTest>VerifyTSOandLRO</suiteTest>	
 				
-                <suiteTest>VHDxResizeToBigger512</suiteTest>
-                <suiteTest>VHDxResizeToBigger4096</suiteTest>
-                <suiteTest>VHDxResizeToBigger512_Dynamic_IDE</suiteTest>
-                <suiteTest>VHDxResizeToBigger512_Fixed_IDE</suiteTest>
-                <suiteTest>VHDxResizeToSmaller512</suiteTest>
-                <suiteTest>VHDxResizeToSmaller4096</suiteTest>
-                <suiteTest>VHDxResizeGrowShrink_SCSI</suiteTest>
-                <suiteTest>VHDxResizeGrowShrink_IDE</suiteTest>
-                <suiteTest>VHDxResizeGrowShrink_SCSI_Offline</suiteTest>
-                <suiteTest>VHDxResizeGrowFilesystem512</suiteTest>
-                <suiteTest>VHDxResizeGrowFilesystem4096</suiteTest>
-                <suiteTest>VHDxResizeOver2TB_SCSI</suiteTest>
-                <suiteTest>VHDxResizeOver2TB_IDE</suiteTest>
-                <suiteTest>VHDxResizeGrowOver2TB_Shrink_SCSI_Online</suiteTest>
-                <suiteTest>VHDxResizeGrowOver2TB_Shrink_SCSI_Offline</suiteTest>
-                <suiteTest>VHDxResizeGrowOver2TB_Shrink_IDE</suiteTest>
-                
 				<suiteTest>Test50TimesReboot</suiteTest>	
             </suiteTests>
         </suite>
@@ -317,32 +300,10 @@
                 <suiteTest>Test500TimesReboot</suiteTest>
             </suiteTests>
         </suite>  
-		
-        <suite>
-            <suiteName>VHDxResize</suiteName>
-            <suiteTests>
-                <suiteTest>VHDxResizeToBigger512</suiteTest>
-                <suiteTest>VHDxResizeToBigger4096</suiteTest>
-                <suiteTest>VHDxResizeToBigger512_Dynamic_IDE</suiteTest>
-                <suiteTest>VHDxResizeToBigger512_Fixed_IDE</suiteTest>
-                <suiteTest>VHDxResizeToSmaller512</suiteTest>
-                <suiteTest>VHDxResizeToSmaller4096</suiteTest>
-                <suiteTest>VHDxResizeGrowShrink_SCSI</suiteTest>
-                <suiteTest>VHDxResizeGrowShrink_IDE</suiteTest>
-                <suiteTest>VHDxResizeGrowShrink_SCSI_Offline</suiteTest>
-                <suiteTest>VHDxResizeGrowFilesystem512</suiteTest>
-                <suiteTest>VHDxResizeGrowFilesystem4096</suiteTest>
-                <suiteTest>VHDxResizeOver2TB_SCSI</suiteTest>
-                <suiteTest>VHDxResizeOver2TB_IDE</suiteTest>
-                <suiteTest>VHDxResizeGrowOver2TB_Shrink_SCSI_Online</suiteTest>
-                <suiteTest>VHDxResizeGrowOver2TB_Shrink_SCSI_Offline</suiteTest>
-                <suiteTest>VHDxResizeGrowOver2TB_Shrink_IDE</suiteTest>
-            </suiteTests>
-        </suite>   
+   
     </testSuites>
 
     <testCases>
-	
 		<test>
             <testName>CheckMemoryCapacity-512MB</testName>
             <testScript>TC-CheckMemCapacity.sh</testScript>
@@ -357,7 +318,7 @@
             <noReboot>False</noReboot>
         </test>
 		
-			<test>
+		<test>
             <testName>CheckMemoryCapacity-2GB</testName>
             <testScript>TC-CheckMemCapacity.sh</testScript>
             <files>remote-scripts\freebsd\TC-CheckMemCapacity.sh</files>
@@ -740,7 +701,7 @@
                 <param>TC_COVERED=STOR-04</param>
                 <param>NO=1</param>
             </testparams>
-    </test>
+        </test>
 
         <test>
             <testName>AddFixedSCSIDrive</testName>
@@ -757,7 +718,7 @@
                 <param>TC_COVERED=STOR-06</param>
                 <param>NO=1</param>
             </testparams>
-    </test>
+        </test>
         <test>
             <testName>AddPassThroughSCSIDrive</testName>
             <testScript>AddNewDisk_New.sh</testScript>
@@ -2107,355 +2068,7 @@
                 <param>TC_COVERED=Kernel-01</param>
             </testparams>
         </test>
-		
-        <test> 
-            <testName>VHDxResizeToBigger512</testName> 
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript> 
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript> 
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript> 
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files> 
-            <timeout>1200</timeout> 
-            <testparams> 
-                <param>Type=Dynamic</param> 
-                <param>SectorSize=512</param> 
-                <param>DefaultSize=3GB</param> 
-                <param>NewSize=4GB</param> 
-                <param>fileSystems=ufs</param> 
-                <param>ControllerType=SCSI</param> 
-                <param>TC_COVERED=STOR-VHDx-01a</param> 
-            </testparams> 
-            <onError>Continue</onError>
-            <noReboot>False</noReboot>
-        </test> 
-
-        <test>
-            <testName>VHDxResizeToBigger4096</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
-            <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=4096</param>
-                <param>DefaultSize=3GB</param>
-                <param>NewSize=4GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-01b</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeToBigger512_Fixed_IDE</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
-            <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Fixed</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=1GB</param>
-                <param>NewSize=2GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=IDE</param>
-                <param>TC_COVERED=STOR-VHDx-105</param>
-             </testparams>
-       </test>
-
-       <test>
-            <testName>VHDxResizeToBigger512_Dynamic_IDE</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
-            <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=1GB</param>
-                <param>NewSize=4GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=IDE</param>
-                <param>TC_COVERED=STOR-VHDx-106</param>
-            </testparams>
-       </test>
-
-        <test>
-            <testName>VHDxResizeToSmaller512</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
-            <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=3GB</param>
-                <param>NewSize=2GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-02a</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeToSmaller4096</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
-            <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=4096</param>
-                <param>DefaultSize=3GB</param>
-                <param>NewSize=2GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-02b</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeGrowShrink_SCSI</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_GrowShrink.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
-            <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=3GB</param>
-                <param>growSize=4GB</param>
-                <param>shrinkSize=3GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-03a</param>
-            </testparams>
-        </test>
-
-      <test>
-          <testName>VHDxResizeGrowShrink_IDE</testName>
-          <testScript>SetupScripts\STOR_VHDXResize_GrowShrink.ps1</testScript>
-          <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-          <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-          <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-          <timeout>1200</timeout>
-          <onError>Continue</onError>
-		  <noReboot>False</noReboot>
-          <testparams>
-              <param>Type=Dynamic</param>
-              <param>SectorSize=512</param>
-              <param>DefaultSize=3GB</param>
-              <param>growSize=4GB</param>
-              <param>shrinkSize=3GB</param>
-              <param>fileSystems=ufs</param>
-              <param>ControllerType=IDE</param>
-              <param>TC_COVERED=STOR-VHDx-03b</param>
-          </testparams>
-        </test>
-
-        <test>
-           <testName>VHDxResizeGrowShrink_SCSI_Offline</testName>
-           <testScript>SetupScripts\STOR_VHDXResize_GrowShrink.ps1</testScript>
-           <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-           <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-           <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-           <timeout>1200</timeout>
-           <onError>Continue</onError>
-		   <noReboot>False</noReboot>
-           <testparams>
-               <param>Type=Dynamic</param>
-               <param>SectorSize=512</param>
-               <param>DefaultSize=3GB</param>
-               <param>growSize=4GB</param>
-               <param>shrinkSize=3GB</param>
-               <param>fileSystems=ufs</param>
-               <param>ControllerType=SCSI</param>
-               <param>Offline=True</param>
-               <param>TC_COVERED=STOR-VHDx-03c</param>
-           </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeGrowFilesystem512</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_GrowFS.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
- 		    <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=3GB</param>
-                <param>NewSize=4GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-04a</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeGrowFilesystem4096</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_GrowFS.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
- 		    <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=4096</param>
-                <param>DefaultSize=3GB</param>
-                <param>NewSize=4GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-04b</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeOver2TB_SCSI</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
- 		    <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=127GB</param>
-                <param>NewSize=2304GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-05a</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeOver2TB_IDE</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_Basic.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
- 		    <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=127GB</param>
-                <param>NewSize=2304GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=IDE</param>
-                <param>TC_COVERED=STOR-VHDx-05b</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeGrowOver2TB_Shrink_SCSI_Online</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_GrowShrink.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
- 		    <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=3GB</param>
-                <param>growSize=2304GB</param>
-                <param>shrinkSize=3GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-               <param>TC_COVERED=STOR-VHDx-06a</param>
-            </testparams>
-       </test>
-
-       <test>
-           <testName>VHDxResizeGrowOver2TB_Shrink_SCSI_Offline</testName>
-           <testScript>SetupScripts\STOR_VHDXResize_GrowShrink.ps1</testScript>
-           <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-           <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-           <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-           <timeout>1200</timeout>
-           <onError>Continue</onError>
- 		   <noReboot>False</noReboot>
-           <testparams>
-               <param>Type=Dynamic</param>
-               <param>SectorSize=512</param>
-               <param>DefaultSize=3GB</param>
-               <param>growSize=2304GB</param>
-               <param>shrinkSize=3GB</param>
-               <param>fileSystems=ufs</param>
-               <param>ControllerType=SCSI</param>
-               <param>Offline=True</param>
-               <param>TC_COVERED=STOR-VHDx-06b</param>
-           </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResizeGrowOver2TB_Shrink_IDE</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_GrowShrink.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
- 		    <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=3GB</param>
-                <param>growSize=2304GB</param>
-                <param>shrinkSize=3GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=IDE</param>
-                <param>TC_COVERED=STOR-VHDx-06c</param>
-            </testparams>
-        </test>
-
-        <test>
-            <testName>VHDxResize_Live_Migration</testName>
-            <testScript>SetupScripts\STOR_VHDXResize_BasicLM.ps1</testScript>
-            <setupScript>SetupScripts\Add-VHDXForResize.ps1</setupScript>
-            <cleanupScript>SetupScripts\Remove-VHDXHardDisk.ps1</cleanupScript>
-            <files>remote-scripts/freebsd/STOR_VHDXResize_ReadWrite.sh</files>
-            <timeout>1200</timeout>
-            <onError>Continue</onError>
- 		    <noReboot>False</noReboot>
-            <testparams>
-                <param>Type=Dynamic</param>
-                <param>SectorSize=512</param>
-                <param>DefaultSize=3GB</param>
-                <param>NewSize=4GB</param>
-                <param>fileSystems=ufs</param>
-                <param>ControllerType=SCSI</param>
-                <param>TC_COVERED=STOR-VHDx-07</param>
-            </testparams>
-        </test>
-        
+		        
         <test>
             <testName>VerifyVRSS</testName>
             <setupScript>setupScripts\ChangeCPUandAddNIC.ps1</setupScript>

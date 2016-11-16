@@ -246,13 +246,13 @@ Start-Sleep -s $sleepTime
 $RetryCounts = 0
 $Retrylimits = 10
 
-$diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
+$diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"  2>$null
 while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
 	$RetryCounts ++
 	Start-Sleep -s 10
 	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
-	$diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
+	$diskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"   2>$null
 }
 if($RetryCounts -ge $Retrylimits)
 {

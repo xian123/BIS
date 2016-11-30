@@ -40,8 +40,6 @@
                 <suiteTest>AddFixedIDEDrive</suiteTest>
                 <suiteTest>AddDynamicIDEDrive0</suiteTest> 
                 <suiteTest>AddDifferencingIDEDrive</suiteTest>  
-               
-                <suiteTest>AddDynamicSCSIDriveVHDX</suiteTest>
                 <suiteTest>AddFixedSCSIDriveVHDX</suiteTest>
                
                 <suiteTest>TakeSnapShot</suiteTest>
@@ -50,7 +48,7 @@
                 <suiteTest>AddDynamicSCSIDrive</suiteTest> 
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
                 <suiteTest>AddDifferencingSCSIDrive</suiteTest>   
-                <suiteTest>AddPassThroughSCSIDrive</suiteTest>                               
+                <suiteTest>AddPassThroughSCSIDrive_Multi</suiteTest>                               
                 <suiteTest>AddPassThroughIDEDrive1</suiteTest> 
 
                 <suiteTest>AddDynamicIDEDriveVHDX0</suiteTest>
@@ -93,26 +91,18 @@
                 <suiteTest>TimeSync_SavedVM</suiteTest>
 				
                 <suiteTest>AddFixedIDEDrive</suiteTest>
-                <suiteTest>AddDynamicIDEDrive0</suiteTest> 
-                <suiteTest>AddDynamicIDEDrive1</suiteTest> 
                 <suiteTest>AddDynamicIDEDrive_Multi</suiteTest>
                 <suiteTest>AddDifferencingIDEDrive</suiteTest>  
-               
-                <suiteTest>AddDynamicSCSIDriveVHDX</suiteTest>
                 <suiteTest>AddFixedSCSIDriveVHDX</suiteTest>
                
                 <suiteTest>TakeSnapShot</suiteTest>
                 <suiteTest>RevertSnapShot</suiteTest> 
             
-                <suiteTest>AddDynamicSCSIDrive</suiteTest> 
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
-                <suiteTest>AddDifferencingSCSIDrive</suiteTest>   
-                <suiteTest>AddDynamicSCSIDrive_Multi</suiteTest>         
+                <suiteTest>AddDifferencingSCSIDrive</suiteTest>       
                 
-                <suiteTest>AddPassThroughSCSIDrive</suiteTest> 
                 <suiteTest>AddPassThroughSCSIDrive_Multi</suiteTest>                                   
                 <suiteTest>AddPassThroughIDEDrive0</suiteTest>                                
-                <suiteTest>AddPassThroughIDEDrive1</suiteTest> 
                 <suiteTest>AddPassThroughIDEDrive1_Multi</suiteTest>
 
                 <suiteTest>4K_AddDynamicIDEDriveVHDX0</suiteTest>
@@ -123,7 +113,6 @@
                 <suiteTest>AddFixedIDEDriveVHDX</suiteTest>   
                 <suiteTest>AddDifferencingIDEDriveVHDx4k</suiteTest>    
                 
-                <suiteTest>4K_AddDynamicSCSIDriveVHDX</suiteTest>
                 <suiteTest>4K_AddFixedSCSIDriveVHDX</suiteTest>
                 <suiteTest>AddDifferencingSCSIDriveVHDx4k</suiteTest>
                 <suiteTest>4K_AddMultipleVHDX_IDE0</suiteTest>        
@@ -146,8 +135,6 @@
                 <suiteTest>InternalSynthNetAdapter</suiteTest>
                 <suiteTest>PrivateSynthNetAdapter</suiteTest> 		
 
-				<suiteTest>HotAddFixedSCSIDrive</suiteTest>
-				<suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
 				<suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
 				<suiteTest>HotRemoveFixedSCSIDrive_Multi</suiteTest>
 				<suiteTest>HotAddPassThroughSCSIDrive</suiteTest>
@@ -156,7 +143,7 @@
 				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks</suiteTest>
 				
 				<suiteTest>VHDX_HotADD_Multi_Dynamic_SCSI_SMP</suiteTest>
                 <suiteTest>VHDX_HotRemove_Multi_Dynamic_SCSI_SMP</suiteTest>
@@ -223,7 +210,7 @@
 				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks</suiteTest>
 			</suiteTests>
 		</suite>
 		
@@ -260,7 +247,7 @@
 				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive_Multi</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks</suiteTest>
 				<suiteTest>HotAddPassThroughSCSIDrive_Multi</suiteTest>
                 <suiteTest>HotRemovePassThroughSCSIDrive_Multi</suiteTest> 
 				<suiteTest>AddFixedIDEDrive</suiteTest>
@@ -274,7 +261,6 @@
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
                 <suiteTest>AddDifferencingSCSIDrive</suiteTest>   
                 <suiteTest>AddDynamicSCSIDrive_Multi</suiteTest>      
-                <suiteTest>AddPassThroughSCSIDrive</suiteTest> 
                 <suiteTest>AddPassThroughSCSIDrive_Multi</suiteTest>                                   
                 <suiteTest>AddPassThroughIDEDrive0</suiteTest>                                
                 <suiteTest>AddPassThroughIDEDrive1</suiteTest> 
@@ -286,7 +272,6 @@
                 <suiteTest>AddDynamicIDEDriveVHDX1</suiteTest>
                 <suiteTest>AddFixedIDEDriveVHDX</suiteTest>   
                 <suiteTest>AddDifferencingIDEDriveVHDx4k</suiteTest>    
-                <suiteTest>4K_AddDynamicSCSIDriveVHDX</suiteTest>
                 <suiteTest>4K_AddFixedSCSIDriveVHDX</suiteTest>
                 <suiteTest>AddDifferencingSCSIDriveVHDx4k</suiteTest>
                 <suiteTest>4K_AddMultipleVHDX_IDE0</suiteTest>        
@@ -2490,6 +2475,21 @@
                 <param>TARGET_ADDR=192.168.1.100</param>
                 <param>LOCAL_ADDR=192.168.1.200</param>
                 <param>TC_COVERED=VRSS-02</param>
+            </testparams>
+        </test>
+        
+        <test>
+            <testName>HotAddRandomMultiSCSIDisks</testName>
+            <testScript>AddRandomNewSCSIDisk.sh</testScript>
+            <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
+            <preTest>setupScripts\HotAddRandomMultiSCSIDisks.ps1</preTest>
+            <cleanupScript>setupScripts\RemoveSCSIDisks.ps1</cleanupScript>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>NO=3</param>
+                <param>TC_COVERED=STOR-56</param>
             </testparams>
         </test>
         

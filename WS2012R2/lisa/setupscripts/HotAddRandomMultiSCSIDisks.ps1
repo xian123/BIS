@@ -5,9 +5,10 @@
 # Run this script:
 #
 # cd WS2012R2\lisa\setupscripts
-# .\RandomAddMultiVhdxHardDisk.ps1  -vmName  YourVMName  -hvServer "localhost"   -testParams "NO=3;"
+# .\HotAddRandomMultiSCSIDisks.ps1  -vmName  YourVMName  -hvServer "localhost"   -testParams "NO=3;MinimumLun=8"
 # 
 # NO -- Sum of the SCSI disks
+# MinimumLun  -- minimum LUN 
 #
 #######################################################################
 
@@ -264,7 +265,9 @@ if ($hvServer -eq $null -or $hvServer.Length -eq 0)
 }
 
 
+#Default parameters
 $numDisks = 3
+$MinimumLun = 0
 
 $params = $testParams.Split(";")
 foreach ($p in $params)
@@ -274,10 +277,30 @@ foreach ($p in $params)
     if ($fields[0].Trim() -eq "NO")
     {
         $numDisks = $fields[1].Trim()
-        break
+    }
+	
+	 if ($fields[0].Trim() -eq "MinimumLun")
+    {
+        $MinimumLun = $fields[1].Trim()
     }
 }
 
+#LUN starts with 0 and ends with 63
+if( [int]$MinimumLun -lt 0 )
+{
+	$MinimumLun = 0
+}
+
+if( [int]$MinimumLun -gt 63 )
+{
+	$MinimumLun = 63
+}
+
+$maxDisksLeft = 64 - $MinimumLun
+if( $numDisks -gt $maxDisksLeft )
+{
+	$numDisks = $maxDisksLeft
+}
 
 #Remove the dvd drive of the vm
 Get-VMDvdDrive -VMName $vmName -ControllerNumber 1  | Remove-VMDvdDrive
@@ -289,8 +312,13 @@ $controllerType = "SCSI"
 "CreateHardDrive $vmName $hvServer $scsi $controllerID $Lun $controllerType"
 
 "To create $numDisks SCSI disks on $vmName"
-$random = Get-Random
-$Lun = $random % 64
+
+do 
+{
+	$random = Get-Random
+	$Lun = $random % 64
+} while( $Lun -lt $MinimumLun )
+
 
 for( $i = 0; $i -lt $numDisks; $i++ )
 {
@@ -300,8 +328,11 @@ for( $i = 0; $i -lt $numDisks; $i++ )
 		$drive = Get-VMHardDiskDrive -VMName $vmName -ControllerNumber $controllerID -ControllerLocation $Lun -ControllerType $controllerType -ComputerName $hvServer
 		if ($drive)
 		{
-			$random = Get-Random
-			$Lun = $random % 64
+			do 
+			{
+				$random = Get-Random
+				$Lun = $random % 64
+			} while( $Lun -lt $MinimumLun )
 		}
 		else
 		{

@@ -144,7 +144,8 @@
 				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>HotAddRandomMultiSCSIDisks</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks_MiniLun0</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks_MiniLun8</suiteTest>
 				
 				<suiteTest>VHDX_HotADD_Multi_Dynamic_SCSI_SMP</suiteTest>
                 <suiteTest>VHDX_HotRemove_Multi_Dynamic_SCSI_SMP</suiteTest>
@@ -194,7 +195,8 @@
 				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>HotAddRandomMultiSCSIDisks</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks_MiniLun0</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks_MiniLun8</suiteTest>
 			</suiteTests>
 		</suite>
 		
@@ -231,7 +233,8 @@
 				<suiteTest>HotRemoveDynamicSCSIDriveVHDX</suiteTest>
 				<suiteTest>4K_HotAddDynamicVHDX_SCSIDrive</suiteTest>
 				<suiteTest>4K_HotRemoveDynamicVHDX_SCSIDrive</suiteTest>
-				<suiteTest>HotAddRandomMultiSCSIDisks</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks_MiniLun0</suiteTest>
+				<suiteTest>HotAddRandomMultiSCSIDisks_MiniLun8</suiteTest>
 				<suiteTest>HotAddPassThroughSCSIDrive_Multi</suiteTest>
                 <suiteTest>HotRemovePassThroughSCSIDrive_Multi</suiteTest> 
 				<suiteTest>AddFixedIDEDrive</suiteTest>
@@ -288,6 +291,14 @@
                 <suiteTest>Test500TimesReboot</suiteTest>
             </suiteTests>
         </suite>  
+        
+        <suite>    
+            <suiteName>PressTest</suiteName>
+            <suiteTests>
+                <suiteTest>Test500TimesReboot</suiteTest>
+                <suiteTest>HotAddRandomMultiSCSIDisks_Press</suiteTest>
+            </suiteTests>
+        </suite> 
    
     </testSuites>
 
@@ -2095,7 +2106,7 @@
         </test>
         
         <test>
-            <testName>HotAddRandomMultiSCSIDisks</testName>
+            <testName>HotAddRandomMultiSCSIDisks_MiniLun0</testName>
             <testScript>AddRandomNewSCSIDisk.sh</testScript>
             <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
             <preTest>setupScripts\HotAddRandomMultiSCSIDisks.ps1</preTest>
@@ -2104,7 +2115,40 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NO=3</param>
+                <param>NO=5</param>
+                <param>MinimumLun=0</param>
+                <param>TC_COVERED=STOR-56-01</param>
+            </testparams>
+        </test>
+        
+        <test>
+            <testName>HotAddRandomMultiSCSIDisks_MiniLun8</testName>
+            <testScript>AddRandomNewSCSIDisk.sh</testScript>
+            <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
+            <preTest>setupScripts\HotAddRandomMultiSCSIDisks.ps1</preTest>
+            <cleanupScript>setupScripts\RemoveSCSIDisks.ps1</cleanupScript>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>NO=5</param>
+                <param>MinimumLun=8</param>
+                <param>TC_COVERED=STOR-56-02</param>
+            </testparams>
+        </test>
+        
+        <test>
+            <testName>HotAddRandomMultiSCSIDisks_Press</testName>
+            <testScript>AddRandomNewSCSIDisk.sh</testScript>
+            <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
+            <preTest>setupScripts\HotAddRandomMultiSCSIDisks.ps1</preTest>
+            <cleanupScript>setupScripts\RemoveSCSIDisks.ps1</cleanupScript>
+            <timeout>1200</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>NO=64</param>
+                <param>MinimumLun=0</param>
                 <param>TC_COVERED=STOR-56</param>
             </testparams>
         </test>

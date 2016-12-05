@@ -22,6 +22,13 @@
     </global>
 
     <testSuites>
+        <suite>    
+            <suiteName>debug</suiteName>
+            <suiteTests>
+                <suiteTest>Heartbeat</suiteTest>
+            </suiteTests>
+        </suite>
+        
         <suite>
             <suiteName>LegacyNICTest</suiteName>
             <suiteTests>
@@ -99,7 +106,6 @@
                 <suiteTest>TakeSnapShot</suiteTest>
                 <suiteTest>RevertSnapShot</suiteTest> 
                
-                <suiteTest>AddDynamicSCSIDrive</suiteTest> 
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
                 <suiteTest>AddDifferencingSCSIDrive</suiteTest>   
                 <suiteTest>AddDynamicSCSIDrive_Multi</suiteTest>         
@@ -126,7 +132,10 @@
                 <suiteTest>InternalSynthNetAdapter</suiteTest>        
                 <suiteTest>ExternalSynthNetAdapter</suiteTest>       
                 <suiteTest>PromiscSynthNetAdapter</suiteTest> 
-                <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest>                                   
+                <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest>   
+                
+                <suiteTest>HotAddRandomMultiSCSIDisks_MiniLun0</suiteTest>                                   
+                <suiteTest>HotAddRandomMultiSCSIDisks_MiniLun8</suiteTest>                                   
             </suiteTests>
         </suite>
         
@@ -209,13 +218,13 @@
                 <suiteTest>StopStartKvpDaemon</suiteTest>                
             </suiteTests>
         </suite>
-		
+       
         <suite>    
-            <suiteName>debug</suiteName>
+            <suiteName>PressTest</suiteName>
             <suiteTests>
-                <suiteTest>Heartbeat</suiteTest>
+                <suiteTest>HotAddRandomMultiSCSIDisks_Press</suiteTest>
             </suiteTests>
-        </suite>
+        </suite> 
     </testSuites>
 
     <testCases>
@@ -1551,7 +1560,56 @@
                  <param>TC_COVERED=KVP-12</param>
                  <param>sshKey=lisa_id_rsa.ppk</param>
             </testparams>
-        </test>            				
+        </test>  
+
+        <test>
+            <testName>HotAddRandomMultiSCSIDisks_MiniLun0</testName>
+            <testScript>AddRandomNewSCSIDisk.sh</testScript>
+            <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
+            <preTest>setupScripts\HotAddRandomMultiSCSIDisks.ps1</preTest>
+            <cleanupScript>setupScripts\RemoveSCSIDisks.ps1</cleanupScript>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>NO=5</param>
+                <param>MinimumLun=0</param>
+                <param>TC_COVERED=STOR-56-01</param>
+            </testparams>
+        </test>
+		
+		<test>
+            <testName>HotAddRandomMultiSCSIDisks_MiniLun8</testName>
+            <testScript>AddRandomNewSCSIDisk.sh</testScript>
+            <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
+            <preTest>setupScripts\HotAddRandomMultiSCSIDisks.ps1</preTest>
+            <cleanupScript>setupScripts\RemoveSCSIDisks.ps1</cleanupScript>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>NO=5</param>
+                <param>MinimumLun=8</param>
+                <param>TC_COVERED=STOR-56-02</param>
+            </testparams>
+        </test>
+        
+        <test>
+            <testName>HotAddRandomMultiSCSIDisks_Press</testName>
+            <testScript>AddRandomNewSCSIDisk.sh</testScript>
+            <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
+            <preTest>setupScripts\HotAddRandomMultiSCSIDisks.ps1</preTest>
+            <cleanupScript>setupScripts\RemoveSCSIDisks.ps1</cleanupScript>
+            <timeout>1200</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+                <param>NO=64</param>
+                <param>MinimumLun=0</param>
+                <param>TC_COVERED=STOR-56</param>
+            </testparams>
+        </test>
+		        
     </testCases>
 
     <VMs>       

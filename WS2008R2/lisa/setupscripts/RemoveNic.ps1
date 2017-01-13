@@ -197,9 +197,9 @@ foreach ($p in $params)
         $nics = Get-VMNic -vm $vmName -server $hvServer -Legacy:$legacy -VMBus:(-not $legacy)
         if ($nics)
         {
-            foreach ($nic in $nics)
+            for( $i = 1; $i -lt $nics.length; $i++)
             {
-                $nic | Remove-VMNic -force
+                $nics[$i] | Remove-VMNic -force
             }
             $retVal = $True
         }

@@ -957,7 +957,7 @@ function DoSlowSystemStarting([System.Xml.XmlElement] $vm, [XML] $xmlData)
         LogMsg 9 "Debug: vm.ipv4 = $($vm.ipv4) and ipv4 = ${ipv4} "
         if ($ipv4 -and ($vm.ipv4 -ne [String] $ipv4))
         {
-            LogMsg 0 "Updating VM IP： ${ipv4}"
+            LogMsg 0 "Updating VM IP: ${ipv4}"
             $vm.ipv4 = [String] $ipv4
         }
         

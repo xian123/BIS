@@ -511,7 +511,7 @@ if (-not $?)
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 60
+$sleepTime = 120
 Start-Sleep -s $sleepTime
 
 #

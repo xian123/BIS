@@ -28,7 +28,6 @@
     Ensures that the VM sees the newly attached VHDx Hard Disk
     Creates partitions, filesytem, mounts partitions, sees if it can perform
     Read/Write operations on the newly created partitions and deletes partitions
-
     A typical test case definition for this test script would look
     similar to the following:
         <test>
@@ -42,6 +41,7 @@
                 <param>SCSI=0,0,Dynamic,512</param>
                 <param>shrinkSize=3GB</param>
                 <param>growSize=4GB</param>
+                <param>Offline=False</param>
                 <param>TC_COVERED=STOR-VHDx-01</param>
             </testparams>
         </test>
@@ -52,7 +52,7 @@
 .Parameter testParams
     Test data for this test case
 .Example
-    setupScripts\STOR_VHDXResize_GrowShrink.ps1 -vmName "VM_Name" -hvServer "HYPERV_SERVER" -TestParams "ipv4=255.255.255.255;sshKey=YOUR_KEY.ppk;growSize=4GB;shrinkSize=3GB;TC_COVERED=STOR-VHDx-01"
+    setupScripts\STOR_VHDXResize_GrowShrink.ps1 -vmName "VM_Name" -hvServer "HYPERV_SERVER" -TestParams "ipv4=255.255.255.255;sshKey=YOUR_KEY.ppk;growSize=4GB;shrinkSize=3GB;Offline=False;TC_COVERED=STOR-VHDx-01"
 #>
 
 param( [String] $vmName,
@@ -64,291 +64,15 @@ $sshKey     = $null
 $ipv4       = $null
 $newGrowSize    = $null
 $newShrinkSize    = $null
+$sectorSize = $null
+$DefaultSize = $null
 $rootDir    = $null
 $TC_COVERED = $null
 $TestLogDir = $null
 $TestName   = $null
-
-#######################################################################
-#
-# GetRemoteFileInfo()
-#
-# Description:
-#     Use WMI to retrieve file information for a file residing on the
-#     Hyper-V server.
-#
-# Return:
-#     A FileInfo structure if the file exists, null otherwise.
-#
-#######################################################################
-function GetRemoteFileInfo([String] $filename, [String] $server )
-{
-    $fileInfo = $null
-
-    if (-not $filename)
-    {
-        return $null
-    }
-
-    if (-not $server)
-    {
-        return $null
-    }
-
-    $remoteFilename = $filename.Replace("\", "\\")
-    $fileInfo = Get-WmiObject -query "SELECT * FROM CIM_DataFile WHERE Name='${remoteFilename}'" -computer $server
-
-    return $fileInfo
-}
-
-#######################################################################
-#
-# Convert size String
-#
-#######################################################################
-function ConvertStringToUInt64([string] $str)
-{
-    $uint64Size = $null
-    $newSize = $str
-    #
-    # Make sure we received a string to convert
-    #
-    if (-not $str)
-    {
-        Write-Error -Message "ConvertStringToUInt64() - input string is null" -Category InvalidArgument -ErrorAction SilentlyContinue
-        return $null
-    }
-
-    if ($str.EndsWith("MB"))
-    {
-        $num = $str.Replace("MB","")
-        $uint64Size = ([Convert]::ToUInt64($num)) * 1MB
-    }
-    elseif ($str.EndsWith("GB"))
-    {
-        $num = $str.Replace("GB","")
-        $uint64Size = ([Convert]::ToUInt64($num)) * 1GB
-    }
-    elseif ($str.EndsWith("TB"))
-    {
-        $num = $str.Replace("TB","")
-        $uint64Size = ([Convert]::ToUInt64($num)) * 1TB
-    }
-    else
-    {
-        Write-Error -Message "Invalid newSize parameter: ${str}" -Category InvalidArgument -ErrorAction SilentlyContinue
-        return $null
-    }
-
-    return $uint64Size
-}
-
-function RunTest ([String] $filename)
-{
-
-    "exec ./${filename}.sh &> ${filename}.log " | out-file -encoding ASCII -filepath runtest.sh
-
-    .\bin\pscp.exe -i ssh\${sshKey} .\runtest.sh root@${ipv4}:
-    if (-not $?)
-    {
-       Write-Error -Message "Error: Unable to copy startstress.sh to the VM" -ErrorAction SilentlyContinue
-       return $False
-    }
-
-     .\.\bin\pscp.exe -i ssh\${sshKey} .\remote-scripts\ica\${filename}.sh root@${ipv4}:
-    if (-not $?)
-    {
-       Write-Error -Message "Error: Unable to copy ${filename}.sh to the VM" -ErrorAction SilentlyContinue
-       return $False
-    }
-
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix ${filename}.sh  2> /dev/null"
-    if (-not $?)
-    {
-         Write-Error -Message "Error: Unable to run dos2unix on ${filename}.sh" -ErrorAction SilentlyContinue
-        return $False
-    }
-
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "dos2unix runtest.sh  2> /dev/null"
-    if (-not $?)
-    {
-         Write-Error -Message "Error: Unable to run dos2unix on runtest.sh" -ErrorAction SilentlyContinue
-        return $False
-    }
-
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x ${filename}.sh   2> /dev/null"
-    if (-not $?)
-    {
-         Write-Error -Message "Error: Unable to chmod +x ${filename}.sh" -ErrorAction SilentlyContinue
-        return $False
-    }
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "chmod +x runtest.sh  2> /dev/null"
-    if (-not $?)
-    {
-         Write-Error -Message "Error: Unable to chmod +x runtest.sh " -ErrorAction SilentlyContinue
-        return $False
-    }
-
-    .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "./runtest.sh 2> /dev/null"
-    if (-not $?)
-    {
-         Write-Error -Message "Error: Unable to run runtest.sh " -ErrorAction SilentlyContinue
-        return $False
-    }
-
-    del runtest.sh
-    return $True
-}
-#########################################################################
-#    get state.txt file from VM.
-########################################################################
-function CheckResult()
-{
-    $retVal = $False
-    $stateFile     = "state.txt"
-	$localStateFile= "${vmName}_state.txt"
-    $TestCompleted = "TestCompleted"
-    $TestAborted   = "TestAborted"
-    $TestRunning   = "TestRunning"
-    $timeout       = 6000
-
-    "Info :   pscp -q -i ssh\${sshKey} root@${ipv4}:$stateFile} ."
-    while ($timeout -ne 0 )
-    {
-    .\bin\pscp.exe -q -i ssh\${sshKey} root@${ipv4}:${stateFile} ${localStateFile} #| out-null
-    $sts = $?
-    if ($sts)
-    {
-        if (test-path $localStateFile)
-        {
-            $contents = Get-Content -Path $localStateFile
-            if ($null -ne $contents)
-            {
-                    if ($contents -eq $TestCompleted)
-                    {
-						# Write-Host "Info : state file contains Testcompleted"
-                        $retVal = $True
-                        break
-
-                    }
-
-                    if ($contents -eq $TestAborted)
-                    {
-                         Write-Host "Info : State file contains TestAborted failed. "
-                         break
-
-                    }
-
-                    $timeout--
-
-                    if ($timeout -eq 0)
-                    {
-                        Write-Error -Message "Error : Timed out on Test Running , Exiting test execution."   -ErrorAction SilentlyContinue
-                        break
-                    }
-
-            }
-            else
-            {
-                Write-Host "Warn : state file is empty"
-                break
-            }
-
-        }
-        else
-        {
-             Write-Host "Warn : ssh reported success, but state file was not copied"
-             break
-        }
-    }
-    else #
-    {
-         Write-Error -Message "Error : pscp exit status = $sts" -ErrorAction SilentlyContinue
-         Write-Error -Message "Error : unable to pull state.txt from VM." -ErrorAction SilentlyContinue
-         break
-    }
-    }
-    del $localStateFile
-    return $retVal
-}
-#########################################################################
-#    get summary.log file from VM.
-########################################################################
-function SummaryLog()
-{
-    $retVal = $False
-    $summaryFile   = "summary.log"
-    $localVMSummaryLog = "${vmName}_error_summary.log"
-
-    .\bin\pscp.exe -q -i ssh\${sshKey} root@${ipv4}:${summaryFile} ${localVMSummaryLog} #| out-null
-    $sts = $?
-    if ($sts)
-    {
-        if (test-path $localVMSummaryLog)
-        {
-            $contents = Get-Content -Path $localVMSummaryLog
-            if ($null -ne $contents)
-            {
-                   Write-Output "Error: ${contents}" | Tee-Object -Append -file $summaryLog
-            }
-            $retVal = $True
-        }
-        else
-        {
-             Write-Host "Warn : ssh reported success, but summary file was not copied"
-        }
-    }
-    else #
-    {
-         Write-Error -Message "Error : pscp exit status = $sts" -ErrorAction SilentlyContinue
-         Write-Error -Message "Error : unable to pull summary.log from VM." -ErrorAction SilentlyContinue
-    }
-     del $summaryFile
-     return $retVal
-}
-#########################################################################
-#    get runtest.log file from VM.
-########################################################################
-function RunTestLog([String] $filename, [String] $logDir, [String] $TestName)
-{
-    $retVal = $False
-    $RunTestFile   = "${filename}.log"
-
-    .\bin\pscp.exe -q -i ssh\${sshKey} root@${ipv4}:${RunTestFile} . #| out-null
-    $sts = $?
-    if ($sts)
-    {
-        if (test-path $RunTestFile)
-        {
-            $contents = Get-Content -Path $RunTestFile
-            if ($null -ne $contents)
-            {
-                    move "${RunTestFile}" "${logDir}\${TestName}_${filename}_vm.log"
-
-                   #Get-Content -Path $RunTestFile >> {$TestLogDir}\*_ps.log
-                   $retVal = $True
-
-            }
-            else
-            {
-                Write-Host "Warn : RunTestFile is empty"
-            }
-        }
-        else
-        {
-             Write-Host "Warn : ssh reported success, but RunTestFile file was not copied"
-        }
-    }
-    else
-    {
-         Write-Error -Message "Error : pscp exit status = $sts" -ErrorAction SilentlyContinue
-         Write-Error -Message "Error : unable to pull RunTestFile from VM." -ErrorAction SilentlyContinue
-         return $False
-    }
-
-     return $retVal
-}
-
+$vhdxDrive  = $null
+# when resize disk, if need to shut down VM, set offline as "True", otherwise "False".
+$offline = "False"
 #######################################################################
 #
 # Main script body
@@ -399,10 +123,15 @@ foreach ($p in $params)
     "ipv4"      { $ipv4    = $fields[1].Trim() }
     "growSize"  { $newGrowSize = $fields[1].Trim() }
     "shrinkSize"       { $newShrinkSize = $fields[1].Trim() }
+    "sectorSize"       { $sectorSize = $fields[1].Trim() }
+    "DefaultSize"   { $DefaultSize = $fields[1].Trim() }
     "rootDIR"   { $rootDir = $fields[1].Trim() }
     "TC_COVERED" { $TC_COVERED = $fields[1].Trim() }
     "TestLogDir" { $TestLogDir = $fields[1].Trim() }
     "TestName"   { $TestName = $fields[1].Trim() }
+    "ControllerType"   { $controllerType = $fields[1].Trim() }
+    "Type"   { $type = $fields[1].Trim() }
+    "Offline"   { $offline = $fields[1].Trim() }
     default     {}  # unknown param - just ignore it
     }
 }
@@ -416,29 +145,53 @@ else
     cd $rootDir
 }
 
+# Source STOR_VHDXResize_Utils.ps1
+if (Test-Path ".\setupScripts\STOR_VHDXResize_Utils.ps1")
+{
+    . .\setupScripts\STOR_VHDXResize_Utils.ps1
+}
+else
+{
+    "Error: Could not find setupScripts\STOR_VHDXResize_Utils.ps1"
+    return $false
+}
+
 Write-Output "Covers: ${TC_COVERED}" | Tee-Object -Append -file $summaryLog
 
 #
 # Convert the new size
-#
+
 $newVhdxGrowSize = ConvertStringToUInt64 $newGrowSize
 $newVhdxShrinkSize = ConvertStringToUInt64 $newShrinkSize
+$sizeFlag = ConvertStringToUInt64 "50GB"
 
 #
 # Make sure the VM has a SCSI 0 controller, and that
 # Lun 0 on the controller has a .vhdx file attached.
 #
-"Info : Check if VM ${vmName} has a SCSI 0 Lun 0 drive"
-$scsi00 = Get-VMHardDiskDrive -VMName $vmName -Controllertype SCSI -ControllerNumber 0 -ControllerLocation 0 -ComputerName $hvServer -ErrorAction SilentlyContinue
-if (-not $scsi00)
+
+"Info : Check if VM ${vmName} has a $controllerType drive"
+$vhdxName = $vmName + "-" + $DefaultSize + "-" + $sectorSize + "-test"
+$vhdxDisks = Get-VMHardDiskDrive -VMName $vmName -ComputerName $hvServer
+
+foreach ($vhdx in $vhdxDisks)
 {
-    "Error: VM ${vmName} does not have a SCSI 0 Lun 0 drive"
+    $vhdxPath = $vhdx.Path
+    if ($vhdxPath.Contains($vhdxName))
+    {
+        $vhdxDrive = Get-VMHardDiskDrive -VMName $vmName -Controllertype $controllerType -ControllerNumber $vhdx.ControllerNumber -ControllerLocation $vhdx.ControllerLocation -ComputerName $hvServer -ErrorAction SilentlyContinue
+    }
+}
+
+if (-not $vhdxDrive)
+{
+    "Error: VM ${vmName} does not have a $controllerType drive"
     $error[0].Exception.Message
     return $False
 }
 
 "Info : Check if the virtual disk file exists"
-$vhdPath = $scsi00.Path
+$vhdPath = $vhdxDrive.Path
 $vhdxInfo = GetRemoteFileInfo $vhdPath $hvServer
 if (-not $vhdxInfo)
 {
@@ -449,7 +202,7 @@ if (-not $vhdxInfo)
 "Info : Verify the file is a .vhdx"
 if (-not $vhdPath.EndsWith(".vhdx") -and -not $vhdPath.EndsWith(".avhdx"))
 {
-    "Error: SCSI 0 Lun 0 virtual disk is not a .vhdx file."
+    "Error: $controllerType virtual disk is not a .vhdx file."
     "       Path = ${vhdPath}"
     return $False
 }
@@ -458,85 +211,109 @@ if (-not $vhdPath.EndsWith(".vhdx") -and -not $vhdPath.EndsWith(".avhdx"))
 # Make sure there is sufficient disk space to grow the VHDX to the specified size
 #
 $deviceID = $vhdxInfo.Drive
-$diskInfo = Get-WmiObject -Query "SELECT * FROM Win32_LogicalDisk Where DeviceID = '${deviceID}'"
+$diskInfo = Get-WmiObject -Query "SELECT * FROM Win32_LogicalDisk Where DeviceID = '${deviceID}'" -ComputerName $hvServer
 if (-not $diskInfo)
 {
     "Error: Unable to collect information on drive ${deviceID}"
     return $False
 }
 
-if ($diskInfo.FreeSpace -le $newVhdxSize + 10MB)
+if ($diskInfo.FreeSpace -le $sizeFlag + 10MB)
 {
     "Error: Insufficent disk free space"
     "       This test case requires ${newSize} free"
     "       Current free space is $($diskInfo.FreeSpace)"
     return $False
 }
+#
+# Prepare for expanding disk and expand disk
+#
 
-#
 # Make sure if we can perform Read/Write operations on the guest VM
-#
 $guest_script = "STOR_VHDXResize_PartitionDisk"
 
-$sts = RunTest $guest_script
+$sts = RunRemoteScriptCheckResult $guest_script
 if (-not $($sts[-1]))
 {
-    $sts = SummaryLog
-	if (-not $($sts[-1]))
-	{
-		"Warning : Failed getting summary.log from VM"
-	}
-    "Error: Running '${guest_script}' script failed on VM "
-    return $False
+  "Error: Running ${guest_script} script failed on VM. check VM logs , exiting test case execution "
+  return $False
 }
 
-$CheckResultsts = CheckResult
+# Source the TCUtils.ps1 file
+. .\setupscripts\TCUtils.ps1
 
-$sts = RunTestLog $guest_script $TestLogDir $TestName
-if (-not $($sts[-1]))
+# for IDE and offline resize disk need to stop VM before resize
+
+if ( $controllerType -eq "IDE" -or $offline -eq "True"  )
 {
-    "Warning : Getting RunTestLog.log from VM, will not exit test case execution "
+  "Info: Resize IDE disk or testing offline needs to turn off VM"
+  Stop-VM -VMName $vmName -ComputerName $hvServer -force
 }
 
-if (-not $($CheckResultsts[-1]))
-{
-    "Error: Running '${guest_script}'script failed on VM. check VM logs , exiting test case execution "
-    return $False
-}
+"Info : Growing the VHDX to ${newGrowSize}"
+write-output "Resize-VHD -Path $vhdPath -SizeBytes $newVhdxGrowSize -ComputerName $hvServer -ErrorAction SilentlyContinue"
+Resize-VHD -Path $vhdPath -SizeBytes $newVhdxGrowSize -ComputerName $hvServer -ErrorAction SilentlyContinue
 
-"Info : Growing the VHDX to ${growSize}"
-Resize-VHD -Path $vhdPath -SizeBytes ($newVhdxGrowSize) -ComputerName $hvServer -ErrorAction SilentlyContinue
+
 if (-not $?)
 {
    "Error: Unable to grow VHDX file '${vhdPath}"
    return $False
 }
 
+# Now start the VM if IDE disk attached or offline resize
+if ( $controllerType -eq "IDE" -or $offline -eq "True" )
+{
+  "Info: Check disk from VM needs to turn on VM"
+  $timeout = 300
+  $sts = Start-VM -Name $vmName -ComputerName $hvServer
+  if (-not (WaitForVMToStartKVP $vmName $hvServer $timeout ))
+  {
+      Write-Output "ERROR: ${vmName} failed to start"
+      return $False
+  }
+  else
+  {
+      Write-Output "INFO: Started VM ${vmName}"
+  }
+}
+
+$vhdxInfoResize = Get-VHD -Path $vhdPath -ComputerName $hvServer -ErrorAction SilentlyContinue
+
+if ( $newGrowSize.contains("GB") -and $vhdxInfoResize.Size/1gb -ne $newGrowSize.Trim("GB") )
+{
+  "Error: Failed to Resize Disk to new Size"
+  return $False
+}
+
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 60
+$sleepTime = 180
 Start-Sleep -s $sleepTime
 
 #
 # Check if the guest sees the added space
 #
 "Info : Check if the guest sees the new space"
-.\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "echo 1 > /sys/block/sdb/device/rescan"
-if (-not $?)
+$RetryCounts = 0
+$Retrylimits = 10
+
+$growDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"  2>$null
+while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
-    "Error: Failed to force SCSI device rescan"
-    return $False
+	$RetryCounts ++
+	Start-Sleep -s 30
+	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
+	$growDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"  2>$null
+}
+if($RetryCounts -ge $Retrylimits)
+{
+	"Error: Unable to determine disk size from within the guest after growing the VHDX"
+	return $False
 }
 
-$growDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "fdisk -l 2> /dev/null | grep Disk | grep sdb | cut -f 5 -d ' '"
-if (-not $?)
-{
-    "Error: Unable to determine disk size from within the guest after growing the VHDX"
-    return $False
-}
-
-if ($growDiskSize -ne $newVhdxGrowSize)
+if ($growDiskSize.Trim() -ne $newVhdxGrowSize)
 {
     "Error: VM ${vmName} sees a disk size of ${diskSize}, not the expected size of ${newVhdxGrowSize}"
     return $False
@@ -545,35 +322,30 @@ if ($growDiskSize -ne $newVhdxGrowSize)
 #
 # Make sure if we can perform Read/Write operations on the guest VM
 #
+
+# if file size larger than 2T (2048G), use parted to format disk
+
 $guest_script = "STOR_VHDXResize_PartitionDiskAfterResize"
 
-$sts = RunTest $guest_script
+$sts = RunRemoteScriptCheckResult $guest_script
 if (-not $($sts[-1]))
 {
-    $sts = SummaryLog
-	if (-not $($sts[-1]))
-	{
-		"Warning : Failed getting summary.log from VM"
-	}
-    "Error: Running '${guest_script}' script failed on VM "
-    return $False
+  "Error: Running '${guest_script}'script failed on VM. check VM logs , exiting test case execution "
+  return $False
 }
 
-$CheckResultsts = CheckResult
+#
+# Prepare for shrinking disk and shrink disk
+#
 
-$sts = RunTestLog $guest_script $TestLogDir $TestName
-if (-not $($sts[-1]))
+# for IDE and offline resize disk need to stop VM before resize
+if ( $controllerType -eq "IDE" -or $offline -eq "True")
 {
-    "Warning : Getting RunTestLog.log from VM, will not exit test case execution "
+  "Info: Resize IDE disk or testing offline needs to turn off VM"
+  Stop-VM -VMName $vmName -ComputerName $hvServer -force
 }
 
-if (-not $($CheckResultsts[-1]))
-{
-    "Error: Running '${guest_script}'script failed on VM. check VM logs , exiting test case execution "
-    return $False
-}
-
-"Info : Shrinking the VHDX to ${shrinkSize}"
+"Info : Shrinking the VHDX to ${newShrinkSize}"
 Resize-VHD -Path $vhdPath -SizeBytes ($newVhdxShrinkSize) -ComputerName $hvServer -ErrorAction SilentlyContinue
 if (-not $?)
 {
@@ -584,28 +356,49 @@ if (-not $?)
 #
 # Let system have some time for the volume change to be indicated
 #
-$sleepTime = 60
+$sleepTime = 180
 Start-Sleep -s $sleepTime
+
+# Now start the VM if IDE disk attached or offline resize
+
+if ( $controllerType -eq "IDE" -or $offline -eq "True" )
+{
+  "Info: Check disk from VM needs to turn on VM"
+  $timeout = 300
+  $sts = Start-VM -Name $vmName -ComputerName $hvServer
+  if (-not (WaitForVMToStartKVP $vmName $hvServer $timeout ))
+  {
+      Write-Output "ERROR: ${vmName} failed to start"
+      return $False
+  }
+  else
+  {
+      "Info: Started VM ${vmName}"
+  }
+}
 
 #
 # Check if the guest sees the added space
 #
 "Info : Check if the guest sees the new size"
-.\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "echo 1 > /sys/block/sdb/device/rescan"
-if (-not $?)
+$RetryCounts = 0
+$Retrylimits = 10
+
+$shrinkDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
+while (-not $? -and $RetryCounts -lt $Retrylimits)
 {
-    "Error: Failed to force SCSI device rescan"
-    return $False
+	$RetryCounts ++
+	Start-Sleep -s 30
+	"Attempt $RetryCounts/$Retrylimits : Determine disk size from within the guest"
+	$shrinkDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "diskinfo -v da1 | grep bytes | cut -f 1 -d '#'"
+}
+if($RetryCounts -ge $Retrylimits)
+{
+	"Error: Unable to determine disk size from within the guest after growing the VHDX"
+	return $False
 }
 
-$shrinkDiskSize = .\bin\plink.exe -i ssh\${sshKey} root@${ipv4} "fdisk -l 2> /dev/null | grep Disk | grep sdb | cut -f 5 -d ' '"
-if (-not $?)
-{
-    "Error: Unable to determine disk size from within the guest after shrinking the VHDX"
-    return $False
-}
-
-if ($shrinkDiskSize -ne $newVhdxShrinkSize)
+if ($shrinkDiskSize.Trim() -ne $newVhdxShrinkSize)
 {
     "Error: VM ${vmName} sees a disk size of ${diskSize}, not the expected size of ${newVhdxShrinkSize}"
     return $False
@@ -614,32 +407,12 @@ if ($shrinkDiskSize -ne $newVhdxShrinkSize)
 #
 # Make sure if we can perform Read/Write operations on the guest VM
 #
-$guest_script = "STOR_VHDXResize_PartitionDiskAfterShrink"
-
-$sts = RunTest $guest_script
+$guest_script = "STOR_VHDXResize_PartitionDisk"
+$sts = RunRemoteScriptCheckResult $guest_script
 if (-not $($sts[-1]))
 {
-    $sts = SummaryLog
-	if (-not $($sts[-1]))
-	{
-		"Warning : Failed getting summary.log from VM"
-	}
-    "Error: Running '${guest_script}' script failed on VM "
-    return $False
-}
-
-$CheckResultsts = CheckResult
-
-$sts = RunTestLog $guest_script $TestLogDir $TestName
-if (-not $($sts[-1]))
-{
-    "Warning : Getting RunTestLog.log from VM, will not exit test case execution "
-}
-
-if (-not $($CheckResultsts[-1]))
-{
-    "Error: Running '${guest_script}'script failed on VM. check VM logs , exiting test case execution "
-    return $False
+  "Error: Running '${guest_script}'script failed on VM. check VM logs , exiting test case execution "
+  return $False
 }
 
 "Info : The guest sees the new grow size ($growDiskSize) and the new shrink size ($shrinkDiskSize)"

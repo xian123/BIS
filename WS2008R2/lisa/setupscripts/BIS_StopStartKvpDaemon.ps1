@@ -153,7 +153,8 @@ if (-not (SendCommandToVM $ipv4 $sshKey "${cmd}" ))
     return $False
 }
 
-sleep 1
+"Sleep 20 seconds for updating the status of kvp daemon"
+sleep 20
 
 #
 # Try to read the IP addresses via KVP. Make sure nothing can be read.
@@ -177,7 +178,8 @@ if (-not (SendCommandToVM $ipv4 $sshKey "${cmd}" ))
     return $False
 }
 
-sleep 1
+"Sleep 20 seconds for updating the status of kvp daemon"
+sleep 20
 
 #
 # Read the IP addresses via KVP.

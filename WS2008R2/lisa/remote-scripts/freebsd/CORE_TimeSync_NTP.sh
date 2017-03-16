@@ -140,7 +140,7 @@ while [ $isOver == false ]; do
         LogMsg "NTP offset is $offset milliseconds."
     done
 
-    # The loop will run for $secondsToRun mins if delay doesn't match the requirements
+    # The loop will run for 10 mins if delay doesn't match the requirements
     if  [[ $(date +%s) -gt $stopTest ]]; then
         isOver=true
         LogMsg "ERROR: NTP Time out of sync. Test Failed"

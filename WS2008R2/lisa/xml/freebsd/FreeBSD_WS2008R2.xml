@@ -15,7 +15,7 @@
             <param>REPOSITORY_EXPORT=/usr/lisa/public</param>
             <param>NFS_SERVER=10.156.76.58</param>
             <param>NFS_EXPORT=/usr/lisa/public</param>
-            <param>RootDir=D:\code\BIS_automation\lisa\</param>
+            <param>RootDir=D:\BisCI\workspace\CI_BIS_WS2008R2_HyperV\BIS\WS2008R2\lisa</param>
             <param>TARGET_ADDR=10.156.76.58</param>  <!--target address to ping external network-->
             <param>DEBUG=0</param>
         </testparams>

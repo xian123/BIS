@@ -27,10 +27,11 @@ ICA_TESTRUNNING="TestRunning"      # The test is running
 ICA_TESTCOMPLETED="TestCompleted"  # The test completed successfully
 ICA_TESTABORTED="TestAborted"      # Error during setup of test
 ICA_TESTFAILED="TestFailed"        # Error during execution of test
-
-maxdelay=5000   # max offset in milliseconds.
+maxdelay=5.0                        # max offset in seconds.
+zerodelay=0.0                       # zero
 
 CONSTANTS_FILE="constants.sh"
+
 
 UpdateTestState()
 {
@@ -82,6 +83,10 @@ else
     exit 5
 fi
 
+# Turn off timesync
+sysctl hw.hvtimesync.ignore_sync=1
+sysctl hw.hvtimesync.sample_thresh=-1
+
 grep "^[ ]*ntpd_enable"  /etc/rc.conf
 if [ $? -ne 0 ]; then
     cat <<EOF>> /etc/rc.conf 
@@ -121,38 +126,61 @@ if [ $? -ne 0 ]; then
 	fi
 fi
 
-# We wait 30 seconds for the ntp server to sync
-sleep 30
+service ntpd stop
+ntpdate pool.ntp.org
+service ntpd start
+
+# We wait 120 seconds for the ntp server to sync
+sleep 120
 
 # Variables for while loop. stopTest is the time until the test will run
 isOver=false
-secondsToRun=600
+secondsToRun=1800
 stopTest=$(( $(date +%s) + secondsToRun )) 
 
 while [ $isOver == false ]; do
-    offsets=$(ntpq -nc peers | tail -n +3 | cut -c 62-66 | tr -d '-')
-    for offset in ${offsets}; do
-        if [ ${offset:-0} -ge ${maxdelay:-3000} ]; then
-            isOver=false
-            LogMsg "Offset is $offset and it's bigger than $maxdelay in milliseconds."
-        fi  
-        isOver=true
-        LogMsg "NTP offset is $offset milliseconds."
-    done
+    # 'ntpq -c rl' returns the offset between the ntp server and internal clock
+    delay=$(ntpq -c rl | grep offset= | awk -F "=" '{print $3}' | awk '{print $1}' | tr -d '-')
+    delay=$(echo $delay | sed s'/.$//')
 
-    # The loop will run for 10 mins if delay doesn't match the requirements
-    if  [[ $(date +%s) -gt $stopTest ]]; then
+    # Transform from milliseconds to seconds
+    delay=$(echo $delay 1000 | awk '{ print $1/$2 }')
+
+    # Using awk for float comparison
+    check=$(echo "$delay $maxdelay" | awk '{if ($1 < $2) print 0; else print 1}')
+
+    # Also check if delay is 0.0
+    checkzero=$(echo "$delay $zerodelay" | awk '{if ($1 == $2) print 0; else print 1}')
+
+    # Check delay for changes; if it matches the requirements, the loop will end
+    if [[ $checkzero -ne 0 ]] && \
+       [[ $check -eq 0 ]]; then
         isOver=true
-        LogMsg "ERROR: NTP Time out of sync. Test Failed"
-        UpdateTestState $ICA_TESTFAILED
-        exit 1
     fi
 
-    sleep 5    
+    # The loop will run for 30 mins if delay doesn't match the requirements
+    if  [[ $(date +%s) -gt $stopTest ]]; then
+        isOver=true
+        if [[ $checkzero -eq 0 ]]; then
+            # If delay is 0, something is wrong, so we abort.
+            LogMsg "ERROR: Delay cannot be 0.000; Please check NTP sync manually."
+            UpdateTestState $ICA_TESTABORTED
+            exit 10
+        elif [[ 0 -ne $check ]] ; then    
+            LogMsg "ERROR: NTP Time out of sync. Test Failed"
+            LogMsg "NTP offset is $delay seconds."
+            UpdateTestState $ICA_TESTFAILED
+            exit 10
+        fi
+    fi
+    
+    sleep 30
 done
 
 # If we reached this point, time is synced.
+LogMsg "NTP offset is $delay seconds."
 LogMsg "SUCCESS: NTP time synced!"
+
 UpdateTestState $ICA_TESTCOMPLETED
 exit 0
 

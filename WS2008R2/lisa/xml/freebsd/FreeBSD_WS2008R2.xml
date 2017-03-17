@@ -1615,7 +1615,7 @@
             <testName>TimeSyncWithNTPServer</testName>
             <testScript>CORE_TimeSync_NTP.sh</testScript>
             <files>remote-scripts\freebsd\CORE_TimeSync_NTP.sh</files>
-            <timeout>720</timeout>
+            <timeout>2400</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>

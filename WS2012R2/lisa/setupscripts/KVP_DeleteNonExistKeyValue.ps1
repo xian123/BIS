@@ -178,6 +178,17 @@ Write-Output $job.Status
 #
 switch ($osInfo.BuildNumber)
 {
+    "7601" # Server 2008 R2
+    {
+        if ($job.ErrorCode -eq 32773)
+        {
+            "Info : RemoveKvpItems() correctly returned 32773"
+            return $True
+        }
+        "Error: RemoveKVPItems() returned error code $($job.ErrorCode) rather than 32773"
+        return $False
+    }
+    
 	"9200" # Server 2012
 	{
 		if ($job.ErrorCode -eq 32773)
@@ -188,6 +199,7 @@ switch ($osInfo.BuildNumber)
 		"Error: RemoveKVPItems() returned error code $($job.ErrorCode) rather than 32773"
 		return $False
 	}
+    
 	"9600" # Server 2012 R2
 	{
 		if ($job.ErrorCode -eq 0)
@@ -198,6 +210,7 @@ switch ($osInfo.BuildNumber)
 		"Error: RemoveKVPItems() returned error code $($job.ErrorCode)"
 		return $False
 	}
+    
 	Default # An unsupported version of Windows Server
 	{
 		#
@@ -206,4 +219,5 @@ switch ($osInfo.BuildNumber)
 		"Error: Unsupported build of Windows Server"
 		return $False
 	}
+    
 }

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Linux on Hyper-V and Azure Test Code, ver. 1.0.0
+    Copyright (c) Microsoft Corporation
+
+    All rights reserved. 
+    Licensed under the Apache License, Version 2.0 (the ""License"");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0  
+
+    THIS CODE IS PROVIDED *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS
+    OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
+    ANY IMPLIED WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR
+    PURPOSE, MERCHANTABLITY OR NON-INFRINGEMENT.
+
+    See the Apache Version 2.0 License for specific language governing
+    permissions and limitations under the License.
+-->
+
+<config>
+    <global>
+        <logfileRootDir>C:\Lisa\TestResults</logfileRootDir>
+        <defaultSnapshot>ICABase</defaultSnapshot>
+        <email>
+            <recipients>
+                <to>myboss@mycompany.com</to>
+                <to>myself@mycompany.com</to>
+            </recipients>
+            <sender>myself@mycompany.com</sender>
+            <subject>TCPing Test Run on WS2012</subject>
+            <smtpServer>mysmtphost.mycompany.com</smtpServer>
+        </email>
+
+        <!-- Optional testParams go here -->
+    </global>
+
+    <testSuites>
+        <suite>
+            <suiteName>HVKBD</suiteName>
+            <suiteTests>
+                <suiteTest>Hyperv_keyboard_vim</suiteTest>
+            </suiteTests>
+        </suite>
+    </testSuites>
+
+    <testCases>
+        <test>
+            <testName>Hyperv_keyboard_vim</testName>
+			<testScript>setupscripts\HVKBD_vim_input.ps1</testScript> 
+            <testparams>
+                <param>TC_COVERED=PERF-TTCP-01</param>
+            </testparams>
+			<timeout>10800</timeout>
+            <OnError>Continue</OnError>
+        </test>
+    </testCases>
+
+    <VMs>        
+	     <vm>
+            <hvServer>localhost</hvServer>
+            <vmName>hz_FreeBSD11_alpha</vmName>
+            <os>FreeBSD</os>
+            <ipv4>10.156.76.65</ipv4>
+            <sshKey>lisa_id_rsa.ppk</sshKey>
+            <suite>HVKBD</suite>
+        </vm>
+    </VMs>
+
+</config>

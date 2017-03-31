@@ -17,7 +17,7 @@
             <param>REPOSITORY_EXPORT=/usr/lisa/public</param>
             <param>NFS_SERVER=10.156.76.58</param>
             <param>NFS_EXPORT=/usr/lisa/public</param>
-            <param>RootDir=D:\code\BIS_automation\lisa\</param>
+             <param>RootDir=D:\BisCI\workspace\CI_BIS_WS2012R2_HyperV\BIS\WS2012R2\lisa\</param>
             <param>TARGET_ADDR=10.156.76.58</param>  <!--target address to ping external network-->
             <param>DEBUG=0</param>
         </testparams>
@@ -2039,7 +2039,7 @@
 			<testName>TimeSyncWithNTPServer</testName>
 			<testScript>CORE_TimeSync_NTP.sh</testScript>
 			<files>remote-scripts\freebsd\CORE_TimeSync_NTP.sh</files>
-			<timeout>720</timeout>
+			<timeout>2400</timeout>
 			<onError>Continue</onError>
 			<noReboot>False</noReboot>
 			<testparams>

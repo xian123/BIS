@@ -164,19 +164,62 @@ while($job.jobstate -lt 7) {
 	$job.get()
 } 
 
-if ($job.ErrorCode -eq 0)
+Write-Output $job.ErrorCode
+Write-Output $job.Status
+
+"Info : Detecting Host version of Windows Server"
+$osInfo = GWMI Win32_OperatingSystem -ComputerName $hvServer
+if (-not $osInfo)
 {
-    "Error: The job should not succeed while deleting a non-existent key value pair."
-    return $False;
+    "Error: Unable to collect Operating System informatioin"
+    return $False
 }
 
-if ($job.ErrorCode -eq 32773)
-{  
-    "Info: Key does not exist."
-    return $True
-}
-else
+#
+# Due to a change in behavior between Server 2012 and 2012 R2, we need to modify
+# acceptance criteria based on the version of the HyperVisor.
+#
+switch ($osInfo.BuildNumber)
 {
-    "Error: Unknown error code."
-    return $False
+    "7601" # Server 2008 R2
+    {
+        if ($job.ErrorCode -eq 32773)
+        {
+            "Info : RemoveKvpItems() correctly returned 32773"
+            return $True
+        }
+        "Error: RemoveKVPItems() returned error code $($job.ErrorCode) rather than 32773"
+        return $False
+    }
+
+	"9200" # Server 2012
+	{
+		if ($job.ErrorCode -eq 32773)
+		{
+			"Info : RemoveKvpItems() correctly returned 32773"
+			return $True
+		}
+		"Error: RemoveKVPItems() returned error code $($job.ErrorCode) rather than 32773"
+		return $False
+	}
+
+	"9600" # Server 2012 R2
+	{
+		if ($job.ErrorCode -eq 0)
+		{
+			"Info : Server 2012 R2 returns success even when the KVP item does not exist"
+			return $True
+		}
+		"Error: RemoveKVPItems() returned error code $($job.ErrorCode)"
+		return $False
+	}
+	
+    Default # An unsupported version of Windows Server
+	{
+		#
+		# We should only hit this case when testing on Windows.Next
+		#
+		"Error: Unsupported build of Windows Server"
+		return $False
+	}
 }

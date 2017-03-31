@@ -117,13 +117,22 @@ function sendScancodes($vmName, [byte[]]$keys)
     $Keyboard.TypeScanCodes($keys) # Press enter
 }
 
+function createUser()
+{
+   # recreate login user every time or use existing one? now we reuse the existing one.
+   #echo y|.\bin\plink -i ssh\${sshKey} root@${ipv4} "pw user show hvkbd && pw user del -r -n hvkbd"
+   #echo y|.\bin\plink -i ssh\${sshKey} root@${ipv4} "pw useradd -s tcsh -m -n hvkbd && echo "123" | pw usermod hvkbd -h 0"
+   echo y|.\bin\plink -i ssh\${sshKey} root@${ipv4} "pw user show hvkbd || pw useradd -s tcsh -m -n hvkbd && echo "123" | pw usermod hvkbd -h 0"
+}
+
 function login($vmName)
 {
-   # send 'test' as user
-   sendKey $vmName 0x54
-   sendKey $vmName 0x45
-   sendKey $vmName 0x53
-   sendKey $vmName 0x54
+   # send 'hvkbd' as user
+   sendKey $vmName 0x48
+   sendKey $vmName 0x56
+   sendKey $vmName 0x4B
+   sendKey $vmName 0x42
+   sendKey $vmName 0x44
    sendKey $vmName 0x0D
    # send '123' as passwd
    sendKey $vmName 0x31
@@ -293,6 +302,9 @@ if (-not $vm)
     "Error: VM '${vmName}' does not exist"
     return $False
 }
+
+# create the login user if it does not exist
+createUser
 
 # remove the file if it existed
 DeleteFile

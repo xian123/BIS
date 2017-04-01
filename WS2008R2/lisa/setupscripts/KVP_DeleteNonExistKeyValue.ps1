@@ -178,7 +178,17 @@ Write-Output $job.Status
 #
 switch ($osInfo.BuildNumber)
 {
-	"9200" # Server 2012
+	"7601" # Server 2008 R2
+    {
+        if ($job.ErrorCode -eq 32773)
+        {
+            "Info : RemoveKvpItems() correctly returned 32773"
+            return $True
+        }
+        "Error: RemoveKVPItems() returned error code $($job.ErrorCode) rather than 32773"
+        return $False
+    }
+    "9200" # Server 2012
 	{
 		if ($job.ErrorCode -eq 32773)
 		{

@@ -15,7 +15,7 @@
             <param>REPOSITORY_EXPORT=/usr/lisa/public</param>
             <param>NFS_SERVER=10.156.76.58</param>
             <param>NFS_EXPORT=/usr/lisa/public</param>
-            <param>RootDir=D:\code\BIS_automation\lisa\</param>
+            <param>RootDir=D:\BisCI\workspace\CI_BIS_WS2008R2_HyperV\BIS\WS2008R2\lisa</param>
             <param>TARGET_ADDR=10.156.76.58</param>  <!--target address to ping external network-->
             <param>DEBUG=0</param>
         </testparams>
@@ -92,6 +92,7 @@
                 <suiteTest>Heartbeat</suiteTest>
 				<suiteTest>TimeSync</suiteTest>
                 <suiteTest>TimeSync_SavedVM</suiteTest>
+                <suiteTest>TimeSyncWithNTPServer</suiteTest>
 				<suiteTest>CheckCPUCount-3</suiteTest>
                 <suiteTest>ShutdownFromHyperV-3</suiteTest> 
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
@@ -1607,6 +1608,18 @@
                 <param>NO=64</param>
                 <param>MinimumLun=0</param>
                 <param>TC_COVERED=STOR-56</param>
+            </testparams>
+        </test>
+        
+        <test>
+            <testName>TimeSyncWithNTPServer</testName>
+            <testScript>CORE_TimeSync_NTP.sh</testScript>
+            <files>remote-scripts\freebsd\CORE_TimeSync_NTP.sh</files>
+            <timeout>2400</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <testparams>
+              <param>TC_COVERED=CORE-04</param>
             </testparams>
         </test>
 		        

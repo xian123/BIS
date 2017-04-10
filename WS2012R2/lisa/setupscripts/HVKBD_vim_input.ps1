@@ -21,36 +21,18 @@
 
 <#
 .Synopsis
-    This script tests VSS backup functionality.
+    This script tests keyboard functionality.
 
 .Description
-    This script will create a file on the vm, backs up the VM,
-    deletes the file and restores the VM.
-
-    It uses a second partition as target. 
-
-    Note: The script has to be run on the host. A second partition
-    different from the Hyper-V one has to be available. 
-
-    The .xml entry for this script could look like either of the
-    following:
-
-    An actual testparams definition may look like the following
-
-        <testParams>
-            <param>driveletter=F:</param>
-        <testParams>
-
-    A typical XML definition for this test case would look similar
-    to the following:
+    The .xml entry for this script could look like either of the following:
+    A typical XML definition for this test case would look similar to the following:
         <test>
-        <testName>Hyperv_Keyboard</testName>
-            <testScript>setupscripts\HVKBD_vim_input.ps1</testScript> 
-            <testParams>
-                <param>driveletter=F:</param>
-                <param>TC_COVERED=VSS-06,VSS-17</param>
-            </testParams>
-            <timeout>1200</timeout>
+            <testName>Hyperv_keyboard_vim</testName>
+			<testScript>setupscripts\HVKBD_vim_input.ps1</testScript> 
+            <testparams>
+                <param>TC_COVERED=PERF-TTCP-01</param>
+            </testparams>
+			<timeout>10800</timeout>
             <OnError>Continue</OnError>
         </test>
 
@@ -64,7 +46,7 @@
     Test data for this test case
 
 .Example
-    setupScripts\VSS_WSB_BackupRestore.ps1 -hvServer localhost -vmName NameOfVm -testParams 'sshKey=path/to/ssh;rootdir=path/to/testdir;ipv4=ipaddress;driveletter=D:'
+    setupScripts\HVKBD_vim_input.ps1 -hvServer localhost -vmName NameOfVm -testParams 'sshKey=path/to/ssh;rootdir=path/to/testdir;ipv4=ipaddress;'
 
 #>
 
@@ -242,9 +224,6 @@ function simulateVI($vmName)
 #######################################################################
 $retVal = $false
 
-# Define and cleanup the summaryLog
-$summaryLog  = "${vmName}_summary.log"
-echo "HV synthetic keyboard test" > $summaryLog
 
 # Check input arguments
 if ($vmName -eq $null)
@@ -292,6 +271,12 @@ echo $params
 # Change the working directory to where we need to be
 cd $rootDir
 
+# Define and cleanup the summaryLog
+$summaryLog  = "${vmName}_summary.log"
+del $summaryLog -ErrorAction SilentlyContinue
+Write-Output "HV synthetic keyboard test" | Out-File $summaryLog
+
+
 # Source the TCUtils.ps1 file
 . .\setupscripts\TCUtils.ps1
 
@@ -318,8 +303,15 @@ GetFileFromVM $ipv4 $sshKey '/tmp/t' t
 $ref = get-content .\setupscripts\hvkbd.ref
 
 $result = get-content t
-if ("ref" -eq "result") {
-   return $True
+if ("$ref" -eq "$result") {
+    Write-Output "Keyboard test successfully" | Out-File -Append $summaryLog
+    return $True
 } else {
-   return $False
+	Write-Output "Keyboard test failed" | Out-File -Append $summaryLog
+	Write-Output "The content expected is: " | Out-File -Append $summaryLog
+	Write-Output "$ref" | Out-File -Append $summaryLog
+	Write-Output "But, the content is: " | Out-File -Append $summaryLog
+	Write-Output "$result" | Out-File -Append $summaryLog
+    return $False
 }
+

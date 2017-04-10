@@ -2152,6 +2152,16 @@
                 <param>TC_COVERED=STOR-56</param>
             </testparams>
         </test>
+		
+		<test>
+            <testName>Hyperv_keyboard_vim</testName>
+			<testScript>setupscripts\HVKBD_vim_input.ps1</testScript> 
+            <testparams>
+                <param>TC_COVERED=PERF-TTCP-01</param>
+            </testparams>
+			<timeout>600</timeout>
+            <OnError>Continue</OnError>
+		</test>
         
     </testCases>
 

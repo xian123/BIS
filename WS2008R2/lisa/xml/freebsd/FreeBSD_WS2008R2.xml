@@ -138,7 +138,9 @@
                 <suiteTest>HotAddRandomMultiSCSIDisks_MiniLun0</suiteTest>                                   
                 <suiteTest>HotAddRandomMultiSCSIDisks_MiniLun8</suiteTest>   
                 
-                <suiteTest>Hyperv_keyboard_vim</suiteTest>   
+                <suiteTest>Hyperv_keyboard_vim</suiteTest> 
+                
+                <suiteTest>Test50TimesReboot</suiteTest>   
             </suiteTests>
         </suite>
         

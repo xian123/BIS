@@ -38,7 +38,7 @@
                 <suiteTest>PromiscSynthNetAdapter</suiteTest>    
                 <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest>    
                 <suiteTest>SwitchNIC1</suiteTest>        
-                <suiteTest>TwiceExternalSynthNetAdapter</suiteTest>   		
+                <suiteTest>TwiceExternalSynthNetAdapter</suiteTest>           
             </suiteTests>
         </suite>    
         
@@ -56,13 +56,13 @@
                 <suiteTest>AddDifferencingIDEDrive</suiteTest>  
                 <suiteTest>AddPassThroughSCSIDrive</suiteTest>                                                       
                 <suiteTest>AddPassThroughIDEDrive1</suiteTest> 
-				
+                
                 <suiteTest>TakeSnapShot</suiteTest>
                 <suiteTest>RevertSnapShot</suiteTest> 
-		
+        
                 <suiteTest>AddDynamicSCSIDrive</suiteTest>  
                 <suiteTest>AddFixedSCSIDrive</suiteTest>
-                <suiteTest>AddDifferencingSCSIDrive</suiteTest>   			   
+                <suiteTest>AddDifferencingSCSIDrive</suiteTest>                  
 
                 <suiteTest>ReadKvpIntrinsicData</suiteTest>
                 <suiteTest>WriteKvpDataToGuest</suiteTest>
@@ -90,10 +90,10 @@
                 <suiteTest>CheckCPUCount-4</suiteTest>
                 <suiteTest>ShutdownFromHyperV-4</suiteTest>    
                 <suiteTest>Heartbeat</suiteTest>
-				<suiteTest>TimeSync</suiteTest>
+                <suiteTest>TimeSync</suiteTest>
                 <suiteTest>TimeSync_SavedVM</suiteTest>
                 <suiteTest>TimeSyncWithNTPServer</suiteTest>
-				<suiteTest>CheckCPUCount-3</suiteTest>
+                <suiteTest>CheckCPUCount-3</suiteTest>
                 <suiteTest>ShutdownFromHyperV-3</suiteTest> 
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
                 <suiteTest>CheckCPUCount-2</suiteTest>
@@ -136,7 +136,9 @@
                 <suiteTest>ExternalMultipleSynthNetAdapter</suiteTest>   
                 
                 <suiteTest>HotAddRandomMultiSCSIDisks_MiniLun0</suiteTest>                                   
-                <suiteTest>HotAddRandomMultiSCSIDisks_MiniLun8</suiteTest>                                   
+                <suiteTest>HotAddRandomMultiSCSIDisks_MiniLun8</suiteTest>   
+                
+                <suiteTest>Hyperv_keyboard_vim</suiteTest>   
             </suiteTests>
         </suite>
         
@@ -1392,8 +1394,8 @@
                 <param>TC_COVERED=NMI-03</param>
             </testparams>            
         </test>         
-		
-		
+        
+        
         <test>
             <testName>ReadKvpIntrinsicData</testName>
             <testScript>SetupScripts\KVP_Basic.ps1</testScript>
@@ -1578,8 +1580,8 @@
                 <param>TC_COVERED=STOR-56-01</param>
             </testparams>
         </test>
-		
-		<test>
+        
+        <test>
             <testName>HotAddRandomMultiSCSIDisks_MiniLun8</testName>
             <testScript>AddRandomNewSCSIDisk.sh</testScript>
             <files>remote-scripts\freebsd\AddRandomNewSCSIDisk.sh</files>
@@ -1622,7 +1624,17 @@
               <param>TC_COVERED=CORE-04</param>
             </testparams>
         </test>
-		        
+        
+        <test>
+            <testName>Hyperv_keyboard_vim</testName>
+            <testScript>setupscripts\HVKBD_vim_input.ps1</testScript> 
+            <testparams>
+                <param>TC_COVERED=PERF-TTCP-01</param>
+            </testparams>
+            <timeout>600</timeout>
+            <OnError>Continue</OnError>
+        </test>
+                
     </testCases>
 
     <VMs>       
@@ -1634,7 +1646,7 @@
             <sshKey>lisa_id_rsa.ppk</sshKey>
             <suite>debug</suite>
         </vm>  -->
-		<vm>
+        <vm>
             <hvServer>localhost</hvServer>
             <vmName>FreeBSD11Release64bits</vmName>
             <os>FreeBSD</os>

@@ -180,7 +180,7 @@ function simulateVI($vmName)
 
    # send 'QQWWEERRTTYYUUIIOOPP{{}}'
    $j = 0
-   $i = 15
+   $i = 16
    do {
      sendScancodes $vmName @([byte]$i)
      sendScancodes $vmName @([byte]$i)

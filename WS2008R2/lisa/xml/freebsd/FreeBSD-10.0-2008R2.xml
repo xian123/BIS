@@ -432,6 +432,7 @@
             <testScript>TC-AttachSynthNetAdapter.sh</testScript>
             <files>remote-scripts\freebsd\TC-AttachSynthNetAdapter.sh</files>
             <pretest>setupScripts\SwitchNIC.ps1</pretest>
+			<setupScript>setupScripts\AddNIC.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveNic.ps1</cleanupScript>
             <timeout>100</timeout>
             <onError>Abort</onError>

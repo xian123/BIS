@@ -27,13 +27,15 @@
         <suite>    
             <suiteName>debug</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>VmbusVerifyInterrupts</suiteTest>
             </suiteTests>
         </suite> 
         
         <suite>
             <suiteName>BasicTest</suiteName>
-            <suiteTests>                                               
+            <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
                 
@@ -79,9 +81,10 @@
 
         <suite>
             <suiteName>DailyTest</suiteName>
-            <suiteTests>                                                                                                   
+            <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Heartbeat</suiteTest>
-                <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
+                <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>
                 
                 <suiteTest>CheckCPUCount-2</suiteTest>
                 <suiteTest>ShutdownFromHyperV-2</suiteTest>
@@ -169,6 +172,7 @@
         <suite>    
             <suiteName>Other</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Setmtu</suiteTest>    
                 
                 <suiteTest>Floppymount</suiteTest>
@@ -187,6 +191,7 @@
         <suite>
             <suiteName>HotAddRemoveDisk</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>HotAddFixedSCSIDrive</suiteTest>
                 <suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
                 <suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
@@ -205,6 +210,7 @@
         <suite>
             <suiteName>KnownBugs</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
                 <suiteTest>DisableEnableDataExchange</suiteTest>
                 <suiteTest>CopyWithDifferentMTU</suiteTest>    
@@ -214,6 +220,7 @@
         <suite>
             <suiteName>NMITest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>SetNMI</suiteTest>
                 <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
@@ -225,6 +232,7 @@
         <suite>    
             <suiteName>DiskTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>HotAddFixedSCSIDrive</suiteTest>
                 <suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
                 <suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
@@ -273,6 +281,7 @@
         <suite>    
             <suiteName>KvpTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>ReadKvpIntrinsicData</suiteTest>
                 <suiteTest>WriteKvpDataToGuest</suiteTest>
                 <suiteTest>ModifyKvpDataOnGuest</suiteTest>
@@ -290,6 +299,7 @@
         <suite>    
             <suiteName>500TimesRebootTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Test500TimesReboot</suiteTest>
             </suiteTests>
         </suite>  
@@ -297,6 +307,7 @@
         <suite>    
             <suiteName>PressTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Test500TimesReboot</suiteTest>
                 <suiteTest>HotAddRandomMultiSCSIDisks_Press</suiteTest>
             </suiteTests>
@@ -305,6 +316,15 @@
     </testSuites>
 
     <testCases>
+        <test>
+            <testName>GetSystemInfo</testName>
+            <testScript>GetSystemInfo.sh</testScript>
+            <files>remote-scripts\freebsd\GetSystemInfo.sh</files>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+        </test>
+
         <test>
             <testName>CheckMemoryCapacity-512MB</testName>
             <testScript>TC-CheckMemCapacity.sh</testScript>

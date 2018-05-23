@@ -48,6 +48,9 @@ class TestRun(object):
         self.test_cases = dict()
         self.server_name = os.environ['COMPUTERNAME']
         self.checkpoint_name = checkpoint_name
+        self.guest_os = ''
+        self.guest_distro = ''
+        self.kernel_version = ''
 
     def update_from_xml(self, xml_path):
         xml_object = ParseXML(xml_path)
@@ -82,6 +85,9 @@ class TestRun(object):
 
         try:
             self.log_path = parsed_ica['logPath']
+            self.guest_os = 'FreeBSD'
+            self.guest_distro = parsed_ica['GuestDistro']
+            self.kernel_version = parsed_ica['KernelVersion']
             logger.debug('Saving log folder path - %s', self.log_path)
         except KeyError:
             logger.warning('Log folder path not found in ICA log')
@@ -172,6 +178,9 @@ class TestRun(object):
                         test_dict['GuestOS'] = vm_object.kvp_info['OSName']
                     test_dict['KernelVersion'] = vm_object.kvp_info['OSBuildNumber']
 
+                test_dict['GuestOS'] = self.guest_os
+                test_dict['KernelVersion'] = self.kernel_version
+                test_dict['GuestDistro'] = self.guest_distro
                 logger.debug('Parsed line %s for insertion', test_dict)
                 insertion_list.append(test_dict)
 

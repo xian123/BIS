@@ -213,6 +213,10 @@ def parse_ica_log(log_path):
                 parsed_ica['logPath'] = line.split()[-1]
             elif re.search('^lis version', line):
                 parsed_ica['lisVersion'] = line.split(':')[1].strip()
+            elif re.search('^GuestDistro', line):
+                parsed_ica['GuestDistro'] = line.split(':')[1].strip()
+            elif re.search('^Kernel Version', line):
+                parsed_ica['KernelVersion'] = line.split(':')[1].strip()
 
     return parsed_ica
 

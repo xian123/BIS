@@ -814,6 +814,10 @@ function RunTests ([String] $xmlFilename )
 
     LogMsg 0 "$summary"
 
+    $icaLogFile = Join-Path -path $testDir -childPath "ica.log"
+    Write-Host "ica log file location" + $icaLogFile
+    Write-Host "xml file location" + $xmlFilename
+    Write-Host "Current location" + $pwd
     return $true
 }
 

@@ -134,7 +134,7 @@ def insert_values(cursor, values_dict):
 
 
 def select_row(cursor, row_dict):
-    select_cmd_template = Template('select id from $tableName where ($filters)')
+    select_cmd_template = Template('select testid from $tableName where ($filters)')
 
     filters = ''
 

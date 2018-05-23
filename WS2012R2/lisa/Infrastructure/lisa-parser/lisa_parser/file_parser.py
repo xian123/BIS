@@ -195,7 +195,7 @@ def parse_ica_log(log_path):
                     parsed_ica['vms'][vm_name]['TestLocation'] = 'Azure'
 
             elif re.search('^test', line) and \
-                    re.search('(passed$|failed$|aborted$|skipped$)', line):
+                    re.search('(success$|failed$|aborted$|skipped$)', line):
                 test = line.split()
                 try:
                     parsed_ica['tests'][test[1].lower()] = (vm_name, test[3])
@@ -213,9 +213,9 @@ def parse_ica_log(log_path):
                 parsed_ica['logPath'] = line.split()[-1]
             elif re.search('^lis version', line):
                 parsed_ica['lisVersion'] = line.split(':')[1].strip()
-            elif re.search('^GuestDistro', line):
+            elif re.search('^guestdistro', line):
                 parsed_ica['GuestDistro'] = line.split(':')[1].strip()
-            elif re.search('^Kernel Version', line):
+            elif re.search('^kernel version', line):
                 parsed_ica['KernelVersion'] = line.split(':')[1].strip()
 
     return parsed_ica

@@ -87,7 +87,7 @@ class TestRun(object):
             self.log_path = parsed_ica['logPath']
             self.guest_os = 'FreeBSD'
             self.guest_distro = parsed_ica['GuestDistro']
-            self.kernel_version = parsed_ica['KernelVersion']
+            self.kernel_version = parsed_ica['KernelVersion'].split(' ')[3] + ' ' + parsed_ica['KernelVersion'].split(' ')[4] + ' ' + parsed_ica['KernelVersion'].split(' ')[5] + ' ' + parsed_ica['KernelVersion'].split(' ')[6]
             logger.debug('Saving log folder path - %s', self.log_path)
         except KeyError:
             logger.warning('Log folder path not found in ICA log')

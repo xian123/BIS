@@ -45,6 +45,9 @@ fi
 echo "Test Passed" >> ~/summary.log
 LogMsg "Test Passed"
 LogMsg "Test completed successfully"
-LogMsg "Kernel Version : `uname -r`"
-echo "Kernel Version : `uname -r`" >> ~/summary.log
+LogMsg "GuestDistro  : `uname -nr`"
+echo "GuestDistro : `uname -nr`" >> ~/summary.log
+
+LogMsg "Kernel Version : `uname -a`"
+echo "Kernel Version : `uname -a`" >> ~/summary.log
 UpdateTestState $ICA_TESTCOMPLETED

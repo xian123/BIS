@@ -250,7 +250,7 @@ $rootDir = $null
 $tcCovered = "unknown"
 $testDelay = "300"
 $idleVmCount = 3
-$switchName  = "ExternalNet"
+$switchName  = "External"
 $vmPrefix    = "IDLE_"
 $parentVhd  = "SLES11Sp3x64.vhd"
 

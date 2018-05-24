@@ -164,7 +164,7 @@
             <onError>Abort</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+                <param>NIC=NetworkAdapter,Internal,Internal</param>
                 <param>LOCAL_ADDR=192.168.0.100</param>
                 <param>TARGET_ADDR=192.168.0.1</param>
                 <param>TC_COVERED=TC16</param>
@@ -181,7 +181,7 @@
             <onError>Abort</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Private,PrivateNet</param>
+                <param>NIC=NetworkAdapter,Private,Private</param>
                 <param>LOCAL_ADDR=192.168.1.100</param>
                 <param>TARGET_ADDR=192.168.1.1</param>
                 <param>TC_COVERED=TC17</param>

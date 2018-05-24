@@ -505,7 +505,7 @@
             <onError>Continue</onError>
             <noReboot>True</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.149</param>
                 <param>TC_COVERED=NET-05</param>
             </testparams>
@@ -520,7 +520,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>NIC_NAME=hn0</param>
                 <param>CYCLE_COUNT=5</param>
                 <param>TC_COVERED=TC16</param>
@@ -535,7 +535,7 @@
             <onError>Abort</onError>
             <noReboot>True</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.149</param>
                 <param>TC_COVERED=NET-17</param>
             </testparams>
@@ -550,7 +550,7 @@
             <onError>Abort</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+                <param>NIC=NetworkAdapter,Internal,Internal</param>
                 <param>LOCAL_ADDR=192.168.1.153</param>
                 <param>TARGET_ADDR=192.168.1.100</param>
                 <param>TC_COVERED=TC16</param>
@@ -566,7 +566,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+                <param>NIC=NetworkAdapter,Internal,Internal</param>
                 <param>LOCAL_ADDR=192.168.1.101</param>
                 <param>TARGET_ADDR=192.168.1.100</param>
                 <param>TC_COVERED=NET-04</param>
@@ -583,7 +583,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Private,PrivateNet</param>
+                <param>NIC=NetworkAdapter,Private,Private</param>
                 <param>LOCAL_ADDR=192.168.3.165</param>
                 <param>TARGET_ADDR=192.168.3.100</param>
                 <param>TC_COVERED=NET-06</param>
@@ -600,7 +600,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TC_COVERED=NET-15</param>
                 <param>TARGET_ADDR=10.156.76.149</param>
             </testparams>
@@ -1232,7 +1232,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TC_COVERED=NET-12</param>
             </testparams>
         </test>
@@ -1246,8 +1246,8 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.149</param>
                 <param>TC_COVERED=NET-07</param>
             </testparams>
@@ -1262,7 +1262,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>MAC=00155DDC4F68</param>
                 <param>TARGET_ADDR=10.156.76.149</param>
                 <param>TC_COVERED=TC113</param>
@@ -1278,7 +1278,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.149</param>
                 <param>TC_COVERED=TC110</param>
             </testparams>
@@ -1304,7 +1304,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.149</param>
                 <param>TC_COVERED=TC107</param>
             </testparams>
@@ -1319,7 +1319,7 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet,00155d33d0fc</param>
+                <param>NIC=NetworkAdapter,External,External,00155d33d0fc</param>
                 <param>TC_COVERED=NET-09</param>
                 <param>MAC=00:15:5d:33:d0:fc</param>
                 <param>TARGET_ADDR=10.156.76.149</param>

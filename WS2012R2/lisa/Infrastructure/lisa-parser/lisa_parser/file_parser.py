@@ -197,6 +197,8 @@ def parse_ica_log(log_path):
             elif re.search('^test', line) and \
                     re.search('(success$|failed$|aborted$|skipped$)', line):
                 test = line.split()
+                if len(test) < 4:
+                    continue
                 try:
                     parsed_ica['tests'][test[1].lower()] = (vm_name, test[3])
                 except KeyError:

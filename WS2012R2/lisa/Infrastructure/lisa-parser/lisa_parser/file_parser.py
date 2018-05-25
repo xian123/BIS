@@ -49,8 +49,8 @@ class ParseXML(object):
         self.root = self.tree.getroot()
 
     def get_tests_suite(self):
-        return self.root.find('testSuites').getchildren()[0]\
-            .find('suiteName').text
+        return self.root.find('VMs').getchildren()[0]\
+            .find('suite').text
 
     def get_tests(self):
         """Iterates through the xml file looking for <test> sections

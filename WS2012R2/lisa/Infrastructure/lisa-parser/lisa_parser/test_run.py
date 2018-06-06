@@ -147,7 +147,7 @@ class TestRun(object):
                                  test_name, vm_name)
                     logger.info('Skipping %s for database insertion', test_name)
                     continue
-
+                test_dict['TestScope'] = test_object.covered_cases
                 test_dict['HostName'] = vm_object.hv_server
                 test_dict['HostVersion'] = vm_object.host_os
                 test_dict['TestCaseName'] = test_name

@@ -148,6 +148,7 @@ class TestRun(object):
                     logger.info('Skipping %s for database insertion', test_name)
                     continue
                 test_dict['TestScope'] = test_object.covered_cases
+
                 test_dict['HostName'] = vm_object.hv_server
                 test_dict['HostVersion'] = vm_object.host_os
                 test_dict['TestCaseName'] = test_name
@@ -155,6 +156,7 @@ class TestRun(object):
                 test_dict['TestDate'] = TestRun.format_date(
                     self.timestamp
                 )
+                test_dict['TestCategory'] = test_object.test_category
 
                 if not vm_object.kvp_info:
                     test_dict['GuestOS'] = ''
@@ -335,6 +337,7 @@ class TestCase(object):
         self.covered_cases = self.get_covered_cases(properties)
         self.results = dict()
         self.perf_dict = dict()
+        self.test_category = properties['testcategory']
 
     def update_results(self, vm_result):
         self.results[vm_result[0]] = vm_result[1]

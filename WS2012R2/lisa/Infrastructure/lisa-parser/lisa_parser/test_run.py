@@ -156,7 +156,7 @@ class TestRun(object):
                 test_dict['TestDate'] = TestRun.format_date(
                     self.timestamp
                 )
-                test_dict['TestCategory'] = test_object.test_category
+                test_dict['TestCategory'] = test_object.test_category[0]
 
                 if not vm_object.kvp_info:
                     test_dict['GuestOS'] = ''

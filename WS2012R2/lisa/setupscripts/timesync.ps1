@@ -175,6 +175,41 @@ function GetUnixVMTime([String] $sshKey, [String] $ipv4)
 }
 
 
+
+
+#####################################################################
+#
+# UpdateVmTimezoneBasedOnHost()
+#
+#####################################################################
+function UpdateVmTimezoneBasedOnHost([String] $sshKey, [String] $ipv4)
+{
+	#In our test env, the usual time zone is Pacific or China Standard Time
+	$command = ""
+	$localTimeZone = (Get-WmiObject win32_timezone).StandardName
+	if( $localTimeZone  -like "Pacific*" )
+	{
+		$command = "cp  /usr/share/zoneinfo/PST8PDT  /etc/localtime"
+	}
+
+	if( $localTimeZone  -like "China*" )
+	{
+		$command = "cp  /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime"
+	}
+	
+	# Add other time zone if it's needed
+	
+	if( !$command )
+	{
+		"Error: Time zone is not updated"
+		return 1
+	}
+
+	"The command is $command"
+	AskVMForTime ${sshKey} $ipv4 $command
+
+}
+
 #####################################################################
 #
 # Main script body
@@ -308,6 +343,8 @@ if ($testDelay -ne "0")
     Start-Sleep -S $testDelay
 }
 
+
+UpdateVmTimezoneBasedOnHost -sshKey "ssh\${sshKey}" -ipv4 $ipv4
 
 $i = 0
 $totalTimes = 3

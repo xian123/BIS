@@ -133,7 +133,6 @@
 				
 				<suiteTest>PingSizeInterval</suiteTest>
 				<suiteTest>ExternalSynthNetAdapter</suiteTest>   
-				<suiteTest>SwitchNIC1</suiteTest> 
                 <suiteTest>SwitchNIC2</suiteTest> 
                 <suiteTest>InternalSynthNetAdapter</suiteTest>
                 <suiteTest>PrivateSynthNetAdapter</suiteTest> 		

@@ -1212,7 +1212,7 @@
             <files>remote-scripts\freebsd\AddNewDisk_New.sh</files>
             <setupScript>setupScripts\AddVhdxHardDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -1929,7 +1929,7 @@
             <preTest>setupScripts\AddVhdxHardDisk.ps1</preTest>  
             <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
             <timeout>600</timeout>
-            <onError>Abort</onError>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Dynamic,512</param>
@@ -2021,8 +2021,8 @@
             <setupScript>setupScripts\ChangeCPU.ps1</setupScript>
             <preTest>setupScripts\AddVhdxHardDisk.ps1</preTest>  
             <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
-            <timeout>600</timeout>
-            <onError>Abort</onError>
+            <timeout>1200</timeout>
+            <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
                 <param>SCSI=0,0,Dynamic,4096</param>

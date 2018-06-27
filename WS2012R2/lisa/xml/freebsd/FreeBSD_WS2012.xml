@@ -35,6 +35,7 @@
         <suite>
             <suiteName>BasicTest</suiteName>
             <suiteTests>
+                <suiteTest>BuildKernel</suiteTest>
                 <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
@@ -82,6 +83,7 @@
         <suite>
             <suiteName>DailyTest</suiteName>
             <suiteTests>
+                <suiteTest>BuildKernel</suiteTest>
                 <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>
@@ -369,16 +371,24 @@
             <noReboot>False</noReboot>
             <TestCategory>Core</TestCategory>
         </test>
-        
         <test>
-            <testName>BuildKernel</testName>
-            <testScript>BuildKernel_Compress.sh</testScript>
-            <files>remote-scripts\freebsd\BuildKernel_Compress.sh</files>
-            <timeout>14400</timeout>
-            <onError>Abort</onError>
-            <noReboot>False</noReboot>
-            <TestCategory>Core</TestCategory>
-        </test>
+			<testName>BuildKernel</testName>
+			<setupScript>setupScripts\PrepareBuildKernel.ps1</setupScript>
+			<testScript>BuildFreebsdKernel.sh</testScript>
+			<cleanupScript>setupScripts\TakeSnapshot.ps1</cleanupScript>
+			<files>remote-scripts\freebsd\BuildFreebsdKernel.sh</files>
+			<timeout>72000</timeout>
+			<onError>Abort</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>GIT_URL=https://github.com/freebsd/freebsd.git</param>
+				<param>GIT_BRANCH=master</param>
+				<param>GIT_COMMITID=None</param>
+				<param>SnapshotName=ICABase</param>
+				<param>TC_COVERED=CORE-15</param>
+			</testparams>
+			<TestCategory>Core</TestCategory>
+		</test>
         <test>
             <testName>VerifyBISInstall</testName>
             <testScript>VerifyBISInstall.sh</testScript>

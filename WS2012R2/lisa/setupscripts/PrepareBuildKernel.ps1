@@ -1,6 +1,6 @@
 ############################################################################
 #
-# TakeSnapshot.ps1
+# PrepareBuildKernel.ps1
 #
 ############################################################################
 param([string] $vmName, [string] $hvServer, [string] $testParams)
@@ -59,7 +59,7 @@ foreach ($p in $params)
     {
         $Snapshot = $tokens[1].Trim()
     }
-}
+}          
 
 if ($rootDir -eq $null)
 {
@@ -67,10 +67,10 @@ if ($rootDir -eq $null)
     return $False
 }
 
-if ($Snapshot -eq $null)
+if (-not $Snapshot)
 {
     "Error: Missing testParam SnapshotName"
-    return $false
+    return $retVal
 }
 
 cd $rootDir
@@ -78,20 +78,31 @@ cd $rootDir
 $summaryLog  = "${vmName}_summary.log"
 del $summaryLog -ErrorAction SilentlyContinue
 
-
-Checkpoint-VM -Name $vmName -ComputerName $hvServer -SnapshotName $Snapshot -Confirm:$False
+# Delete the ICABase snapshot
+Get-VMSnapshot -VMName $vmName -ComputerName $hvServer -Name $Snapshot | Remove-VMSnapshot -Confirm:$False
 if ($? -eq "True")
 {
-    Write-Output "Snapshot $Snapshot created successfully" | Out-File $summaryLog
+    Write-Output "Snapshot $Snapshot delete successfully" | Out-File $summaryLog
     $retVal = $True
 }
 else
 {
-    Write-Output "Error while creating VM snapshot" | Out-File $summaryLog
-    return $false
+    Write-Output "Error while deleting VM snapshot" | Out-File $summaryLog
+    return $False
 }
 
-Write-Output $retVal
+
+# Apply the basic snapshot
+$snaps = Get-VMSnapshot -VMName $vmName -ComputerName $hvServer 
+foreach($s in $snaps)
+{
+	if ($s.Name -eq "Base")
+	{
+		Write-Output  "Info :  $vmName is being reset to $($s.Name)"
+		Restore-VMSnapshot $s -Confirm:$false | out-null
+		break
+	}
+}
 
 return $retVal
 

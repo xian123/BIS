@@ -79,16 +79,27 @@ $summaryLog  = "${vmName}_summary.log"
 del $summaryLog -ErrorAction SilentlyContinue
 
 # Delete the ICABase snapshot
-Get-VMSnapshot -VMName $vmName -ComputerName $hvServer -Name $Snapshot | Remove-VMSnapshot -Confirm:$False
-if ($? -eq "True")
+$snaps = Get-VMSnapshot -VMName $vmName -ComputerName $hvServer 
+foreach($s in $snaps)
 {
-    Write-Output "Snapshot $Snapshot delete successfully" | Out-File $summaryLog
-    $retVal = $True
-}
-else
-{
-    Write-Output "Error while deleting VM snapshot" | Out-File $summaryLog
-    return $False
+	if ($s.Name -eq $Snapshot)
+	{
+		Write-Output  "Info : remove $($s.Name) snapshot"
+		Get-VMSnapshot -VMName $vmName -ComputerName $hvServer -Name $Snapshot | Remove-VMSnapshot -Confirm:$False | out-null
+		if ($? -eq "True")
+		{
+			Write-Output "Snapshot $Snapshot delete successfully" | Out-File $summaryLog
+			$retVal = $True
+		}
+		else
+		{
+			Write-Output "Error while deleting VM snapshot" | Out-File $summaryLog
+			return $False
+		}
+		
+		break
+		
+	}
 }
 
 

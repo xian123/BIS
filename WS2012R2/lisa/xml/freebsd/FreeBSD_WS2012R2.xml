@@ -27,13 +27,16 @@
         <suite>    
             <suiteName>debug</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>VmbusVerifyInterrupts</suiteTest>	
             </suiteTests>
         </suite>   
                 
         <suite>
             <suiteName>BasicTest</suiteName>
-            <suiteTests>                                               
+            <suiteTests>
+				<suiteTest>BuildKernel</suiteTest>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
                 
@@ -78,7 +81,9 @@
 
         <suite>
             <suiteName>DailyTest</suiteName>
-            <suiteTests>                                                                                                   
+            <suiteTests>
+                <suiteTest>BuildKernel</suiteTest>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Heartbeat</suiteTest>
                 <suiteTest>Reboot_CTRL-ALT-DEL</suiteTest>   
 				
@@ -130,7 +135,6 @@
 				
 				<suiteTest>PingSizeInterval</suiteTest>
 				<suiteTest>ExternalSynthNetAdapter</suiteTest>   
-				<suiteTest>SwitchNIC1</suiteTest> 
                 <suiteTest>SwitchNIC2</suiteTest> 
                 <suiteTest>InternalSynthNetAdapter</suiteTest>
                 <suiteTest>PrivateSynthNetAdapter</suiteTest> 		
@@ -183,6 +187,7 @@
         <suite>    
             <suiteName>Other</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
 				<suiteTest>Setmtu</suiteTest>	
 				
                 <suiteTest>Floppymount</suiteTest>
@@ -201,6 +206,7 @@
 		<suite>
 			<suiteName>HotAddAddRemoveDisk</suiteName>
 			<suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
 				<suiteTest>HotAddFixedSCSIDrive</suiteTest>
 				<suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
 				<suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
@@ -219,6 +225,7 @@
 		<suite>
 			<suiteName>KnownBugs</suiteName>
 			<suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
 				<suiteTest>DeleteNonExistentKvpDataOnGuest</suiteTest>
 				<suiteTest>DisableEnableDataExchange</suiteTest>
 				<suiteTest>CopyWithDifferentMTU</suiteTest>	
@@ -228,6 +235,7 @@
 		<suite>
 			<suiteName>NMITest</suiteName>
 			<suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
 				<suiteTest>SetNMI</suiteTest>
                 <suiteTest>VerifyNMIforVMInSavedState</suiteTest>
                 <suiteTest>VerifyNMIforVMInStoppedState</suiteTest>
@@ -239,6 +247,7 @@
 		<suite>    
             <suiteName>DiskTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>HotAddFixedSCSIDrive</suiteTest>
 				<suiteTest>HotRemoveFixedSCSIDrive</suiteTest>
 				<suiteTest>HotAddFixedSCSIDrive_Multi</suiteTest>
@@ -285,6 +294,7 @@
 		<suite>    
             <suiteName>KvpTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>ReadKvpIntrinsicData</suiteTest>
                 <suiteTest>WriteKvpDataToGuest</suiteTest>
                 <suiteTest>ModifyKvpDataOnGuest</suiteTest>
@@ -302,6 +312,7 @@
 		<suite>    
             <suiteName>500TimesRebootTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Test500TimesReboot</suiteTest>
             </suiteTests>
         </suite>  
@@ -309,6 +320,7 @@
         <suite>    
             <suiteName>PressTest</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>Test500TimesReboot</suiteTest>
                 <suiteTest>HotAddRandomMultiSCSIDisks_Press</suiteTest>
             </suiteTests>
@@ -317,6 +329,7 @@
         <suite>
             <suiteName>VHDxResize</suiteName>
             <suiteTests>
+                <suiteTest>GetSystemInfo</suiteTest>
                 <suiteTest>VHDxResizeToBigger512</suiteTest>
                 <suiteTest>VHDxResizeToBigger4096</suiteTest>
                 <suiteTest>VHDxResizeToBigger512_Dynamic_IDE</suiteTest>
@@ -338,7 +351,16 @@
     </testSuites>
 
     <testCases>
-	
+        <test>
+            <testName>GetSystemInfo</testName>
+            <testScript>GetSystemInfo.sh</testScript>
+            <files>remote-scripts\freebsd\GetSystemInfo.sh</files>
+            <timeout>600</timeout>
+            <onError>Continue</onError>
+            <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
+        </test>
+
 		<test>
             <testName>CheckMemoryCapacity-512MB</testName>
             <testScript>TC-CheckMemCapacity.sh</testScript>
@@ -351,6 +373,7 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
 		
 			<test>
@@ -365,6 +388,7 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
 		
 		<test>
@@ -379,16 +403,26 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
-		
         <test>
-            <testName>BuildKernel</testName>
-            <testScript>BuildKernel_Compress.sh</testScript>
-            <files>remote-scripts\freebsd\BuildKernel_Compress.sh</files>
-            <timeout>14400</timeout>
-            <onError>Abort</onError>
-            <noReboot>False</noReboot>
-        </test>
+			<testName>BuildKernel</testName>
+			<setupScript>setupScripts\PrepareBuildKernel.ps1</setupScript>
+			<testScript>BuildFreebsdKernel.sh</testScript>
+			<cleanupScript>setupScripts\TakeSnapshot.ps1</cleanupScript>
+			<files>remote-scripts\freebsd\BuildFreebsdKernel.sh</files>
+			<timeout>72000</timeout>
+			<onError>Abort</onError>
+			<noReboot>False</noReboot>
+			<testparams>
+				<param>GIT_URL=https://github.com/freebsd/freebsd.git</param>
+				<param>GIT_BRANCH=master</param>
+				<param>GIT_COMMITID=None</param>
+				<param>SnapshotName=ICABase</param>
+				<param>TC_COVERED=CORE-15</param>
+			</testparams>
+			<TestCategory>Core</TestCategory>
+		</test>
         <test>
             <testName>VerifyBISInstall</testName>
             <testScript>VerifyBISInstall.sh</testScript>
@@ -396,6 +430,7 @@
             <timeout>600</timeout>
             <onError>Abort</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>CDmount</testName>
@@ -410,6 +445,7 @@
             <timeout>600</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>BuildLoadableKernel</testName>
@@ -418,6 +454,7 @@
             <timeout>14400</timeout>
             <onError>Abort</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
 
         <test>
@@ -427,6 +464,7 @@
             <timeout>600</timeout>
             <onError>Abort</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
 
         <test>
@@ -441,6 +479,7 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>True</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>ShutdownFromHyperV-2</testName>
@@ -452,7 +491,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-07</param>
-            </testparams>                
+            </testparams>             
+            <TestCategory>Core</TestCategory>   
         </test>
         <test>
             <testName>CheckCPUCount-3</testName>
@@ -466,6 +506,7 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>True</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>ShutdownFromHyperV-3</testName>
@@ -477,7 +518,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-07</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>           
         </test>
         <test>
             <testName>CheckCPUCount-4</testName>
@@ -491,6 +533,7 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>True</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>ShutdownFromHyperV-4</testName>
@@ -502,7 +545,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-07</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>CheckCPUCount-8</testName>
@@ -517,7 +561,8 @@
             <noReboot>True</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-08</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Core</TestCategory>     
         </test>
         <test>
             <testName>ExternalSynthNetAdapter</testName>
@@ -528,10 +573,11 @@
             <onError>Continue</onError>
             <noReboot>True</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=NET-05</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
 
         <test>
@@ -543,11 +589,12 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>NIC_NAME=hn0</param>
                 <param>CYCLE_COUNT=5</param>
                 <param>TC_COVERED=TC16</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>SwitchNIC1</testName>
@@ -558,10 +605,11 @@
             <onError>Continue</onError>
             <noReboot>True</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=NET-17</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>SwitchNIC2</testName>
@@ -574,11 +622,12 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+                <param>NIC=NetworkAdapter,Internal,Internal</param>
                 <param>LOCAL_ADDR=192.168.1.153</param>
                 <param>TARGET_ADDR=192.168.1.100</param>
                 <param>TC_COVERED=TC16</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>InternalSynthNetAdapter</testName>
@@ -590,11 +639,12 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+                <param>NIC=NetworkAdapter,Internal,Internal</param>
                 <param>LOCAL_ADDR=192.168.1.101</param>
                 <param>TARGET_ADDR=192.168.1.100</param>
                 <param>TC_COVERED=NET-04</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
 
         <test>
@@ -607,11 +657,12 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,Private,PrivateNet</param>
+                <param>NIC=NetworkAdapter,Private,Private</param>
                 <param>LOCAL_ADDR=192.168.3.165</param>
                 <param>TARGET_ADDR=192.168.3.100</param>
                 <param>TC_COVERED=NET-06</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
 
         <test>
@@ -624,10 +675,11 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TC_COVERED=NET-15</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
 
         <test>
@@ -645,6 +697,7 @@
                 <param>TC_COVERED=STOR-02</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDynamicIDEDrive0</testName>
@@ -661,6 +714,7 @@
                 <param>TC_COVERED=STOR-03</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDynamicIDEDrive_NBIS</testName>
@@ -677,6 +731,7 @@
                 <param>TC_COVERED=TC14</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddFixedIDEDrive</testName>
@@ -693,6 +748,7 @@
                 <param>TC_COVERED=STOR-05</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddFixedIDEDrive_NBIS</testName>
@@ -709,6 +765,7 @@
                 <param>TC_COVERED=TC15</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>SCSI_Start</testName>
@@ -721,6 +778,7 @@
                 <param>IPT=172.25.220.130</param> <!-- Repository server as target -->
                 <param>TC_COVERED=TCxx</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDynamicSCSIDrive</testName>
@@ -737,6 +795,7 @@
                 <param>TC_COVERED=STOR-04</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
     </test>
 
         <test>
@@ -754,6 +813,7 @@
                 <param>TC_COVERED=STOR-06</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
     </test>
         <test>
             <testName>AddPassThroughSCSIDrive</testName>
@@ -770,6 +830,7 @@
                 <param>TC_COVERED=STOR-11</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddPassThroughSCSIDrive_Multi</testName>
@@ -788,6 +849,7 @@
                 <param>TC_COVERED=STOR-15</param>
                 <param>NO=2</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>    
         <test>
             <testName>AddDynamicSCSIDrive_Multi</testName>
@@ -806,6 +868,7 @@
                 <param>TC_COVERED=STOR-14</param>
                 <param>NO=2</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDifferencingIDEDrive</testName>
@@ -822,6 +885,7 @@
                 <param>TC_COVERED=STOR-07</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -839,6 +903,7 @@
                 <param>TC_COVERED=STOR-08</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDifferencingSCSIDriveVHDx4k</testName>
@@ -855,6 +920,7 @@
                 <param>TC_COVERED=STOR-50</param>
                 <param>PARENT=icaDiffVhdx4k.vhdx</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>    
         <test>
             <testName>CopyLargeFile</testName>
@@ -867,6 +933,7 @@
                 <param>LARGE_FILENAME=testdata</param>
                 <param>TC_COVERED=NET-02</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>CopyMultipleSmallFiles</testName>
@@ -878,7 +945,8 @@
             <testparams>
                 <param>LARGE_FILENAME=testdata</param>
                 <param>TC_COVERED=NET-20</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Network</TestCategory>        
         </test>
         <test>
             <testName>CopyFileExceedDiskSizeIDE</testName>
@@ -895,6 +963,7 @@
                 <param>TC_COVERED=STOR-59</param>
                 <param>LARGE_FILENAME=largefile</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -912,6 +981,7 @@
                 <param>TC_COVERED=STOR-60</param>
                 <param>LARGE_FILENAME=largefile</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -923,7 +993,8 @@
             <noReboot>True</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-04</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>      
         </test>
         <test>
             <testName>TimeSync_SavedVM</testName>
@@ -934,7 +1005,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-05</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>         
         </test>  
         <test>
             <testName>Heartbeat</testName>
@@ -945,7 +1017,8 @@
             <noReboot>True</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-03</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Core</TestCategory>         
         </test>
         <test>
             <testName>ShutdownFromHyperV</testName>
@@ -956,7 +1029,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-06</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>            
         </test>
         <test>
             <testName>Reboot_CTRL-ALT-DEL</testName>
@@ -967,7 +1041,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=CORE-16</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>             
         </test>
         <test>
             <testName>AddDynamicIDEDriveVHDX_NBIS</testName>
@@ -984,6 +1059,7 @@
                 <param>TC_COVERED=TC17</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddFixedIDEDriveVHDX_NBIS</testName>
@@ -1000,6 +1076,7 @@
                 <param>TC_COVERED=TC16</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDynamicIDEDriveVHDX1</testName>
@@ -1016,6 +1093,7 @@
                 <param>TC_COVERED=STOR-29</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDynamicIDEDriveVHDX0</testName>
@@ -1032,6 +1110,7 @@
                 <param>TC_COVERED=STOR-28</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddFixedIDEDriveVHDX</testName>
@@ -1048,6 +1127,7 @@
                 <param>TC_COVERED=STOR-31</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>4K_AddDynamicIDEDriveVHDX1</testName>
@@ -1064,6 +1144,7 @@
                 <param>TC_COVERED=STOR-45</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>4K_AddDynamicIDEDriveVHDX0</testName>
@@ -1080,6 +1161,7 @@
                 <param>TC_COVERED=STOR-45</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>4K_AddFixedIDEDriveVHDX</testName>
@@ -1096,6 +1178,7 @@
                 <param>TC_COVERED=STOR-47</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>4K_AddDynamicSCSIDriveVHDX</testName>
@@ -1111,6 +1194,7 @@
                 <param>TEST_DEVICE=/dev/da1</param>
                 <param>TC_COVERED=STOR-46</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>        
         <test>
             <testName>4K_AddFixedSCSIDriveVHDX</testName>
@@ -1126,6 +1210,7 @@
                 <param>TEST_DEVICE=/dev/da1</param>
                 <param>TC_COVERED=STOR-48</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>        
         <test>
             <!-- added by andy -->
@@ -1143,6 +1228,7 @@
                 <param>TC_COVERED=STOR-51</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>            
         <test>
             <!-- added by andy -->
@@ -1162,6 +1248,7 @@
                 <param>TC_COVERED=STOR-52</param>
                 <param>NO=2</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>            
         <test>
             <testName>4K_AddDynamicVHDX_SCSIDrive_Multi</testName>
@@ -1169,7 +1256,7 @@
             <files>remote-scripts\freebsd\AddNewDisk_New.sh</files>
             <setupScript>setupScripts\AddVhdxHardDisk.ps1</setupScript>
             <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
-            <timeout>600</timeout>
+            <timeout>1200</timeout>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
@@ -1180,6 +1267,7 @@
                 <param>TC_COVERED=STOR-53</param>
                 <param>NO=2</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>            
         <test>
             <testName>AddDynamicSCSIDriveVHDX</testName>
@@ -1196,6 +1284,7 @@
                 <param>TC_COVERED=STOR-30</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddFixedSCSIDriveVHDX</testName>
@@ -1212,6 +1301,7 @@
                 <param>TC_COVERED=STOR-32</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddPassThroughIDEDrive1</testName>
@@ -1228,6 +1318,7 @@
                 <param>TC_COVERED=STOR-10</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddPassThroughIDEDrive0</testName>
@@ -1244,6 +1335,7 @@
                 <param>TC_COVERED=STOR-09</param>
                 <param>NO=1</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -1256,9 +1348,10 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TC_COVERED=NET-12</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>ExternalMultipleSynthNetAdapter</testName>
@@ -1270,11 +1363,12 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=NET-07</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>SynthNetAdapterOnly</testName>
@@ -1286,11 +1380,12 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>MAC=00155DDC4F68</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=TC113</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>TwiceExternalSynthNetAdapter</testName>
@@ -1302,10 +1397,11 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=TC110</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>Floppymount</testName>
@@ -1317,6 +1413,7 @@
             <testparams>
                 <param>TC_COVERED=STOR-01</param>
            </testparams>
+           <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>Setmtu</testName>
@@ -1328,10 +1425,11 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet</param>
+                <param>NIC=NetworkAdapter,External,External</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
                 <param>TC_COVERED=TC107</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>StaticMac</testName>
@@ -1343,11 +1441,12 @@
             <onError>Continue</onError>
             <noReboot>False</noReboot>
             <testparams>
-                <param>NIC=NetworkAdapter,External,ExternalNet,00155d33d0fc</param>
+                <param>NIC=NetworkAdapter,External,External,00155d33d0fc</param>
                 <param>TC_COVERED=NET-09</param>
                 <param>MAC=00:15:5d:33:d0:fc</param>
                 <param>TARGET_ADDR=10.156.76.58</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>TakeSnapShot</testName>
@@ -1361,6 +1460,7 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>RevertSnapShot</testName>
@@ -1375,6 +1475,7 @@
             </testparams>
             <onError>Continue</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Core</TestCategory>
         </test>
         <test>
             <testName>TestExportImport</testName>
@@ -1385,7 +1486,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=STOR-58</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Core</TestCategory> 
         </test>
         <test>
             <testName>Test50TimesReboot</testName>
@@ -1396,7 +1498,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=BOOT-02</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>   
         </test>
 		<test>
             <testName>Test500TimesReboot</testName>
@@ -1407,7 +1510,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=BOOT-02</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>          
         </test>
         <test>
             <testName>AddDifferencingIDEDriveVHDx4k</testName>
@@ -1425,6 +1529,7 @@
                 <param>NO=1</param>
                 <param>PARENT=icaDiffVhdx4k.vhdx</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDifferencingIDEDriveVHDx512</testName>
@@ -1442,6 +1547,7 @@
                 <param>NO=1</param>
                 <param>PARENT=icaDiffVhdx512.vhdx</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>AddDynamicIDEDrive_Multi</testName>
@@ -1460,6 +1566,7 @@
                 <param>TC_COVERED=STOR-13</param>
                 <param>NO=2</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>LoadUnloadnetvsc</testName>
@@ -1468,6 +1575,7 @@
             <timeout>600</timeout>
             <onError>Abort</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>LoadUnloadstorvsc</testName>
@@ -1477,6 +1585,7 @@
             <timeout>600</timeout>
             <onError>Abort</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>AddPassThroughIDEDrive1_Multi</testName>
@@ -1495,6 +1604,7 @@
                 <param>TC_COVERED=STOR-17</param>
                 <param>NO=2</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         <test>
             <testName>BridgeNic</testName>
@@ -1510,6 +1620,7 @@
                 <param>NIC=NetworkAdapter,Private,PrivateNet</param>
                 <param>TC_COVERED=TC17</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         <test>
             <testName>SetNMI</testName>
@@ -1518,7 +1629,8 @@
             <noReboot>True</noReboot>
             <testparams>
                 <param>TC_COVERED=NMI-01</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>       
         </test>        
         <test>
             <testName>VerifyNMIforVMInSavedState</testName>
@@ -1527,7 +1639,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=NMI-02</param>
-            </testparams>                
+            </testparams>
+            <TestCategory>Core</TestCategory>          
         </test>        
         <test>
             <testName>VerifyNMIforVMInStoppedState</testName>
@@ -1536,7 +1649,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=NMI-02</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Core</TestCategory>        
         </test>
         <test>
             <testName>VerifyNMIforVMInPausedState</testName>
@@ -1545,7 +1659,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=NMI-02</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Core</TestCategory>          
         </test>            
         <test>
             <testName>SendNMIToVMwithUnPrivUser</testName>
@@ -1554,7 +1669,8 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>TC_COVERED=NMI-03</param>
-            </testparams>            
+            </testparams>
+            <TestCategory>Core</TestCategory>      
         </test>         
         
         <test>
@@ -1566,6 +1682,7 @@
             <testparams>
                 <param>TC_COVERED=KVP-01</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
 
         <test>
@@ -1582,6 +1699,7 @@
                 <param>Value=555</param>
                 <param>Pool=0</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
 
         <test>
@@ -1598,6 +1716,7 @@
                 <param>Value=999</param>
                 <param>Pool=0</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
 
         <test>
@@ -1612,6 +1731,7 @@
                 <param>Value=999</param>
                 <param>Pool=0</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
 
         <test>
@@ -1626,6 +1746,7 @@
                 <param>Value=111</param>
                 <param>sshKey=lisa_id_rsa.ppk</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
         
         <test>
@@ -1637,6 +1758,7 @@
             <testparams>
                 <param>TC_COVERED=KVP-11</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
         
         <test>
@@ -1652,6 +1774,7 @@
                  <param>Value=SH-OSTC-TH53dup.fareast.corp.microsoft.com</param>
                  <param>Pool=3</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
         
         <test>
@@ -1668,6 +1791,7 @@
                  <param>Value=321</param>
                  <param>Pool=0</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
         
         <test>
@@ -1682,6 +1806,7 @@
                  <param>Value=000</param>
                  <param>Pool=0</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>
 
         <test>
@@ -1696,6 +1821,7 @@
                  <param>Value=000</param>
                  <param>Pool=0</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>        
         
         <test>
@@ -1712,6 +1838,7 @@
                  <param>Value=111</param>
                  <param>Pool=0</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>    
 
         <test>
@@ -1724,6 +1851,7 @@
                  <param>TC_COVERED=KVP-12</param>
                  <param>sshKey=lisa_id_rsa.ppk</param>
             </testparams>
+            <TestCategory>KVP</TestCategory>
         </test>    
 
 		<test>
@@ -1741,6 +1869,7 @@
 				<param>TC_COVERED=STOR-18</param>
 				<param>NO=1</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 	
 		<test>
@@ -1758,6 +1887,7 @@
 				<param>TC_COVERED=STOR-19</param>    
 				<param>NO=1</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1777,6 +1907,7 @@
 				<param>TC_COVERED=STOR-20</param>
 				<param>NO=2</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 	
 		<test>
@@ -1796,6 +1927,7 @@
 				<param>TC_COVERED=STOR-21</param>
 				<param>NO=2</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 	
 		<test>
@@ -1813,6 +1945,7 @@
 				<param>TC_COVERED=STOR-22</param>
 				<param>NO=1</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 	
 		<test>
@@ -1830,6 +1963,7 @@
 				<param>TC_COVERED=STOR-23</param>
 				<param>NO=1</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1839,7 +1973,7 @@
 		    <preTest>setupScripts\AddVhdxHardDisk.ps1</preTest>  
 		    <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
 		    <timeout>600</timeout>
-		    <onError>Abort</onError>
+		    <onError>Continue</onError>
 		    <noReboot>False</noReboot>
 		    <testparams>
 				<param>SCSI=0,0,Dynamic,512</param>
@@ -1847,6 +1981,7 @@
 				<param>TC_COVERED=STOR-38</param>
 				<param>NO=1</param>
 		    </testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1864,6 +1999,7 @@
 			</testparams>
 			<onError>Continue</onError>
 			<noReboot>False</noReboot>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1881,6 +2017,7 @@
 				<param>TC_COVERED=STOR-54</param>
 				<param>NO=1</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1898,6 +2035,7 @@
 			</testparams>
 			<onError>Continue</onError>
 			<noReboot>False</noReboot>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1917,6 +2055,7 @@
 				<param>TC_COVERED=STOR-56</param>
 				<param>NO=2</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 	    <test>
@@ -1926,8 +2065,8 @@
 			<setupScript>setupScripts\ChangeCPU.ps1</setupScript>
 		    <preTest>setupScripts\AddVhdxHardDisk.ps1</preTest>  
 		    <cleanupScript>setupScripts\RemoveVhdxHardDisk.ps1</cleanupScript>
-		    <timeout>600</timeout>
-		    <onError>Abort</onError>
+		    <timeout>1200</timeout>
+		    <onError>Continue</onError>
 		    <noReboot>False</noReboot>
 		    <testparams>
 				<param>SCSI=0,0,Dynamic,4096</param>
@@ -1938,6 +2077,7 @@
 				<param>NO=2</param>
 				<param>VCPU=4</param>
 		    </testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1957,6 +2097,7 @@
 			</testparams>
 			<onError>Continue</onError>
 			<noReboot>False</noReboot>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1978,6 +2119,7 @@
 				<param>NO=2</param>
 				<param>VCPU=4</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -1997,6 +2139,7 @@
 				<param>TC_COVERED=STOR-24</param>
 				<param>NO=2</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		
@@ -2017,6 +2160,7 @@
 				<param>TC_COVERED=STOR-25</param>
 				<param>NO=2</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
 		
 		<test>
@@ -2036,6 +2180,7 @@
 				<param>TC_COVERED=STOR-25</param>
 				<param>NO=2</param>
 			</testparams>
+            <TestCategory>Storage</TestCategory>
 		</test>
         
 		<test>
@@ -2048,6 +2193,7 @@
 			<testparams>
 				<param>TC_COVERED=CORE-04</param>
 			</testparams>
+            <TestCategory>Core</TestCategory>
 		</test>
 		
 		<test>
@@ -2062,6 +2208,7 @@
 			    <param>VCPU=2</param>
 			    <param>TC_COVERED=VMBUS-02</param>
 		    </testparams>
+            <TestCategory>Core</TestCategory>
 		</test>
 		
 		<test>
@@ -2077,6 +2224,7 @@
 				<param>LARGE_FILENAME=1GB.file</param>
 				<param>TC_COVERED=NET-13</param>
 		    </testparams>
+            <TestCategory>Core</TestCategory>
 		</test>
 		
 		<test>
@@ -2091,6 +2239,7 @@
                 <param>VMBusVerOnWS2012=2.4</param>
 				<param>TC_COVERED=VMBUS-01</param>
 			</testparams>
+            <TestCategory>Core</TestCategory>
 		</test>
         
         <test>
@@ -2103,6 +2252,7 @@
             <testparams>
                 <param>TC_COVERED=Kernel-01</param>
             </testparams>
+            <TestCategory>Core</TestCategory>
         </test>
 		
         <test> 
@@ -2123,6 +2273,7 @@
             </testparams> 
             <onError>Continue</onError>
             <noReboot>False</noReboot>
+            <TestCategory>Storage</TestCategory>
         </test> 
 
         <test>
@@ -2143,6 +2294,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-01b</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2163,6 +2315,7 @@
                 <param>ControllerType=IDE</param>
                 <param>TC_COVERED=STOR-VHDx-105</param>
              </testparams>
+             <TestCategory>Storage</TestCategory>
        </test>
 
        <test>
@@ -2183,6 +2336,7 @@
                 <param>ControllerType=IDE</param>
                 <param>TC_COVERED=STOR-VHDx-106</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
        </test>
 
         <test>
@@ -2203,6 +2357,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-02a</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2223,6 +2378,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-02b</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2244,6 +2400,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-03a</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
       <test>
@@ -2265,6 +2422,7 @@
               <param>ControllerType=IDE</param>
               <param>TC_COVERED=STOR-VHDx-03b</param>
           </testparams>
+          <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2287,6 +2445,7 @@
                <param>Offline=True</param>
                <param>TC_COVERED=STOR-VHDx-03c</param>
            </testparams>
+           <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2307,6 +2466,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-04a</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2327,6 +2487,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-04b</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2347,6 +2508,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-05a</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2367,6 +2529,7 @@
                 <param>ControllerType=IDE</param>
                 <param>TC_COVERED=STOR-VHDx-05b</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2388,6 +2551,7 @@
                 <param>ControllerType=SCSI</param>
                <param>TC_COVERED=STOR-VHDx-06a</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
        </test>
 
        <test>
@@ -2410,6 +2574,7 @@
                <param>Offline=True</param>
                <param>TC_COVERED=STOR-VHDx-06b</param>
            </testparams>
+           <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2431,6 +2596,7 @@
                 <param>ControllerType=IDE</param>
                 <param>TC_COVERED=STOR-VHDx-06c</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 
         <test>
@@ -2451,6 +2617,7 @@
                 <param>ControllerType=SCSI</param>
                 <param>TC_COVERED=STOR-VHDx-07</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         
         <test>
@@ -2465,11 +2632,12 @@
             <testparams>
 		        <param>VCPU=2</param>
                 <param>NVSVERSION=327680</param>  <!-- 0x50000 -->
-		        <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+		        <param>NIC=NetworkAdapter,Internal,Internal</param>
                 <param>TARGET_ADDR=192.168.1.100</param>
                 <param>LOCAL_ADDR=192.168.1.200</param>
 		        <param>TC_COVERED=VRSS-01</param>
             </testparams>
+            <TestCategory>Core</TestCategory>
         </test>
 	
         <test>
@@ -2483,11 +2651,12 @@
             <noReboot>False</noReboot>
             <testparams>
                 <param>VCPU=2</param>
-                <param>NIC=NetworkAdapter,Internal,InternalNet</param>
+                <param>NIC=NetworkAdapter,Internal,Internal</param>
                 <param>TARGET_ADDR=192.168.1.100</param>
                 <param>LOCAL_ADDR=192.168.1.200</param>
                 <param>TC_COVERED=VRSS-02</param>
             </testparams>
+            <TestCategory>Network</TestCategory>
         </test>
         
         <test>
@@ -2504,6 +2673,7 @@
                 <param>MinimumLun=0</param>
                 <param>TC_COVERED=STOR-56</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         
         <test>
@@ -2520,6 +2690,7 @@
                 <param>MinimumLun=8</param>
                 <param>TC_COVERED=STOR-56</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
         
         <test>
@@ -2536,6 +2707,7 @@
                 <param>MinimumLun=0</param>
                 <param>TC_COVERED=STOR-56</param>
             </testparams>
+            <TestCategory>Storage</TestCategory>
         </test>
 		
 		<test>
@@ -2546,6 +2718,7 @@
             </testparams>
 			<timeout>600</timeout>
             <OnError>Continue</OnError>
+            <TestCategory>Core</TestCategory>
 		</test>
         
     </testCases>

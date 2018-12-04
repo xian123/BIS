@@ -102,7 +102,7 @@ foreach ($p in $params)
     if ($tokens.Length -ne 2)
     {
 	"Warn : test parameter '$p' is being ignored because it appears to be malformed"
-     continue
+     continue
     }
     
     if ($tokens[0].Trim() -eq "RootDir")
@@ -131,7 +131,7 @@ Write-Output "Covers TC124" | Out-File $summaryLog
 #
 # Switch the NIC of the VM
 #
- $snic = Get-VMNetworkAdapter –VMName $vmName
+ $snic = Get-VMNetworkAdapter -VMName $vmName
  Write-Output $snic | Out-File -Append $summaryLog
  if( $snic.Length -ne 2 )
  {
@@ -139,9 +139,9 @@ Write-Output "Covers TC124" | Out-File $summaryLog
      return $False
  }
  
- $switchName = "InternalNet"
- $snic[-1] | Connect-VMNetworkAdapter –SwitchName $switchName
- $switch = Get-VMNetworkAdapter –VMName $vmName
+ $switchName = "Internal"
+ $snic[-1] | Connect-VMNetworkAdapter -SwitchName $switchName
+ $switch = Get-VMNetworkAdapter -VMName $vmName
  if ($switch[-1].SwitchName -ne $switchName)
   {
     "Error: Unable to Switch Network Adaptor Type"

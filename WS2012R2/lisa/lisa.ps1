@@ -814,6 +814,13 @@ function RunTests ([String] $xmlFilename )
 
     LogMsg 0 "$summary"
 
+    $icaLogFile = Join-Path -path $testDir -childPath "ica.log"
+    $runXmlFile = Join-Path -path $pwd -childPath $xmlFilename
+    $pythonFile = Join-Path -path $pwd -childPath "Infrastructure\lisa-parser\lisa_parser\lisa_parser.py"
+    $databaseConfig = "C:\Config\db.config"
+    $command = "python ${pythonFile} -c ${databaseConfig} -k ${runXmlFile} ${icaLogFile}"
+    Write-Host ("Insert results into database " + $command)
+    cmd /c $command
     return $true
 }
 

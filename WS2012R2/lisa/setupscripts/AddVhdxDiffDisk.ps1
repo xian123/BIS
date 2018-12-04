@@ -361,11 +361,12 @@ function CreateHardDrive( [string] $vmName, [string] $server, [System.Boolean] $
         # Check for parent vhdx
         #
          $parentVhdName = $defaultVhdPath + $ParentName
-         $parentInfo = GetRemoteFileInfo -filename $parentVhdName -server $hvServer 
+         $parentInfo = GetRemoteFileInfo -filename $parentVhdName -server $server 
          if (-not $parentInfo)
          {
-          Write-Output "Error: parent VHDX does not exist: ${parentVhdName}"
-          return $retVal
+			Write-Output "Parent VHDX does not exist: ${parentVhdName}, so create it."
+			$size = [uint64](1024 * 1024 * 8)
+			New-VHD -Path $parentVhdName  -ComputerName $server -SizeBytes $size -Dynamic
          }
          
         #

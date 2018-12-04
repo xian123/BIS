@@ -112,10 +112,10 @@ Function CreateNetworkSwitch([String] $swithName, [String] $swithType)
 Function CreateNetworkSwitches( [String]$hvServer)
 {
 	LogMsg 3 "Info:Creating network switches, need a few minutes..."
-    CreateNetworkSwitch "InternalNet" "Internal"
-    CreateNetworkSwitch "PrivateNet" "Private"
+    CreateNetworkSwitch "Internal" "Internal"
+    CreateNetworkSwitch "Private" "Private"
 
-    $swithName = "ExternalNet"
+    $swithName = "External"
     $switches = Get-VMSwitch -Name $swithName -ComputerName $hvServer
     if ($switches.Count -ge 1)
     {
@@ -138,7 +138,7 @@ Function CreateNetworkSwitches( [String]$hvServer)
             $adapterName = $adapter.Name
         }
     
-        New-VMSwitch "ExternalNet" -NetAdapterName $adapterName -ComputerName $hvServer
+        New-VMSwitch "External" -NetAdapterName $adapterName -ComputerName $hvServer
         if ($? -eq "True")
         {
 			LogMsg 0 "Info:Create ExternalNet switch successfully"

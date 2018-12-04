@@ -130,6 +130,41 @@ function GetTimeSync([String] $sshKey, [String] $ipv4)
      return $diffInSeconds
 }
 
+
+#####################################################################
+#
+# UpdateVmTimezoneBasedOnHost()
+#
+#####################################################################
+function UpdateVmTimezoneBasedOnHost([String] $sshKey, [String] $ipv4)
+{
+	#In our test env, the usual time zone is Pacific or China Standard Time
+	$command = ""
+	$localTimeZone = (Get-WmiObject win32_timezone).StandardName
+	if( $localTimeZone  -like "Pacific*" )
+	{
+		$command = "cp  /usr/share/zoneinfo/PST8PDT  /etc/localtime"
+	}
+
+	if( $localTimeZone  -like "China*" )
+	{
+		$command = "cp  /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime"
+	}
+	
+	# Add other time zone if it's needed
+	
+	if( !$command )
+	{
+		"Error: Time zone is not updated"
+		return 1
+	}
+
+	"The command is $command"
+	SendCommandToVM -sshKey "ssh\${sshKey}" -ipv4 $ipv4 -command $command
+}
+
+
+
 #####################################################################
 #
 # Main script body
@@ -238,6 +273,7 @@ if (! $sts)
     Import-module .\HyperVLibV2Sp1\HyperV.psd1
 }#>
 
+UpdateVmTimezoneBasedOnHost -sshKey $sshKey -ipv4 $ipv4
 
 $diffInSeconds = GetTimeSync -sshKey $sshKey -ipv4 $ipv4
 

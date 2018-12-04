@@ -442,7 +442,7 @@ function CreateHardDrive( [string] $vmName, [string] $server, [System.Boolean] $
     # If the hard drive exists, complain. Otherwise, add it
     #
     
-    $drives = Get-VMHardDiskDrive -VMName $vmName -ComputerName $hvServer -ControllerType $controllerType -ControllerNumber $controllerID -ControllerLocation $lun 
+    $drives = Get-VMHardDiskDrive -VMName $vmName -ComputerName $server -ControllerType $controllerType -ControllerNumber $controllerID -ControllerLocation $lun 
     if ($drives)
     {
         write-output "Error: drive $controllerType $controllerID $Lun already exists"
@@ -453,7 +453,7 @@ function CreateHardDrive( [string] $vmName, [string] $server, [System.Boolean] $
         #
         # Create the .vhd file if it does not already exist
         #
-        $obj = Get-WmiObject -ComputerName $hvServer -Namespace "root\virtualization\v2" -Class "MsVM_VirtualSystemManagementServiceSettingData"
+        $obj = Get-WmiObject -ComputerName $server -Namespace "root\virtualization\v2" -Class "MsVM_VirtualSystemManagementServiceSettingData"
         
         $defaultVhdPath = $obj.DefaultVirtualHardDiskPath
         
@@ -472,7 +472,7 @@ function CreateHardDrive( [string] $vmName, [string] $server, [System.Boolean] $
 		$listContent = $vhdName + ","
 		$listContent | Out-File $newVHDListsPath -NoClobber -Append
 		
-        $fileInfo = GetRemoteFileInfo -filename $vhdName -server $hvServer
+        $fileInfo = GetRemoteFileInfo -filename $vhdName -server $server
 
         if (-not $fileInfo)
         {
@@ -490,11 +490,11 @@ function CreateHardDrive( [string] $vmName, [string] $server, [System.Boolean] $
                 "Diff"
                     {
                         $parentVhdName = $defaultVhdPath + "icaDiffParent.vhd"
-                        $parentInfo = GetRemoteFileInfo -filename $parentVhdName -server $hvServer
+                        $parentInfo = GetRemoteFileInfo -filename $parentVhdName -server $server
                         if (-not $parentInfo)
                         {
-                            Write-Output "Error: parent VHD does not exist: ${parentVhdName}"
-                            return $retVal
+                            Write-Output "Parent VHD does not exist: ${parentVhdName}, so create it."
+                            New-VHD -Path $parentVhdName -size  $newVHDSize -ComputerName $server -Fixed
                         }
                         $newVhd = New-VHD -Path $vhdName -ParentPath $parentVhdName -ComputerName $server -Differencing
                     }

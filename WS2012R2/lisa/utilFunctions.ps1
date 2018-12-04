@@ -427,7 +427,7 @@ function SummaryToString([XML] $xmlConfig, [DateTime] $startTime, [string] $xmlF
 	$str += "Logs can be found at \\$($hostname)\LisaTestResults\" + $fname + "-" + $startTime.ToString("yyyyMMdd-HHmmss") + "<br /><br />"
 	
     $str += "</pre><br />"
-
+    
     return $str
 }
 
